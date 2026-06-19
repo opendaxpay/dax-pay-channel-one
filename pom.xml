@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.dromara.daxpay</groupId>
+    <groupId>cn.daxpay.open</groupId>
     <artifactId>daxpay-channel-one</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -37,17 +37,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.dromara.daxpay</groupId>
+                <groupId>cn.daxpay.open</groupId>
                 <artifactId>daxpay-channel-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dromara.daxpay</groupId>
+                <groupId>cn.daxpay.open</groupId>
                 <artifactId>daxpay-channel-alipay</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dromara.daxpay</groupId>
+                <groupId>cn.daxpay.open</groupId>
                 <artifactId>daxpay-channel-wechat</artifactId>
                 <version>${project.version}</version>
             </dependency>

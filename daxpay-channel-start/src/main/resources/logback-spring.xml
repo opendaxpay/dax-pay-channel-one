@@ -10,5 +10,5 @@
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
-    <logger name="org.dromara.daxpay" level="DEBUG"/>
+    <logger name="cn.daxpay.open" level="DEBUG"/>
 </configuration>
