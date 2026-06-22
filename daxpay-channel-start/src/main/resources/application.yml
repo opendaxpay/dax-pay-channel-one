@@ -11,3 +11,20 @@ spring:
     driver-class-name: org.postgresql.Driver
   jackson:
     time-zone: UTC
+# 监控端点与链路追踪(仅日志关联, 不导出到后端)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,httpexchanges
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          enabled: false
