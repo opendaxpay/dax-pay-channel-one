@@ -17,10 +17,18 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+/// # 支付宝通道支付服务
+///
+/// 实现 [ChannelPayService], 按 `method` 支持以下支付方式:
+/// `alipay_wap`(手机网站)、`alipay_app`(APP)、`alipay_page`(电脑网站)、`alipay_qr`(扫码预下单)。
+/// 当请求 `config` 为空时进入 Demo 模式, 返回模拟支付响应, 不调用真实支付宝 SDK。
 @Slf4j
-@Service("alipay")
+@Service
 public class AlipayPayService implements ChannelPayService {
 
+    /// 通道支付下单
+    ///
+    /// 金额单位转换: 请求中为分, 调用 SDK 时转为元(保留两位小数)。
     @Override
     public ChannelPayResp pay(ChannelPayReq req) {
         log.info("📋 支付宝通道收到支付请求: bizOrderNo={}, amount={}, subject={}, method={}",
@@ -94,6 +102,10 @@ public class AlipayPayService implements ChannelPayService {
                 model.setSubject(req.getSubject());
                 model.setBody(req.getDescription());
                 request.setBizModel(model);
+                // 异步通知地址由主应用通过 config.notifyUrl 下发, 透传给支付宝
+                String notifyUrl = req.getConfig() != null && req.getConfig().get("notifyUrl") != null
+                        ? req.getConfig().get("notifyUrl").toString() : null;
+                if (StrUtil.isNotBlank(notifyUrl)) request.setNotifyUrl(notifyUrl);
                 if (StrUtil.isNotBlank(req.getExpireTime())) model.setTimeExpire(req.getExpireTime());
                 AlipayTradePrecreateResponse alipayResp = client.execute(request);
                 if (alipayResp.isSuccess()) {

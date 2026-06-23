@@ -8,8 +8,15 @@ import cn.daxpay.open.platform.core.exception.SdkCallException;
 
 import java.util.Map;
 
+/// # 支付宝 SDK 客户端构建工具
+///
+/// 根据主应用下发的通道配置 Map 构建 [AlipayClient], 支持公钥模式与证书模式两种鉴权方式。
+/// 网关地址未配置时按是否沙箱自动选择。
 public class AlipaySdkConfig {
 
+    /// 根据通道配置 Map 构建 [AlipayClient]
+    ///
+    /// 配置缺失或构建失败时抛出 [SdkCallException]。证书模式(`authType=cert`)需同时提供应用证书、公钥证书、根证书。
     public static AlipayClient buildClient(Map<String, Object> configMap) {
         try {
             AlipayConfigDto dto = mapToDto(configMap);
@@ -39,6 +46,7 @@ public class AlipaySdkConfig {
         }
     }
 
+    /// 将配置 Map 映射为 [AlipayConfigDto]
     private static AlipayConfigDto mapToDto(Map<String, Object> map) {
         AlipayConfigDto dto = new AlipayConfigDto();
         dto.setAliAppId(getString(map, "aliAppId"));
@@ -56,6 +64,7 @@ public class AlipaySdkConfig {
         return dto;
     }
 
+    /// 安全地从 Map 中取字符串(空值返回 null)
     private static String getString(Map<String, Object> map, String key) {
         Object v = map.get(key);
         return v != null ? v.toString() : null;

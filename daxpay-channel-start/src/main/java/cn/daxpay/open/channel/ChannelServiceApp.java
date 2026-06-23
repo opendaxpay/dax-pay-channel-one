@@ -7,11 +7,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/// # 通道子应用 One 启动类
+///
+/// 独立部署的支付通道服务, 接收主应用 dax-pay-open 通过声明式 HTTP 客户端转发的通道请求,
+/// 按 `channel` 字段路由到对应实现(支付宝/微信等)。启动后打印健康检查地址。
 @Slf4j
-@SpringBootApplication(scanBasePackages = "cn.daxpay.open.channel")
+@SpringBootApplication
 public class ChannelServiceApp {
 
-    public static void main(String[] args) throws UnknownHostException {
+    /// 应用入口, 启动 Spring 容器并打印健康检查地址
+    static void main(String[] args) throws UnknownHostException {
         var application = SpringApplication.run(ChannelServiceApp.class, args);
         var env = application.getEnvironment();
         var appName = env.getProperty("spring.application.name");
