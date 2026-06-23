@@ -4,24 +4,22 @@ import com.alipay.api.internal.util.AlipaySignature;
 import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import cn.daxpay.open.platform.core.dto.callback.ChannelCallbackVerifyReq;
-import cn.daxpay.open.platform.core.dto.callback.ChannelCallbackVerifyResp;
-import cn.daxpay.open.platform.core.service.ChannelCallbackVerifyService;
+import cn.daxpay.open.channel.alipay.dto.AlipayCallbackVerifyReq;
+import cn.daxpay.open.channel.alipay.dto.AlipayCallbackVerifyResp;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
 @Slf4j
-@Service("alipayCallbackVerifyService")
+@Service
 @RequiredArgsConstructor
-public class AlipayCallbackVerifyService implements ChannelCallbackVerifyService {
+public class AlipayCallbackVerifyService {
 
     private final ObjectMapper objectMapper;
 
-    @Override
-    public ChannelCallbackVerifyResp verify(ChannelCallbackVerifyReq req) {
-        ChannelCallbackVerifyResp resp = new ChannelCallbackVerifyResp();
+    public AlipayCallbackVerifyResp verify(AlipayCallbackVerifyReq req) {
+        AlipayCallbackVerifyResp resp = new AlipayCallbackVerifyResp();
         try {
             Map<String, String> params = req.getRawParams();
             Map<String, Object> config = req.getConfig();
