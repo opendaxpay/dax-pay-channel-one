@@ -2,9 +2,9 @@ package cn.daxpay.open.platform.common.i18n.config;
 
 import cn.daxpay.open.platform.common.i18n.source.JsonMessageSource;
 import cn.daxpay.open.platform.common.i18n.util.I18nUtil;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.util.Locale;
@@ -14,7 +14,10 @@ import java.util.Locale;
 /// 注册 JsonMessageSource 作为 MessageSource 的实现,
 /// Spring Boot 默认的 AcceptHeaderLocaleResolver 会根据请求头自动解析 locale, 无需额外配置 LocaleResolver。
 /// 同时 Spring Boot 自动配置的 LocalValidatorFactoryBean 会用此 MessageSource 解析 Bean Validation 的 {key} 消息。
-@Configuration
+///
+/// 通过 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 注册,
+/// 由 Spring Boot 自动装配机制加载, 不依赖启动类的组件扫描。
+@AutoConfiguration
 public class I18nConfig {
 
     @Bean

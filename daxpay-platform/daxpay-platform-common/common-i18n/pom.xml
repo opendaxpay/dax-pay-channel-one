@@ -26,6 +26,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>
+        <!-- spring-boot-autoconfigure（@AutoConfiguration 注解, optional 不向下游传递, 运行时由宿主应用提供） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- hutool-json（解析国际化 JSON 文件） -->
         <dependency>
             <groupId>cn.hutool</groupId>

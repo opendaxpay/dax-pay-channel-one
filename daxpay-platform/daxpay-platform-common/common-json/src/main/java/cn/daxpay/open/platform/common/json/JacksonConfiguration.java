@@ -5,9 +5,9 @@ import cn.daxpay.open.platform.common.json.jdk.JavaLongTypeModule;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationFeature;
 
@@ -20,7 +20,8 @@ import java.util.TimeZone;
 /// - Long → String (防止前端精度丢失)
 /// - Java 8 时间类型格式定制 (OffsetDateTime → ISO UTC, LocalDate, LocalTime)
 /// - 全局时区 UTC (与 OffsetDateTime + timestamptz(6) 规范一致)
-@Configuration
+///
+@AutoConfiguration
 public class JacksonConfiguration {
 
     /// 定制 JsonMapper Builder, 配置全局序列化行为
