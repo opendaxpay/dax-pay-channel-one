@@ -15,13 +15,21 @@
     <description>通道适配系统启动模块</description>
 
     <dependencies>
+        <!-- service-system: web 组装层(全局异常处理等, 对标主项目 service-system) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>service-system</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>daxpay-channel-alipay</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>daxpay-channel-wechat</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

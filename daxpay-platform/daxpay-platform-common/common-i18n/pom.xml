@@ -36,6 +36,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-json</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <!-- slf4j-api（JsonMessageSource 的 @Slf4j 日志） -->
         <dependency>

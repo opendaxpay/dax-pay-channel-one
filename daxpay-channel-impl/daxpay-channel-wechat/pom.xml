@@ -18,14 +18,24 @@
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>daxpay-platform-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-pay</artifactId>
+            <version>${wxjava.version}</version>
+            <exclusions>
+                <!-- 排除传递依赖 guava, 避免版本冲突(主项目统一由 BOM 管理) -->
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

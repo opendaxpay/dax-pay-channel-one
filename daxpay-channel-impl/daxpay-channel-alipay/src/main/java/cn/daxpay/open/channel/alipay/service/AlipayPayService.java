@@ -12,24 +12,22 @@ import cn.daxpay.open.platform.core.dto.pay.ChannelPayResp;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.daxpay.open.platform.core.exception.SdkCallException;
-import cn.daxpay.open.platform.core.service.ChannelPayService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 /// # 支付宝通道支付服务
 ///
-/// 实现 [ChannelPayService], 按 `method` 支持以下支付方式:
+/// 按 `method` 支持以下支付方式:
 /// `alipay_wap`(手机网站)、`alipay_app`(APP)、`alipay_page`(电脑网站)、`alipay_qr`(扫码预下单)。
 /// 当请求 `config` 为空时进入 Demo 模式, 返回模拟支付响应, 不调用真实支付宝 SDK。
 @Slf4j
 @Service
-public class AlipayPayService implements ChannelPayService {
+public class AlipayPayService {
 
     /// 通道支付下单
     ///
     /// 金额单位转换: 请求中为分, 调用 SDK 时转为元(保留两位小数)。
-    @Override
     public ChannelPayResp pay(ChannelPayReq req) {
         log.info("📋 支付宝通道收到支付请求: bizOrderNo={}, amount={}, subject={}, method={}",
                 req.getBizOrderNo(), req.getAmount(), req.getSubject(), req.getMethod());

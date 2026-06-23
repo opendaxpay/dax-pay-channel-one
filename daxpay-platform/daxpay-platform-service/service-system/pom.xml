@@ -6,18 +6,13 @@
 
     <parent>
         <groupId>cn.daxpay.open</groupId>
-        <artifactId>daxpay-channel-one</artifactId>
+        <artifactId>daxpay-platform-service</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>daxpay-platform</artifactId>
-    <packaging>pom</packaging>
-    <description>通道适配基础层(对标主项目 daxpay-platform)</description>
+    <artifactId>service-system</artifactId>
+    <packaging>jar</packaging>
+    <description>通道服务系统级 web 组装层(对标主项目 service-system)</description>
 
-    <modules>
-        <module>daxpay-platform-core</module>
-        <module>daxpay-platform-common</module>
-        <module>daxpay-platform-service</module>
-    </modules>
 </project>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cn.daxpay.open</groupId>
+        <artifactId>daxpay-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>daxpay-platform-service</artifactId>
+    <packaging>pom</packaging>
+    <description>通道适配业务服务层(对标主项目 daxpay-platform-service)</description>
+
+    <modules>
+        <module>service-system</module>
+    </modules>
+
+    <!-- 聚合层统一声明公共依赖, 子模块继承后无需重复 -->
+    <dependencies>
+        <!-- web框架(@RestControllerAdvice / @ExceptionHandler) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- 参数校验 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- 框架核心包(契约层: DaxResult / 异常类 / ChannelErrorCode) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>daxpay-platform-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 国际化(I18nUtil) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>common-i18n</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

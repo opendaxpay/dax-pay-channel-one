@@ -90,5 +90,5 @@ cd daxpay-channel-start && mvnd spring-boot:run -Dspring-boot.run.profiles=dev
 
 1. 在 `daxpay-channel-impl` 下新建 `daxpay-channel-xxx` 子模块
 2. 通用 DTO/接口已在 `daxpay-platform-core` 定义(`cn.daxpay.open.platform.core.*`); 通道专属配置放新模块自身
-3. 在新模块中实现 `ChannelPayService` 等接口，用 `@Service("xxx")` 注册 Bean 名称
+3. 在新模块中提供通道支付服务类(如 `XxxPayService`), 用 `@Service("xxx")` 注册 Bean 名称
 4. 在 `daxpay-channel-start` 中引入新模块依赖

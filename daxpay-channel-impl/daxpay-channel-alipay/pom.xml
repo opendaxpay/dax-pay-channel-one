@@ -18,19 +18,23 @@
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>daxpay-platform-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- common-json: ObjectMapper(Jackson 3, service 解析 SDK 返回 JSON) -->
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>common-json</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
+            <version>${alipay-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
