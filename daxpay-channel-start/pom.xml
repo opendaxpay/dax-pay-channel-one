@@ -17,10 +17,6 @@
     <dependencies>
         <dependency>
             <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.daxpay.open</groupId>
             <artifactId>daxpay-channel-alipay</artifactId>
         </dependency>
         <dependency>
@@ -58,6 +54,7 @@
     </dependencies>
 
     <build>
+        <finalName>daxpay-channel-one</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -65,6 +62,14 @@
                 <configuration>
                     <mainClass>cn.daxpay.open.channel.ChannelServiceApp</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- 生成 build-info.properties, 供 /actuator/info 端点展示构建信息 -->
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

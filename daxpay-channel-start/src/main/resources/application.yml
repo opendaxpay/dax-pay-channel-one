@@ -4,35 +4,21 @@ server:
 spring:
   application:
     name: daxpay-channel-one
-  datasource:
-    url: jdbc:postgresql://localhost:5432/daxpay_channel
-    username: daxpay
-    password: daxpay
-    driver-class-name: org.postgresql.Driver
-  jackson:
-    time-zone: UTC
-# 监控端点与链路追踪(仅日志关联, 不导出到后端)
+  profiles:
+    # 默认激活开发环境, 生产用 -Dspring.profiles.active=prod 或 SPRING_PROFILES_ACTIVE=prod 覆盖
+    active: dev
+# 监控端点与链路追踪(actuator 配置必须放在顶层, 不能放在 spring: 下)
 management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,httpexchanges
-  endpoint:
-    health:
-      show-details: always
+  # 链路追踪(仅日志关联, 不导出到后端; 采样率 dev/prod 共享 1.0 全采样,
+  # 全采样能让任意请求的日志都能用 traceId 串起来排障)
   tracing:
     sampling:
       probability: 1.0
     # OTLP 导出开关(关闭后不向 OTLP 后端推送 trace)
-    # 注意: Spring Boot 4.1 中 enabled 标准键是 management.tracing.export.otlp.enabled,
-    # 与 endpoint/transport/headers 等连接细节(management.opentelemetry.tracing.export.otlp.*)分属不同前缀;
-    # 旧写法 management.opentelemetry.tracing.export.otlp.enabled 从未存在, 写了不生效。
     export:
       otlp:
         enabled: false
   # 指标导出配置(仅本地日志关联, 不导出到 OTLP 后端)
-  # 注意: Spring Boot 4.x 起 OTLP 指标导出属性前缀改为 management.otlp.metrics.export.*,
-  # 不是旧版的 management.metrics.export.otlp.*。属性键写错会被忽略, 默认仍会推送。
   otlp:
     metrics:
       export:

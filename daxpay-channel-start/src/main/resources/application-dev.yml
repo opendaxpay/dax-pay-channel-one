@@ -1,0 +1,34 @@
+# ====================================================================
+# 通道适配子应用 - 开发环境配置
+# ====================================================================
+# 监控端点全开(无敏感数据, 排障友好; prod 收紧见 application-prod.yml)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: >
+          health,info,httpexchanges,
+          metrics,loggers,threaddump,
+          beans,mappings,scheduledtasks,
+          caches,conditions,startup
+  endpoint:
+    health:
+      show-details: always
+spring:
+  # PostgreSQL(与主项目 dev 同一 PG 实例, channel-one 专用库 daxpay_channel)
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgresql:5432/daxpay-dev?autoReconnect=true&reWriteBatchedInserts=true
+    username: bootx
+    password: bootx123
+    hikari:
+      minimumIdle: 5
+      maximumPoolSize: 20
+      leak-detection-threshold: 5000
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+# 开发时显示业务包 DEBUG 日志
+logging:
+  level:
+    cn.daxpay.open.**: debug

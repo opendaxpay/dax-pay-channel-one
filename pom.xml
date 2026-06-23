@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
 
@@ -15,10 +15,11 @@
     <artifactId>daxpay-channel-one</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>daxpay-channel-one</name>
     <description>通道适配子应用 - 通道对接服务</description>
 
     <modules>
-        <module>daxpay-channel-core</module>
+        <module>daxpay-platform</module>
         <module>daxpay-channel-impl</module>
         <module>daxpay-channel-start</module>
     </modules>
@@ -29,16 +30,28 @@
         <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <hutool.version>5.8.34</hutool.version>
+        <!-- 三方库版本集中管理(子模块通过继承获取) -->
+        <lombok.version>1.18.46</lombok.version>
+        <hutool.version>5.8.46</hutool.version>
         <alipay-sdk.version>4.40.272.ALL</alipay-sdk.version>
-        <wxjava.version>4.8.1.B</wxjava.version>
+        <wxjava.version>4.8.4.B</wxjava.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>cn.daxpay.open</groupId>
-                <artifactId>daxpay-channel-core</artifactId>
+                <artifactId>daxpay-platform-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.daxpay.open</groupId>
+                <artifactId>common-i18n</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.daxpay.open</groupId>
+                <artifactId>common-json</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -54,6 +67,11 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-json</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
             <dependency>

@@ -5,10 +5,12 @@ import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import lombok.extern.slf4j.Slf4j;
 import cn.daxpay.open.channel.alipay.config.AlipaySdkConfig;
-import cn.daxpay.open.channel.common.dto.refund.ChannelRefundReq;
-import cn.daxpay.open.channel.common.dto.refund.ChannelRefundResp;
-import cn.daxpay.open.channel.core.exception.SdkCallException;
-import cn.daxpay.open.channel.core.service.ChannelRefundService;
+import cn.daxpay.open.platform.core.dto.refund.ChannelRefundReq;
+import cn.daxpay.open.platform.core.dto.refund.ChannelRefundResp;
+import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
+import cn.daxpay.open.platform.core.exception.ChannelServiceException;
+import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.service.ChannelRefundService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,9 +39,13 @@ public class AlipayRefundService implements ChannelRefundService {
                 resp.setOutRefundOrderNo(alipayResp.getTradeNo());
                 resp.setComplete("Y".equals(alipayResp.getFundChange()));
             } else {
-                throw new RuntimeException("支付宝退款失败: " + alipayResp.getSubMsg());
+                // 业务失败单独抛出, 不被下面的 SDK 异常包装
+                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(), "channel.error.alipayRefundFailed", alipayResp.getSubMsg());
             }
             return resp;
+        } catch (ChannelServiceException e) {
+            // 业务异常直接透传, 避免被包装成 SDK 调用异常
+            throw e;
         } catch (Exception e) {
             throw new SdkCallException(e.getMessage(), e);
         }

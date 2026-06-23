@@ -7,20 +7,37 @@ import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import lombok.extern.slf4j.Slf4j;
 import cn.daxpay.open.channel.alipay.config.AlipaySdkConfig;
-import cn.daxpay.open.channel.common.dto.pay.ChannelPayReq;
-import cn.daxpay.open.channel.common.dto.pay.ChannelPayResp;
-import cn.daxpay.open.channel.core.exception.SdkCallException;
-import cn.daxpay.open.channel.core.service.ChannelPayService;
+import cn.daxpay.open.platform.core.dto.pay.ChannelPayReq;
+import cn.daxpay.open.platform.core.dto.pay.ChannelPayResp;
+import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
+import cn.daxpay.open.platform.core.exception.ChannelServiceException;
+import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.service.ChannelPayService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Slf4j
-@Service("alipayPayService")
+@Service("alipay")
 public class AlipayPayService implements ChannelPayService {
 
     @Override
     public ChannelPayResp pay(ChannelPayReq req) {
+        log.info("📋 支付宝通道收到支付请求: bizOrderNo={}, amount={}, subject={}, method={}",
+                req.getBizOrderNo(), req.getAmount(), req.getSubject(), req.getMethod());
+
+        // Demo 模式: 无通道配置时返回模拟响应, 不调用真实支付宝 SDK
+        if (req.getConfig() == null || req.getConfig().isEmpty()) {
+            log.info("🧪 Demo 模式: 无通道配置, 返回模拟支付响应");
+            ChannelPayResp demoResp = new ChannelPayResp();
+            demoResp.setBizOrderNo(req.getBizOrderNo());
+            demoResp.setOutOrderNo("DEMO_" + System.currentTimeMillis());
+            demoResp.setComplete(false);
+            demoResp.setPayBody("https://open.alipay.com/demo/pay?orderNo=" + demoResp.getOutOrderNo());
+            demoResp.setPayBodyType("qr_code");
+            return demoResp;
+        }
+
         AlipayClient client = AlipaySdkConfig.buildClient(req.getConfig());
         String amount = new BigDecimal(req.getAmount()).divide(new BigDecimal(100), 2, java.math.RoundingMode.HALF_UP).toPlainString();
         ChannelPayResp resp = new ChannelPayResp();
@@ -84,10 +101,14 @@ public class AlipayPayService implements ChannelPayService {
                     resp.setPayBodyType("qr_code");
                     if (StrUtil.isNotBlank(alipayResp.getOutTradeNo())) resp.setOutOrderNo(alipayResp.getOutTradeNo());
                 } else {
-                    throw new RuntimeException("支付宝预创建订单失败: " + alipayResp.getSubMsg());
+                    // 业务失败单独抛出, 不被下面的 SDK 异常包装
+                    throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(), "channel.error.alipayPreCreateFailed", alipayResp.getSubMsg());
                 }
             }
             resp.setComplete(false);
+        } catch (ChannelServiceException e) {
+            // 业务异常直接透传, 避免被包装成 SDK 调用异常
+            throw e;
         } catch (Exception e) {
             throw new SdkCallException(e.getMessage(), e);
         }

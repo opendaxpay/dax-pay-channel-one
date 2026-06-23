@@ -5,10 +5,10 @@ import com.alipay.api.request.AlipayTradeCloseRequest;
 import com.alipay.api.response.AlipayTradeCloseResponse;
 import lombok.extern.slf4j.Slf4j;
 import cn.daxpay.open.channel.alipay.config.AlipaySdkConfig;
-import cn.daxpay.open.channel.common.dto.close.ChannelCloseReq;
-import cn.daxpay.open.channel.common.dto.close.ChannelCloseResp;
-import cn.daxpay.open.channel.core.exception.SdkCallException;
-import cn.daxpay.open.channel.core.service.ChannelCloseService;
+import cn.daxpay.open.platform.core.dto.close.ChannelCloseReq;
+import cn.daxpay.open.platform.core.dto.close.ChannelCloseResp;
+import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.service.ChannelCloseService;
 import org.springframework.stereotype.Service;
 
 @Slf4j

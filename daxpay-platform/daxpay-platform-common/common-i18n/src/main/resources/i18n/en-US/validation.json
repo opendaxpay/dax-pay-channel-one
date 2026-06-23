@@ -1,0 +1,34 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "Channel code must not be blank"
+    },
+    "bizOrderNo": {
+      "notBlank": "Business order number must not be blank"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "Business refund number must not be blank"
+    },
+    "amount": {
+      "notNull": "Amount must not be null"
+    },
+    "subject": {
+      "notBlank": "Order subject must not be blank"
+    },
+    "method": {
+      "notBlank": "Payment method must not be blank"
+    },
+    "syncType": {
+      "notBlank": "Sync type must not be blank"
+    },
+    "callbackType": {
+      "notBlank": "Callback type must not be blank"
+    },
+    "config": {
+      "notNull": "Channel configuration must not be null"
+    },
+    "rawParams": {
+      "notNull": "Callback raw parameters must not be null"
+    }
+  }
+}

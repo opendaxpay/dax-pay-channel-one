@@ -4,8 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
-import cn.daxpay.open.channel.common.config.AlipayConfigDto;
-import cn.daxpay.open.channel.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.exception.SdkCallException;
 
 import java.util.Map;
 

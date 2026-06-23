@@ -17,7 +17,12 @@
     <dependencies>
         <dependency>
             <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-core</artifactId>
+            <artifactId>daxpay-platform-core</artifactId>
+        </dependency>
+        <!-- common-json: ObjectMapper(Jackson 3, service 解析 SDK 返回 JSON) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>common-json</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alipay.sdk</groupId>

@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-core</artifactId>
+            <artifactId>daxpay-platform-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.binarywang</groupId>

@@ -1,12 +1,12 @@
 package cn.daxpay.open.channel.alipay.service;
 
 import com.alipay.api.internal.util.AlipaySignature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import cn.daxpay.open.channel.common.dto.callback.ChannelCallbackVerifyReq;
-import cn.daxpay.open.channel.common.dto.callback.ChannelCallbackVerifyResp;
-import cn.daxpay.open.channel.core.service.ChannelCallbackVerifyService;
+import cn.daxpay.open.platform.core.dto.callback.ChannelCallbackVerifyReq;
+import cn.daxpay.open.platform.core.dto.callback.ChannelCallbackVerifyResp;
+import cn.daxpay.open.platform.core.service.ChannelCallbackVerifyService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
