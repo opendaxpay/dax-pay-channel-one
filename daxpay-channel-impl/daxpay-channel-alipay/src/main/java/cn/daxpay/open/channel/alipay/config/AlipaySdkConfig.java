@@ -27,9 +27,6 @@ public class AlipaySdkConfig {
             config.setServerUrl(serverUrl);
             config.setAppId(credential.getAliAppId());
             config.setPrivateKey(credential.getPrivateKey());
-            config.setFormat("json");
-            config.setCharset("UTF-8");
-            config.setSignType("RSA2");
             if ("cert".equals(credential.getAuthType())) {
                 config.setAlipayPublicCertContent(credential.getAlipayPublicKey());
                 config.setAppCertContent(credential.getAppCert());

@@ -1,7 +1,9 @@
 package cn.daxpay.open.channel.alipay.controller;
 
 import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
+import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
+import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
 import cn.daxpay.open.channel.alipay.service.AlipayPayService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
@@ -28,5 +30,11 @@ public class AlipayPayController {
     @PostMapping("/pay")
     public DaxResult<AlipayPayResp> pay(@Valid @RequestBody AlipayPayReq req) {
         return DaxResult.ok(alipayPayService.pay(req));
+    }
+
+    /// 支付同步(查询支付宝订单状态)
+    @PostMapping("/sync")
+    public DaxResult<AlipaySyncResp> sync(@Valid @RequestBody AlipaySyncReq req) {
+        return DaxResult.ok(alipayPayService.sync(req));
     }
 }
