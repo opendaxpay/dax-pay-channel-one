@@ -6,17 +6,22 @@
     "bizOrderNo": {
       "notBlank": "Business order number must not be blank"
     },
+    "outTradeNo": {
+      "notBlank": "Out trade number must not be blank"
+    },
     "bizRefundOrderNo": {
       "notBlank": "Business refund number must not be blank"
     },
     "amount": {
-      "notNull": "Amount must not be null"
+      "notNull": "Amount must not be null",
+      "positive": "Amount must be positive"
     },
     "subject": {
       "notBlank": "Order subject must not be blank"
     },
     "method": {
-      "notBlank": "Payment method must not be blank"
+      "notBlank": "Payment method must not be blank",
+      "notNull": "Payment method must not be null"
     },
     "syncType": {
       "notBlank": "Sync type must not be blank"

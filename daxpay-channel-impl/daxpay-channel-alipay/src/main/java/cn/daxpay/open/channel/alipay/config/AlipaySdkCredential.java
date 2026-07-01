@@ -2,11 +2,12 @@ package cn.daxpay.open.channel.alipay.config;
 
 import lombok.Data;
 
-/// # 支付宝通道配置
+/// # 支付宝 SDK 凭证
 ///
-/// 与主应用下发的 `config` Map 中的 key 一一对应, 用于构建 [com.alipay.api.AlipayClient]。
+/// 主应用从进件实体提取 appId / 私钥 / 证书后组装, 下发给子应用用于构建 [com.alipay.api.AlipayClient]。
+/// 仅承载通道调用所需的身份与密钥信息, 不含任何业务字段, 与系统内业务配置实体严格区分。
 @Data
-public class AlipayConfigDto {
+public class AlipaySdkCredential {
     /// 支付宝应用ID
     private String aliAppId;
     /// 应用私钥

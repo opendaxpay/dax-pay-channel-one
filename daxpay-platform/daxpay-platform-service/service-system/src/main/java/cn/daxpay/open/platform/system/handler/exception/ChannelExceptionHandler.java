@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 ///
 /// 对标主项目 `RestExceptionHandler` 的精简版, 拦截通道服务 Web 层异常并统一封装为 [DaxResult]。
 /// 通过 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 注册的
-/// [ChannelServiceWebAutoConfig] 以 `@Bean` 方式装配, 不依赖启动类组件扫描。
 @Slf4j
 @RestControllerAdvice
 public class ChannelExceptionHandler {
@@ -32,6 +32,7 @@ public class ChannelExceptionHandler {
     public DaxResult<Void> handleChannelServiceException(ChannelServiceException ex) {
         String key = ex.getMessageKey();
         log.info("通道业务异常 消息={}, key={}", I18nUtil.get(key, Locale.CHINA, ex.getArgs()), key);
+        log.debug(ex.getMessage(), ex);
         return DaxResult.fail(ex.getCode(), ex.getMessage());
     }
 
@@ -40,7 +41,7 @@ public class ChannelExceptionHandler {
     public DaxResult<Void> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.info(ex.getMessage());
         String message = ex.getAllErrors().stream()
-                .map(e -> e.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
         return DaxResult.fail(ChannelErrorCode.VALIDATE_PARAMS.getCode(), message);
     }
@@ -50,7 +51,7 @@ public class ChannelExceptionHandler {
     public DaxResult<Void> handleBindException(BindException ex) {
         log.info(ex.getMessage());
         String message = ex.getBindingResult().getAllErrors().stream()
-                .map(e -> e.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
         return DaxResult.fail(ChannelErrorCode.VALIDATE_PARAMS.getCode(), message);
     }

@@ -6,25 +6,21 @@
 
     <parent>
         <groupId>cn.daxpay.open</groupId>
-        <artifactId>daxpay-channel-one</artifactId>
+        <artifactId>daxpay-platform-common</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>daxpay-channel-impl</artifactId>
-    <packaging>pom</packaging>
-    <description>通道实现聚合模块</description>
-
-    <modules>
-        <module>daxpay-channel-alipay</module>
-        <module>daxpay-channel-wechat</module>
-    </modules>
+    <artifactId>common-util</artifactId>
+    <packaging>jar</packaging>
+    <description>通用工具基础设施 - 金额/数值等工具类(对标主项目 common-util)</description>
 
     <dependencies>
-        <!-- common-util: PayUtil 等通用工具(分↔元换算), 供所有通道子模块共享 -->
+        <!-- hutool-core（StrUtil 空白判断） -->
         <dependency>
-            <groupId>cn.daxpay.open</groupId>
-            <artifactId>common-util</artifactId>
-            <version>${project.version}</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

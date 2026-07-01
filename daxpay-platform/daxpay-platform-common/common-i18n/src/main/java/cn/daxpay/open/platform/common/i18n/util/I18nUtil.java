@@ -3,6 +3,8 @@ package cn.daxpay.open.platform.common.i18n.util;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import java.util.Locale;
+
 /// # 国际化工具类
 ///
 /// 提供静态方法获取翻译文本, 自动从 LocaleContextHolder 获取当前请求的语言
@@ -28,6 +30,23 @@ public final class I18nUtil {
             return code;
         }
         var locale = LocaleContextHolder.getLocale();
+        try {
+            return messageSource.getMessage(code, args, code, locale);
+        }
+        catch (Exception e) {
+            return code;
+        }
+    }
+
+    /// 获取翻译文本(指定 locale, 不受请求上下文影响, 用于日志等固定语言场景)
+    /// @param code 消息 key
+    /// @param locale 指定语言(如 Locale.CHINA 取中文)
+    /// @param args 消息参数(可选)
+    /// @return 翻译后的文本; 若 messageSource 未初始化或 key 不存在则返回 code 本身
+    public static String get(String code, Locale locale, Object... args) {
+        if (messageSource == null) {
+            return code;
+        }
         try {
             return messageSource.getMessage(code, args, code, locale);
         }
