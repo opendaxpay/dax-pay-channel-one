@@ -21,5 +21,6 @@
   "alipayPreCreateFailed": "支付宝预创建订单失败: {0}",
   "alipayPayCallFailed": "支付宝支付调用失败: {0}",
   "alipayCloseOrderFailed": "支付宝关闭订单失败: {0}",
+  "alipayOrderCancelFailed": "支付宝撤销订单失败: {0}",
   "alipayClientCreateFailed": "创建AlipayClient失败: {0}"
 }

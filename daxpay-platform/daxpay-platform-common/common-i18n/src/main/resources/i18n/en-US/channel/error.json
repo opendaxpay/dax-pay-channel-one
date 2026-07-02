@@ -21,5 +21,6 @@
   "alipayPreCreateFailed": "Alipay pre-create order failed: {0}",
   "alipayPayCallFailed": "Alipay payment call failed: {0}",
   "alipayCloseOrderFailed": "Alipay close order failed: {0}",
+  "alipayOrderCancelFailed": "Alipay cancel order failed: {0}",
   "alipayClientCreateFailed": "Failed to create AlipayClient: {0}"
 }

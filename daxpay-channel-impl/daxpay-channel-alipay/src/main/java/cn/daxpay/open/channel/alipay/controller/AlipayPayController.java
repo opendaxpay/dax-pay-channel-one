@@ -1,9 +1,12 @@
 package cn.daxpay.open.channel.alipay.controller;
 
+import cn.daxpay.open.channel.alipay.req.AlipayCloseReq;
 import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
+import cn.daxpay.open.channel.alipay.resp.AlipayCloseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
+import cn.daxpay.open.channel.alipay.service.close.AlipayCloseService;
 import cn.daxpay.open.channel.alipay.service.pay.AlipayPayService;
 import cn.daxpay.open.channel.alipay.service.sync.AlipaySyncService;
 import cn.daxpay.open.platform.core.result.DaxResult;
@@ -27,6 +30,7 @@ public class AlipayPayController {
 
     private final AlipayPayService alipayPayService;
     private final AlipaySyncService alipaySyncService;
+    private final AlipayCloseService alipayCloseService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -38,5 +42,11 @@ public class AlipayPayController {
     @PostMapping("/sync")
     public DaxResult<AlipaySyncResp> sync(@Valid @RequestBody AlipaySyncReq req) {
         return DaxResult.ok(alipaySyncService.sync(req));
+    }
+
+    /// 关闭/撤销支付宝订单
+    @PostMapping("/close")
+    public DaxResult<AlipayCloseResp> close(@Valid @RequestBody AlipayCloseReq req) {
+        return DaxResult.ok(alipayCloseService.close(req));
     }
 }
