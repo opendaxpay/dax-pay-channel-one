@@ -4,7 +4,8 @@ import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
-import cn.daxpay.open.channel.alipay.service.AlipayPayService;
+import cn.daxpay.open.channel.alipay.service.pay.AlipayPayService;
+import cn.daxpay.open.channel.alipay.service.sync.AlipaySyncService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlipayPayController {
 
     private final AlipayPayService alipayPayService;
+    private final AlipaySyncService alipaySyncService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -35,6 +37,6 @@ public class AlipayPayController {
     /// 支付同步(查询支付宝订单状态)
     @PostMapping("/sync")
     public DaxResult<AlipaySyncResp> sync(@Valid @RequestBody AlipaySyncReq req) {
-        return DaxResult.ok(alipayPayService.sync(req));
+        return DaxResult.ok(alipaySyncService.sync(req));
     }
 }
