@@ -3,6 +3,7 @@ package cn.daxpay.open.channel.alipay.service.sync;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.AlipayConstants;
 import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
@@ -37,8 +38,12 @@ public class AlipaySyncService {
             model.setTradeNo(req.getTradeNo());
         }
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         try {
-            AlipayTradeQueryResponse response = client.execute(request);
+            AlipayTradeQueryResponse response = AlipaySdkConfig.execute(client, req.getCredential(), request);
             AlipaySyncResp resp = new AlipaySyncResp();
             resp.setCode(response.getCode());
             resp.setSubCode(response.getSubCode());

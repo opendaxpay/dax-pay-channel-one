@@ -3,6 +3,7 @@ package cn.daxpay.open.channel.alipay.service.close;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.AlipayConstants;
 import com.alipay.api.domain.AlipayTradeCancelModel;
 import com.alipay.api.domain.AlipayTradeCloseModel;
 import com.alipay.api.request.AlipayTradeCancelRequest;
@@ -63,8 +64,12 @@ public class AlipayCloseService {
         }
         AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         try {
-            AlipayTradeCloseResponse response = client.execute(request);
+            AlipayTradeCloseResponse response = AlipaySdkConfig.execute(client, req.getCredential(), request);
             if (response.isSuccess()) {
                 return toResp(req, response.getCode(), response.getSubCode(), response.getSubMsg());
             }
@@ -90,8 +95,12 @@ public class AlipayCloseService {
         }
         AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         try {
-            AlipayTradeCancelResponse response = client.execute(request);
+            AlipayTradeCancelResponse response = AlipaySdkConfig.execute(client, req.getCredential(), request);
             if (response.isSuccess()) {
                 return toResp(req, response.getCode(), response.getSubCode(), response.getSubMsg());
             }

@@ -25,8 +25,8 @@ public class ChannelServiceApp {
         var contextPath = env.getProperty("server.servlet.context-path", "");
 
         var appInfo = String.format("应用 '%s' 运行成功!", appName);
-        var healthUrl = String.format("Health: http://%s:%s%s/health", host, port, contextPath);
-        var localHealthUrl = String.format("Health: http://%s:%s%s/health", "127.0.0.1", port, contextPath);
+        var healthUrl = String.format("API: http://%s:%s%s/health", host, port, contextPath);
+        var localHealthUrl = String.format("API: http://%s:%s%s/health", "127.0.0.1", port, contextPath);
 
         String message = System.lineSeparator() +
                 "----------------------------------------------------------" + System.lineSeparator() +

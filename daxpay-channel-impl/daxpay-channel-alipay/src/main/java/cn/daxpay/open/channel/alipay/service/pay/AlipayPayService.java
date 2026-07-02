@@ -3,6 +3,7 @@ package cn.daxpay.open.channel.alipay.service.pay;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
+import com.alipay.api.AlipayConstants;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
@@ -49,7 +50,7 @@ public class AlipayPayService {
     ///
     /// 金额单位转换: 请求中为分, 调用 SDK 时转为元(保留两位小数)。
     public AlipayPayResp pay(AlipayPayReq req) {
-        log.info("📋 支付宝通道收到支付请求: outTradeNo={}, amount={}, subject={}, method={}",
+        log.info("支付宝通道收到支付请求: outTradeNo={}, amount={}, subject={}, method={}",
                 req.getOutTradeNo(), req.getAmount(), req.getSubject(), req.getMethod());
 
         AlipayClient client = AlipaySdkConfig.buildClient(req.getCredential());
@@ -93,6 +94,10 @@ public class AlipayPayService {
         model.setBody(req.getBody());
         model.setProductCode("QUICK_WAP_WAY");
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
@@ -118,6 +123,10 @@ public class AlipayPayService {
         model.setBody(req.getBody());
         model.setProductCode("QUICK_MSECURITY_PAY");
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
@@ -142,6 +151,10 @@ public class AlipayPayService {
         model.setBody(req.getBody());
         model.setProductCode("FAST_INSTANT_TRADE_PAY");
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
@@ -166,13 +179,17 @@ public class AlipayPayService {
         model.setSubject(req.getSubject());
         model.setBody(req.getBody());
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
             model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
         }
-        AlipayTradePrecreateResponse alipayResp = client.execute(request);
+        AlipayTradePrecreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         verifySuccess(alipayResp);
         resp.setPayBody(alipayResp.getQrCode());
         resp.setPayBodyType(AlipayPayBodyType.QR_CODE);
@@ -191,13 +208,17 @@ public class AlipayPayService {
         model.setScene(SCENE_BAR_CODE);
         model.setAuthCode(req.getAuthCode());
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
             model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
         }
-        AlipayTradePayResponse alipayResp = client.execute(request);
+        AlipayTradePayResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         String code = alipayResp.getCode();
         // 支付成功, 记录完成信息
         if (CODE_SUCCESS.equals(code)) {
@@ -242,13 +263,17 @@ public class AlipayPayService {
             model.setOpBuyerOpenId(openId);
         }
         request.setBizModel(model);
+        // 服务商模式: 注入应用授权令牌
+        if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
+            request.putOtherTextParam(AlipayConstants.APP_AUTH_TOKEN, req.getCredential().getAppAuthToken());
+        }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
             model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
         }
-        AlipayTradeCreateResponse alipayResp = client.execute(request);
+        AlipayTradeCreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         verifySuccess(alipayResp);
         resp.setTradeNo(alipayResp.getTradeNo());
         resp.setPayBody(alipayResp.getTradeNo());
