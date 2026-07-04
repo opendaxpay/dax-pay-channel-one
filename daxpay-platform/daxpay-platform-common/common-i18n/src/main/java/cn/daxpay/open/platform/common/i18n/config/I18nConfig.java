@@ -22,7 +22,7 @@ public class I18nConfig {
 
     @Bean
     public MessageSource messageSource(ResourcePatternResolver resourceResolver) {
-        JsonMessageSource source = new JsonMessageSource(resourceResolver);
+        var source = new JsonMessageSource(resourceResolver);
         source.setDefaultLocale(Locale.CHINA);
         // 初始化静态工具类
         I18nUtil.setMessageSource(source);

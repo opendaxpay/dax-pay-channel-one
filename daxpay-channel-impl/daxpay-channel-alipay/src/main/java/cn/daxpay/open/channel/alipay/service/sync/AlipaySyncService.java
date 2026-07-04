@@ -31,8 +31,8 @@ public class AlipaySyncService {
     /// 支付同步(查询支付宝订单状态)
     public AlipaySyncResp sync(AlipaySyncReq req) {
         AlipayClient client = AlipaySdkConfig.buildClient(req.getCredential());
-        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
-        AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+        var request = new AlipayTradeQueryRequest();
+        var model = new AlipayTradeQueryModel();
         model.setOutTradeNo(req.getOutTradeNo());
         if (StrUtil.isNotBlank(req.getTradeNo())) {
             model.setTradeNo(req.getTradeNo());

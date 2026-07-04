@@ -86,8 +86,8 @@ public class AlipayPayService {
     ///
     /// 通过 GET 方式返回可直接跳转的支付链接, 前端 `location.href` 即可, 无需整页渲染表单。
     private void payWap(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
-        AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
+        var request = new AlipayTradeWapPayRequest();
+        var model = new AlipayTradeWapPayModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
@@ -115,8 +115,8 @@ public class AlipayPayService {
     ///
     /// 返回订单串(orderStr), 由客户端 SDK 唤起支付宝 APP 完成支付。
     private void payApp(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
-        AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+        var request = new AlipayTradeAppPayRequest();
+        var model = new AlipayTradeAppPayModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
@@ -143,8 +143,8 @@ public class AlipayPayService {
     ///
     /// 通过 GET 方式返回可直接跳转的支付链接, 前端 `location.href` 即可, 无需整页渲染表单。
     private void payPc(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
-        AlipayTradePagePayModel model = new AlipayTradePagePayModel();
+        var request = new AlipayTradePagePayRequest();
+        var model = new AlipayTradePagePayModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
@@ -172,8 +172,8 @@ public class AlipayPayService {
     ///
     /// 返回二维码内容(qrCode), 由前端渲染成二维码供用户扫码支付。
     private void payQr(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
-        AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();
+        var request = new AlipayTradePrecreateRequest();
+        var model = new AlipayTradePrecreateModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
@@ -199,8 +199,8 @@ public class AlipayPayService {
     ///
     /// 同步扣款: `code=10000` 直接成功(complete=true); `code=10003` 支付处理中(需主应用轮询); 其他抛业务异常。
     private void payBarcode(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradePayRequest request = new AlipayTradePayRequest();
-        AlipayTradePayModel model = new AlipayTradePayModel();
+        var request = new AlipayTradePayRequest();
+        var model = new AlipayTradePayModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
@@ -248,8 +248,8 @@ public class AlipayPayService {
     /// 返回支付宝交易号(tradeNo), 由小程序 SDK 调起支付。
     /// 买家标识 openId: `2088` 开头为支付宝用户ID(buyer_id), 否则视为小程序 openid。
     private void payJsapi(AlipayClient client, AlipayPayReq req, String amount, AlipayPayResp resp) throws AlipayApiException {
-        AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
-        AlipayTradeCreateModel model = new AlipayTradeCreateModel();
+        var request = new AlipayTradeCreateRequest();
+        var model = new AlipayTradeCreateModel();
         model.setOutTradeNo(req.getOutTradeNo());
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());

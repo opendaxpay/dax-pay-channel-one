@@ -57,12 +57,12 @@ public class AlipayCloseService {
     ///
     /// 仅未支付订单可关闭, 商户无需额外签约权限。
     private AlipayCloseResp doClose(AlipayClient client, AlipayCloseReq req) {
-        AlipayTradeCloseModel model = new AlipayTradeCloseModel();
+        var model = new AlipayTradeCloseModel();
         model.setOutTradeNo(req.getOutTradeNo());
         if (StrUtil.isNotBlank(req.getTradeNo())) {
             model.setTradeNo(req.getTradeNo());
         }
-        AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
+        var request = new AlipayTradeCloseRequest();
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -88,12 +88,12 @@ public class AlipayCloseService {
     ///
     /// 若用户已支付会将资金退回, 限制一天内有效, 需专门签约权限。
     private AlipayCloseResp doCancel(AlipayClient client, AlipayCloseReq req) {
-        AlipayTradeCancelModel model = new AlipayTradeCancelModel();
+        var model = new AlipayTradeCancelModel();
         model.setOutTradeNo(req.getOutTradeNo());
         if (StrUtil.isNotBlank(req.getTradeNo())) {
             model.setTradeNo(req.getTradeNo());
         }
-        AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
+        var request = new AlipayTradeCancelRequest();
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
