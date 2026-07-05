@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cn.daxpay.open</groupId>
+        <artifactId>daxpay-channel-impl</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>daxpay-channel-lakala</artifactId>
+    <packaging>jar</packaging>
+    <description>拉卡拉支付通道适配模块(聚合通道: 微信/支付宝/银联)</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>daxpay-platform-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- common-json: ObjectMapper(Jackson, 序列化请求/响应) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>common-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- hutool: HTTP 调用 + 工具 + JSON(拉卡拉无官方 SDK, 用 HttpUtil 直连) -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-json</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
