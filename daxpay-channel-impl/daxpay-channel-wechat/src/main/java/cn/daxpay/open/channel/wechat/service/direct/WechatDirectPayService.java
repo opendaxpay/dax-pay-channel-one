@@ -105,7 +105,7 @@ public class WechatDirectPayService {
         request.setPayer(new WxPayUnifiedOrderV3Request.Payer().setOpenid(req.getOpenId()));
         WxPayUnifiedOrderV3Result.JsapiResult result = service.createOrderV3(TradeTypeEnum.JSAPI, request);
         resp.setPayBody(toJsapiPayInfoJson(result));
-        resp.setPayBodyType(WechatPayBodyType.IDENTIFIER);
+        resp.setPayBodyType(WechatPayBodyType.JSAPI);
     }
 
     /// APP 支付

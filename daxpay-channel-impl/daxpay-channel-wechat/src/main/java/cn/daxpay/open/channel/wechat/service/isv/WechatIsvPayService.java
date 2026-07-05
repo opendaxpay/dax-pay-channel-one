@@ -113,7 +113,7 @@ public class WechatIsvPayService {
         request.setPayer(payer);
         WxPayUnifiedOrderV3Result.JsapiResult result = service.createPartnerOrderV3(TradeTypeEnum.JSAPI, request);
         resp.setPayBody(toJsapiPayInfoJson(result));
-        resp.setPayBodyType(WechatPayBodyType.IDENTIFIER);
+        resp.setPayBodyType(WechatPayBodyType.JSAPI);
     }
 
     /// APP 支付(服务商)
