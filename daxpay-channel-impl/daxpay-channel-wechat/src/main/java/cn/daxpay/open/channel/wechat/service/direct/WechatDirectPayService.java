@@ -1,4 +1,4 @@
-package cn.daxpay.open.channel.wechat.service.pay;
+package cn.daxpay.open.channel.wechat.service.direct;
 
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.enums.WechatPayBodyType;
@@ -37,7 +37,7 @@ import java.util.Objects;
 /// 付款码走 V3 codepay 接口同步扣款, 用户支付中(USERPAYING)时抛业务异常由主应用轮询同步。
 @Slf4j
 @Service
-public class WechatPayService {
+public class WechatDirectPayService {
 
     /// V3 过期时间格式(RFC3339, 微信要求; 付款码 success_time 同格式)
     private static final DateTimeFormatter RFC3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

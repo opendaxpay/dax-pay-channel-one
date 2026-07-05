@@ -13,10 +13,14 @@ import lombok.Data;
 /// - 平台证书模式(兜底): publicKeyId 为空时, 由 SDK 自动下载并轮换平台证书
 @Data
 public class WechatSdkCredential {
-    /// 微信商户号
+    /// 微信商户号(服务商模式下为服务商商户号 sp_mchid)
     private String wxMchId;
-    /// 微信应用ID(公众号 / 小程序 / APP 的 appId)
+    /// 微信应用ID(公众号 / 小程序 / APP 的 appId; 服务商模式下为服务商 AppId sp_appid)
     private String wxAppId;
+    /// 微信特约商户号(服务商模式 sub_mchid; 直连模式留空)
+    private String subMchId;
+    /// 微信子应用 AppId(服务商模式 sub_appid; 直连模式留空)
+    private String subAppId;
     /// APIv3 密钥(用于回调解密与平台证书下载)
     private String apiKeyV3;
     /// 商户私钥(PEM 格式 PKCS#8 字符串)
@@ -29,6 +33,4 @@ public class WechatSdkCredential {
     private String publicKey;
     /// 支付公钥ID(支付公钥新模式使用)
     private String publicKeyId;
-    /// 是否沙箱环境
-    private Boolean sandbox;
 }

@@ -1,4 +1,4 @@
-package cn.daxpay.open.channel.wechat.service.refund;
+package cn.daxpay.open.channel.wechat.service.isv;
 
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
@@ -7,7 +7,7 @@ import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.daxpay.open.platform.core.exception.SdkCallException;
 import cn.hutool.core.util.StrUtil;
-import com.github.binarywang.wxpay.bean.request.WxPayRefundV3Request;
+import com.github.binarywang.wxpay.bean.request.WxPayPartnerRefundV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
@@ -17,18 +17,17 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-/// # 微信通道退款服务
+/// # 微信服务商通道退款服务
 ///
-/// 调用微信 V3 `申请退款` 接口发起退款。
-/// 一次退款请求由 outRefundNo 唯一标识, 同一订单可多次部分退款, 每次 outRefundNo 不可重复。
-/// 微信退款需同时指定原订单总额(totalAmount)与退款金额(refundAmount)。
+/// 调用微信 V3 服务商 `申请退款` 接口发起退款。
+/// 与直连模式差异: 请求体用 [WxPayPartnerRefundV3Request] 并显式设置 sub_mchid(特约商户号)。
 ///
 /// 退款状态 status:
 /// - SUCCESS / CLOSED → 终态(complete=true)
 /// - PROCESSING / ABNORMAL → 未终态(complete=false), 需主应用经退款同步查询确认最终状态
 @Slf4j
 @Service
-public class WechatRefundService {
+public class WechatIsvRefundService {
 
     /// V3 时间格式(RFC3339)
     private static final DateTimeFormatter RFC3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -37,14 +36,14 @@ public class WechatRefundService {
     /// 退款关闭状态
     private static final String STATUS_CLOSED = "CLOSED";
 
-    /// 通道退款
+    /// 服务商通道退款
     public WechatRefundResp refund(WechatRefundReq req) {
-        log.info("微信通道收到退款请求: outTradeNo={}, transactionId={}, outRefundNo={}, refundAmount={}",
+        log.info("微信服务商通道收到退款请求: outTradeNo={}, transactionId={}, outRefundNo={}, refundAmount={}",
                 req.getOutTradeNo(), req.getTransactionId(), req.getOutRefundNo(), req.getRefundAmount());
 
         WxPayService service = WechatSdkConfig.buildService(req.getCredential());
 
-        var request = new WxPayRefundV3Request();
+        var request = new WxPayPartnerRefundV3Request();
         // 优先用 transactionId
         if (StrUtil.isNotBlank(req.getTransactionId())) {
             request.setTransactionId(req.getTransactionId());
@@ -58,8 +57,10 @@ public class WechatRefundService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
+        // 服务商模式: 显式设置特约商户号
+        request.setSubMchid(req.getCredential().getSubMchId());
         // 金额(分)
-        var amount = new WxPayRefundV3Request.Amount();
+        var amount = new WxPayPartnerRefundV3Request.Amount();
         amount.setRefund(req.getRefundAmount().intValue());
         amount.setTotal(req.getTotalAmount().intValue());
         amount.setCurrency("CNY");
@@ -91,7 +92,7 @@ public class WechatRefundService {
             }
             return resp;
         } catch (WxPayException e) {
-            log.error("微信退款调用失败: outRefundNo={}, errCode={}, errMsg={}",
+            log.error("微信服务商退款调用失败: outRefundNo={}, errCode={}, errMsg={}",
                     req.getOutRefundNo(), e.getErrCode(), e.getMessage());
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                     "channel.error.wechatRefundCallFailed", e.getMessage());

@@ -1,4 +1,4 @@
-package cn.daxpay.open.channel.wechat.service.sync;
+package cn.daxpay.open.channel.wechat.service.direct;
 
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 /// trade_state 映射由主应用完成。
 @Slf4j
 @Service
-public class WechatSyncService {
+public class WechatDirectSyncService {
 
     /// V3 时间格式(RFC3339)
     private static final DateTimeFormatter RFC3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

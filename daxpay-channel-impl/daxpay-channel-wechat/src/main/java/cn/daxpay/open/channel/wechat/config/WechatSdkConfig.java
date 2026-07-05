@@ -44,6 +44,16 @@ public class WechatSdkConfig {
             config.setPublicKeyString(credential.getPublicKey());
         }
 
+        // 服务商模式: subMchId 非空时启用, WxJava 自动切到 /v3/partner/transactions/... 路径
+        // (对标商业版 WechatPayConfigService.wxJavaSdk: setSubMchId/setSubAppId)
+        if (StrUtil.isNotBlank(credential.getSubMchId())) {
+            config.setSubMchId(credential.getSubMchId());
+            // subAppId 可选(特约商户未配置自己的应用时留空, SDK 仅用 sp_appid + sub_mchid 走服务商模式)
+            if (StrUtil.isNotBlank(credential.getSubAppId())) {
+                config.setSubAppId(credential.getSubAppId());
+            }
+        }
+
         WxPayService service = new WxPayServiceImpl();
         service.setConfig(config);
         return service;

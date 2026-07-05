@@ -10,11 +10,11 @@ import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
-import cn.daxpay.open.channel.wechat.service.close.WechatCloseService;
-import cn.daxpay.open.channel.wechat.service.pay.WechatPayService;
-import cn.daxpay.open.channel.wechat.service.refund.WechatRefundService;
-import cn.daxpay.open.channel.wechat.service.refund.WechatRefundSyncService;
-import cn.daxpay.open.channel.wechat.service.sync.WechatSyncService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectCloseService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectPayService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundSyncService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectSyncService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/channel/wechat")
-public class WechatPayController {
+public class WechatDirectPayController {
 
-    private final WechatPayService wechatPayService;
-    private final WechatSyncService wechatSyncService;
-    private final WechatCloseService wechatCloseService;
-    private final WechatRefundService wechatRefundService;
-    private final WechatRefundSyncService wechatRefundSyncService;
+    private final WechatDirectPayService wechatPayService;
+    private final WechatDirectSyncService wechatSyncService;
+    private final WechatDirectCloseService wechatCloseService;
+    private final WechatDirectRefundService wechatRefundService;
+    private final WechatDirectRefundSyncService wechatRefundSyncService;
 
     /// 支付下单
     @PostMapping("/pay")

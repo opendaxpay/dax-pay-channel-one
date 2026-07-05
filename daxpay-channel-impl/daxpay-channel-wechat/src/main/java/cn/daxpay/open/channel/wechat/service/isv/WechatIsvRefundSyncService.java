@@ -1,4 +1,4 @@
-package cn.daxpay.open.channel.wechat.service.refund;
+package cn.daxpay.open.channel.wechat.service.isv;
 
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
@@ -7,6 +7,7 @@ import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.daxpay.open.platform.core.exception.SdkCallException;
 import cn.hutool.core.util.StrUtil;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundQueryV3Request;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundQueryV3Result;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
@@ -16,25 +17,29 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-/// # 微信通道退款同步服务
+/// # 微信服务商通道退款同步服务
 ///
-/// 调用微信 V3 `查询单笔退款` 接口查询退款状态。
-/// 退款发起时若 status=PROCESSING/ABNORMAL(未终态), 需经本接口确认退款最终结果。
-/// refund status 映射由主应用完成。
+/// 调用微信 V3 服务商 `查询单笔退款` 接口(refundPartnerQueryV3)查询退款状态。
+/// 与直连模式差异: 请求体 [WxPayRefundQueryV3Request] 显式设置 sub_mchid(特约商户号)。
 @Slf4j
 @Service
-public class WechatRefundSyncService {
+public class WechatIsvRefundSyncService {
 
     /// V3 时间格式(RFC3339)
     private static final DateTimeFormatter RFC3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-    /// 退款同步(查询退款状态)
+    /// 服务商退款同步(查询退款状态)
     public WechatRefundSyncResp sync(WechatRefundSyncReq req) {
-        log.info("微信通道收到退款同步请求: outRefundNo={}", req.getOutRefundNo());
+        log.info("微信服务商通道收到退款同步请求: outRefundNo={}", req.getOutRefundNo());
 
         WxPayService service = WechatSdkConfig.buildService(req.getCredential());
         try {
-            WxPayRefundQueryV3Result result = service.refundQueryV3(req.getOutRefundNo());
+            // 服务商退款查询: 需显式带 sub_mchid
+            WxPayRefundQueryV3Request request = new WxPayRefundQueryV3Request();
+            request.setOutRefundNo(req.getOutRefundNo());
+            request.setSubMchid(req.getCredential().getSubMchId());
+            WxPayRefundQueryV3Result result = service.refundPartnerQueryV3(request);
+
             var resp = new WechatRefundSyncResp();
             resp.setStatus(result.getStatus());
             resp.setRefundId(result.getRefundId());
@@ -56,7 +61,7 @@ public class WechatRefundSyncService {
             }
             return resp;
         } catch (WxPayException e) {
-            log.error("微信退款查询失败: outRefundNo={}, errCode={}, errMsg={}",
+            log.error("微信服务商退款查询失败: outRefundNo={}, errCode={}, errMsg={}",
                     req.getOutRefundNo(), e.getErrCode(), e.getMessage());
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                     "channel.error.wechatRefundQueryFailed", e.getMessage());

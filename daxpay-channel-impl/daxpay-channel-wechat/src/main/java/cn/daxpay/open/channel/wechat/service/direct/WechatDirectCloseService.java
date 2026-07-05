@@ -1,4 +1,4 @@
-package cn.daxpay.open.channel.wechat.service.close;
+package cn.daxpay.open.channel.wechat.service.direct;
 
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.req.WechatCloseReq;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 /// - 其他 → 抛业务异常
 @Slf4j
 @Service
-public class WechatCloseService {
+public class WechatDirectCloseService {
 
     /// 微信错误码: 订单不存在
     private static final String ORDER_NOT_EXIST = "ORDER_NOT_EXIST";
