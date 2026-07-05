@@ -9,6 +9,9 @@
     "outTradeNo": {
       "notBlank": "Out trade number must not be blank"
     },
+    "outRequestNo": {
+      "notBlank": "Refund request number must not be blank"
+    },
     "bizRefundOrderNo": {
       "notBlank": "Business refund number must not be blank"
     },
@@ -22,6 +25,9 @@
     "method": {
       "notBlank": "Payment method must not be blank",
       "notNull": "Payment method must not be null"
+    },
+    "description": {
+      "notBlank": "Description must not be blank"
     },
     "syncType": {
       "notBlank": "Sync type must not be blank"

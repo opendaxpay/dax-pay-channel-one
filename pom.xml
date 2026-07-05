@@ -44,6 +44,8 @@
         <hutool.version>5.8.46</hutool.version>
         <alipay-sdk.version>4.40.272.ALL</alipay-sdk.version>
         <wxjava.version>4.8.4.B</wxjava.version>
+        <!-- guava: weixin-java-pay 传递依赖, 显式声明统一版本(排除传递以避免版本漂移) -->
+        <guava.version>33.6.0-jre</guava.version>
     </properties>
 
     <build>

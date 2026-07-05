@@ -1,0 +1,72 @@
+package cn.daxpay.open.channel.wechat.controller;
+
+import cn.daxpay.open.channel.wechat.req.WechatCloseReq;
+import cn.daxpay.open.channel.wechat.req.WechatPayReq;
+import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
+import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
+import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
+import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
+import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
+import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
+import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
+import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
+import cn.daxpay.open.channel.wechat.service.close.WechatCloseService;
+import cn.daxpay.open.channel.wechat.service.pay.WechatPayService;
+import cn.daxpay.open.channel.wechat.service.refund.WechatRefundService;
+import cn.daxpay.open.channel.wechat.service.refund.WechatRefundSyncService;
+import cn.daxpay.open.channel.wechat.service.sync.WechatSyncService;
+import cn.daxpay.open.platform.core.result.DaxResult;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/// # 微信通道接收接口
+///
+/// 接收主应用 dax-pay-open 经声明式 HTTP 客户端转发的微信支付请求。
+/// 通道与操作各自独立端点(通道前缀 `/channel/wechat`), 不做通用分发。
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/channel/wechat")
+public class WechatPayController {
+
+    private final WechatPayService wechatPayService;
+    private final WechatSyncService wechatSyncService;
+    private final WechatCloseService wechatCloseService;
+    private final WechatRefundService wechatRefundService;
+    private final WechatRefundSyncService wechatRefundSyncService;
+
+    /// 支付下单
+    @PostMapping("/pay")
+    public DaxResult<WechatPayResp> pay(@Valid @RequestBody WechatPayReq req) {
+        return DaxResult.ok(wechatPayService.pay(req));
+    }
+
+    /// 支付同步(查询微信订单状态)
+    @PostMapping("/sync")
+    public DaxResult<WechatSyncResp> sync(@Valid @RequestBody WechatSyncReq req) {
+        return DaxResult.ok(wechatSyncService.sync(req));
+    }
+
+    /// 关闭微信订单
+    @PostMapping("/close")
+    public DaxResult<WechatCloseResp> close(@Valid @RequestBody WechatCloseReq req) {
+        return DaxResult.ok(wechatCloseService.close(req));
+    }
+
+    /// 退款
+    @PostMapping("/refund")
+    public DaxResult<WechatRefundResp> refund(@Valid @RequestBody WechatRefundReq req) {
+        return DaxResult.ok(wechatRefundService.refund(req));
+    }
+
+    /// 退款同步(查询退款状态)
+    @PostMapping("/refund-sync")
+    public DaxResult<WechatRefundSyncResp> refundSync(@Valid @RequestBody WechatRefundSyncReq req) {
+        return DaxResult.ok(wechatRefundSyncService.sync(req));
+    }
+}
