@@ -1,0 +1,220 @@
+package cn.daxpay.open.channel.douyin.service.pay;
+
+import cn.daxpay.open.channel.douyin.config.DouyinSdkConfig;
+import cn.daxpay.open.channel.douyin.enums.DouyinPayBodyType;
+import cn.daxpay.open.channel.douyin.enums.DouyinPayMethod;
+import cn.daxpay.open.channel.douyin.req.DouyinPayReq;
+import cn.daxpay.open.channel.douyin.resp.DouyinPayResp;
+import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
+import cn.daxpay.open.platform.core.exception.ChannelServiceException;
+import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.hutool.core.util.StrUtil;
+import com.douyinpay.api.payments.app.models.ApiPrepayRequest;
+import com.douyinpay.api.payments.app.models.Amount;
+import com.douyinpay.api.payments.app.models.ApiSceneInfo;
+import com.douyinpay.api.payments.common.ApiTransactionPayer;
+import com.douyinpay.api.payments.h5.models.ApiH5Info;
+import com.douyinpay.exception.DouyinpayException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
+/// # 抖音通道支付下单服务
+///
+/// 按 [DouyinPayReq.method] 分发到对应支付方式子方法:
+/// 扫码(QR)、JSAPI、H5、APP。
+/// 关单/查单不在此类, 由 close/sync Service 复用 NATIVE Service 调用。
+@Slf4j
+@Service
+public class DouyinPayService {
+
+    /// 货币种类
+    private static final String CURRENCY_CNY = "CNY";
+    /// H5 场景类型(Wap)
+    private static final String H5_TYPE_WAP = "Wap";
+    /// 抖音过期时间格式(RFC3339)
+    private static final DateTimeFormatter RFC3339 = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+    /// 通道支付下单
+    public DouyinPayResp pay(DouyinPayReq req) {
+        log.info("抖音通道收到支付请求: outTradeNo={}, amount={}, method={}",
+                req.getOutTradeNo(), req.getAmount(), req.getMethod());
+        DouyinPayMethod method = req.getMethod();
+        if (method == null) {
+            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
+                    "channel.error.douyinPayMethodNull");
+        }
+        return switch (method) {
+            case QR -> this.nativePay(req);
+            case JSAPI -> this.jsapiPay(req);
+            case H5 -> this.h5Pay(req);
+            case APP -> this.appPay(req);
+        };
+    }
+
+    /// 扫码支付(NATIVE, 返回 codeUrl 二维码链接)
+    private DouyinPayResp nativePay(DouyinPayReq req) {
+        var request = new com.douyinpay.api.payments.nativepay.models.ApiPrepayRequest();
+        request.setAppid(req.getCredential().getDouyinAppId());
+        request.setMchid(req.getCredential().getMchId());
+        request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
+        request.setOutTradeNo(req.getOutTradeNo());
+        request.setNotifyUrl(req.getNotifyUrl());
+        if (req.getExpiredTime() != null) {
+            request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
+        }
+        var amount = new com.douyinpay.api.payments.nativepay.models.Amount();
+        amount.setTotal(req.getAmount().intValue());
+        amount.setCurrency(CURRENCY_CNY);
+        request.setAmount(amount);
+        if (StrUtil.isNotBlank(req.getClientIp())) {
+            var sceneInfo = new com.douyinpay.api.payments.nativepay.models.ApiSceneInfo();
+            sceneInfo.setPayerClientIp(req.getClientIp());
+            request.setSceneInfo(sceneInfo);
+        }
+        try {
+            var response = DouyinSdkConfig.nativeService(req.getCredential()).prepay(request);
+            if (response == null || StrUtil.isBlank(response.getCodeUrl())) {
+                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                        "channel.error.douyinPayFailed", "未返回二维码链接");
+            }
+            return new DouyinPayResp()
+                    .setOutTradeNo(req.getOutTradeNo())
+                    .setPayBody(response.getCodeUrl())
+                    .setPayBodyType(DouyinPayBodyType.QR_CODE);
+        } catch (DouyinpayException e) {
+            log.error("抖音扫码支付失败", e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinPayFailed", e.getMessage());
+        }
+    }
+
+    /// JSAPI 支付(返回 prepayId, 需 openId)
+    private DouyinPayResp jsapiPay(DouyinPayReq req) {
+        if (StrUtil.isBlank(req.getOpenId())) {
+            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
+                    "channel.error.douyinJsapiNoOpenId");
+        }
+        var request = new com.douyinpay.api.payments.jsapi.models.ApiPrepayRequest();
+        request.setAppid(req.getCredential().getDouyinAppId());
+        request.setMchid(req.getCredential().getMchId());
+        request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
+        request.setOutTradeNo(req.getOutTradeNo());
+        request.setNotifyUrl(req.getNotifyUrl());
+        if (req.getExpiredTime() != null) {
+            request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
+        }
+        var amount = new com.douyinpay.api.payments.jsapi.models.Amount();
+        amount.setTotal(req.getAmount().intValue());
+        amount.setCurrency(CURRENCY_CNY);
+        request.setAmount(amount);
+        if (StrUtil.isNotBlank(req.getClientIp())) {
+            var sceneInfo = new com.douyinpay.api.payments.jsapi.models.ApiSceneInfo();
+            sceneInfo.setPayerClientIp(req.getClientIp());
+            request.setSceneInfo(sceneInfo);
+        }
+        var payer = new ApiTransactionPayer();
+        payer.setOpenid(req.getOpenId());
+        request.setPayerInfo(payer);
+        try {
+            var response = DouyinSdkConfig.jsapiService(req.getCredential()).prepay(request);
+            if (response == null || StrUtil.isBlank(response.getPrepayId())) {
+                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                        "channel.error.douyinPayFailed", "未返回prepay_id");
+            }
+            return new DouyinPayResp()
+                    .setOutTradeNo(req.getOutTradeNo())
+                    .setPayBody(response.getPrepayId())
+                    .setPayBodyType(DouyinPayBodyType.IDENTIFIER);
+        } catch (DouyinpayException e) {
+            log.error("抖音JSAPI支付失败", e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinPayFailed", e.getMessage());
+        }
+    }
+
+    /// APP 支付(返回 prepayId)
+    private DouyinPayResp appPay(DouyinPayReq req) {
+        var request = new ApiPrepayRequest();
+        request.setAppid(req.getCredential().getDouyinAppId());
+        request.setMchid(req.getCredential().getMchId());
+        request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
+        request.setOutTradeNo(req.getOutTradeNo());
+        request.setNotifyUrl(req.getNotifyUrl());
+        if (req.getExpiredTime() != null) {
+            request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
+        }
+        var amount = new Amount();
+        amount.setTotal(req.getAmount().intValue());
+        amount.setCurrency(CURRENCY_CNY);
+        request.setAmount(amount);
+        if (StrUtil.isNotBlank(req.getClientIp())) {
+            var sceneInfo = new ApiSceneInfo();
+            sceneInfo.setPayerClientIp(req.getClientIp());
+            request.setSceneInfo(sceneInfo);
+        }
+        try {
+            var response = DouyinSdkConfig.appService(req.getCredential()).prepay(request);
+            if (response == null || StrUtil.isBlank(response.getPrepayId())) {
+                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                        "channel.error.douyinPayFailed", "未返回prepay_id");
+            }
+            return new DouyinPayResp()
+                    .setOutTradeNo(req.getOutTradeNo())
+                    .setPayBody(response.getPrepayId())
+                    .setPayBodyType(DouyinPayBodyType.IDENTIFIER);
+        } catch (DouyinpayException e) {
+            log.error("抖音APP支付失败", e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinPayFailed", e.getMessage());
+        }
+    }
+
+    /// H5 支付(返回 h5Url 跳转链接)
+    private DouyinPayResp h5Pay(DouyinPayReq req) {
+        var request = new com.douyinpay.api.payments.h5.models.ApiPrepayRequest();
+        request.setAppid(req.getCredential().getDouyinAppId());
+        request.setMchid(req.getCredential().getMchId());
+        request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
+        request.setOutTradeNo(req.getOutTradeNo());
+        request.setNotifyUrl(req.getNotifyUrl());
+        if (req.getExpiredTime() != null) {
+            request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
+        }
+        var amount = new com.douyinpay.api.payments.h5.models.Amount();
+        amount.setTotal(req.getAmount().intValue());
+        amount.setCurrency(CURRENCY_CNY);
+        request.setAmount(amount);
+        var sceneInfo = new com.douyinpay.api.payments.h5.models.ApiSceneInfo();
+        if (StrUtil.isNotBlank(req.getClientIp())) {
+            sceneInfo.setPayerClientIp(req.getClientIp());
+        }
+        var h5Info = new ApiH5Info();
+        h5Info.setType(H5_TYPE_WAP);
+        sceneInfo.setH5Info(h5Info);
+        request.setSceneInfo(sceneInfo);
+        try {
+            var response = DouyinSdkConfig.h5Service(req.getCredential()).prepay(request);
+            if (response == null || StrUtil.isBlank(response.getH5Url())) {
+                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                        "channel.error.douyinPayFailed", "未返回h5_url");
+            }
+            return new DouyinPayResp()
+                    .setOutTradeNo(req.getOutTradeNo())
+                    .setPayBody(response.getH5Url())
+                    .setPayBodyType(DouyinPayBodyType.LINK);
+        } catch (DouyinpayException e) {
+            log.error("抖音H5支付失败", e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinPayFailed", e.getMessage());
+        }
+    }
+
+    /// OffsetDateTime 转 RFC3339 字符串(抖音要求 ISO_OFFSET_DATETIME 格式)
+    private String formatRfc3339(OffsetDateTime time) {
+        return time.withOffsetSameInstant(ZoneOffset.ofHours(8)).format(RFC3339);
+    }
+}

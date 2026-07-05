@@ -22,16 +22,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-alipay</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-wechat</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -40,10 +30,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- 链路追踪(OpenTelemetry, 仅日志关联, 不导出) -->
+        <!-- 链路追踪(仅日志关联, 不导出): 排除 otel 导出器, 避免拖入 okhttp 5.x 与抖音 SDK(锁 4.x) 冲突 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-opentelemetry</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.opentelemetry</groupId>
+                    <artifactId>opentelemetry-exporter-otlp</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -58,6 +54,26 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- 支付通道对接 -->
+        <!-- 支付宝 -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>daxpay-channel-alipay</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 微信 -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>daxpay-channel-wechat</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 抖音 -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>daxpay-channel-douyin</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

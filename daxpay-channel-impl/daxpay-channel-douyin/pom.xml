@@ -10,9 +10,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>daxpay-channel-alipay</artifactId>
+    <artifactId>daxpay-channel-douyin</artifactId>
     <packaging>jar</packaging>
-    <description>支付宝支付通道适配模块</description>
+    <description>抖音支付通道适配模块</description>
 
     <dependencies>
         <dependency>
@@ -20,27 +20,23 @@
             <artifactId>daxpay-platform-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- common-json: ObjectMapper(Jackson 3, service 解析 SDK 返回 JSON) -->
+        <!-- common-json: ObjectMapper(Jackson 3, service 解析 SDK 返回 JSON 与回调密文) -->
         <dependency>
             <groupId>cn.daxpay.open</groupId>
             <artifactId>common-json</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- 抖音支付官方 SDK -->
         <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-            <version>${alipay-sdk.version}</version>
-            <exclusions>
-                <!-- 排除传递的旧版 okhttp 3.x / okio 1.x, 统一本应用 OkHttp 4.x -->
-                <exclusion>
-                    <groupId>com.squareup.okhttp3</groupId>
-                    <artifactId>okhttp</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.squareup.okio</groupId>
-                    <artifactId>okio</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.github.douyinpay</groupId>
+            <artifactId>douyinpay-java</artifactId>
+            <version>${douyinpay.version}</version>
+        </dependency>
+        <!-- OkHttp 4.x (抖音 SDK 依赖, 版本见根 pom) -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

@@ -17,6 +17,7 @@
     <modules>
         <module>daxpay-channel-alipay</module>
         <module>daxpay-channel-wechat</module>
+        <module>daxpay-channel-douyin</module>
     </modules>
 
     <dependencies>
