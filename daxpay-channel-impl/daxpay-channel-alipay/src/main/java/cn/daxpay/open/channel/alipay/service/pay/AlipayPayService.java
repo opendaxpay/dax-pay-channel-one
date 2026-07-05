@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -43,8 +44,14 @@ public class AlipayPayService {
     /// 支付宝买家ID前缀(2088 开头为支付宝用户ID)
     private static final String BUYER_ID_PREFIX = "2088";
 
-    /// 支付宝过期时间格式(yyyy-MM-dd HH:mm:ss, 支付宝服务器时区)
+    /// 支付宝过期时间格式(yyyy-MM-dd HH:mm:ss, 支付宝服务器时区 GMT+8)
     private static final DateTimeFormatter EXPIRE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /// 格式化关单时间为支付宝要求的北京时间字符串
+    /// 主应用传入的 expireTime 为 UTC 偏移, 支付宝 time_expire 按服务器时区(GMT+8)解析, 需先转 +08:00 再格式化
+    private static String formatExpire(OffsetDateTime expireTime) {
+        return expireTime.withOffsetSameInstant(ZoneOffset.ofHours(8)).format(EXPIRE_FORMATTER);
+    }
 
     /// 通道支付下单
     ///
@@ -102,7 +109,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         // GET 方式返回可直接跳转的 URL
         AlipayTradeWapPayResponse alipayResp = client.pageExecute(request, "GET");
@@ -131,7 +138,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradeAppPayResponse alipayResp = client.sdkExecute(request);
         verifySuccess(alipayResp);
@@ -159,7 +166,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         // GET 方式返回可直接跳转的 URL
         AlipayTradePagePayResponse alipayResp = client.pageExecute(request, "GET");
@@ -187,7 +194,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradePrecreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         verifySuccess(alipayResp);
@@ -216,7 +223,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradePayResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         String code = alipayResp.getCode();
@@ -271,7 +278,7 @@ public class AlipayPayService {
             request.setNotifyUrl(req.getNotifyUrl());
         }
         if (req.getExpireTime() != null) {
-            model.setTimeExpire(req.getExpireTime().format(EXPIRE_FORMATTER));
+            model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradeCreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
         verifySuccess(alipayResp);
