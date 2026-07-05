@@ -1,15 +1,18 @@
 package cn.daxpay.open.channel.wechat.controller;
 
+import cn.daxpay.open.channel.wechat.req.WechatCallbackParseReq;
 import cn.daxpay.open.channel.wechat.req.WechatCloseReq;
 import cn.daxpay.open.channel.wechat.req.WechatPayReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
+import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
+import cn.daxpay.open.channel.wechat.service.callback.WechatCallbackParseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectCloseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectPayService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundService;
@@ -39,6 +42,7 @@ public class WechatDirectPayController {
     private final WechatDirectCloseService wechatCloseService;
     private final WechatDirectRefundService wechatRefundService;
     private final WechatDirectRefundSyncService wechatRefundSyncService;
+    private final WechatCallbackParseService wechatCallbackParseService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -68,5 +72,17 @@ public class WechatDirectPayController {
     @PostMapping("/refund-sync")
     public DaxResult<WechatRefundSyncResp> refundSync(@Valid @RequestBody WechatRefundSyncReq req) {
         return DaxResult.ok(wechatRefundSyncService.sync(req));
+    }
+
+    /// 支付回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-pay")
+    public DaxResult<WechatCallbackParseResp> parsePayCallback(@RequestBody WechatCallbackParseReq req) {
+        return DaxResult.ok(wechatCallbackParseService.parsePay(req));
+    }
+
+    /// 退款回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-refund")
+    public DaxResult<WechatCallbackParseResp> parseRefundCallback(@RequestBody WechatCallbackParseReq req) {
+        return DaxResult.ok(wechatCallbackParseService.parseRefund(req));
     }
 }

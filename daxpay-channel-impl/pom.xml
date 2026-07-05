@@ -18,6 +18,8 @@
         <module>daxpay-channel-alipay</module>
         <module>daxpay-channel-wechat</module>
         <module>daxpay-channel-douyin</module>
+        <module>daxpay-channel-ums</module>
+        <module>daxpay-channel-lakala</module>
     </modules>
 
     <dependencies>
