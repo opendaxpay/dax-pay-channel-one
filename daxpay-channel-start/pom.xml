@@ -81,12 +81,6 @@
             <artifactId>daxpay-channel-ums</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- 拉卡拉(聚合通道: 微信/支付宝/银联) -->
-        <dependency>
-            <groupId>cn.daxpay.open</groupId>
-            <artifactId>daxpay-channel-lakala</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
