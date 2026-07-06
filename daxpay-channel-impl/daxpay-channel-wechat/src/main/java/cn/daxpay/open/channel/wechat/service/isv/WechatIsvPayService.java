@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,8 +44,17 @@ import java.util.Objects;
 @Service
 public class WechatIsvPayService {
 
-    /// V3 过期时间格式(RFC3339)
+    /// 回调时间解析(RFC3339, 兼容带/不带小数秒、Z/+08:00 各种变体)
     private static final DateTimeFormatter RFC3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    /// 过期时间输出格式(微信要求 yyyy-MM-dd'T'HH:mm:ss+08:00, 无小数秒)
+    private static final DateTimeFormatter EXPIRE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+    /// 格式化关单时间为微信要求的 RFC3339 北京时间字符串
+    /// 微信要求 yyyy-MM-ddTHH:mm:ss+TIMEZONE(无小数秒), 主应用传入的 expireTime 为 UTC 偏移, 需先转 +08:00
+    private static String formatExpire(OffsetDateTime expireTime) {
+        return expireTime.withOffsetSameInstant(ZoneOffset.ofHours(8)).format(EXPIRE_FORMATTER);
+    }
+
     /// H5 场景类型固定值
     private static final String H5_SCENE_TYPE = "Wap";
     /// Gson(weixin-java-pay 传递依赖, 序列化调起参数 Map → JSON 与付款码请求体)
@@ -236,9 +246,9 @@ public class WechatIsvPayService {
         amount.setTotal(req.getAmount().intValue());
         amount.setCurrency("CNY");
         request.setAmount(amount);
-        // 过期时间(RFC3339)
+        // 过期时间(RFC3339, 无小数秒, 东八区)
         if (req.getExpireTime() != null) {
-            request.setTimeExpire(req.getExpireTime().format(RFC3339_FORMATTER));
+            request.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         return request;
     }
