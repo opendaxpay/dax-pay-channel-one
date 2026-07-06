@@ -70,6 +70,9 @@ public class LakalaPayService {
         LakalaSdkCredential credential = req.getCredential();
         Map<String, Object> bizParam = buildBaseBizParam(req, credential);
         bizParam.put("auth_code", req.getAuthCode());
+        // 条码支付无法预判渠道(拉卡拉据 authCode 自动识别), 支付宝收单需要 store_id
+        // 传 true 无条件上送, 微信/银联会忽略该字段
+        applyAccBusiFields(bizParam, req, credential, true);
         JSONObject respData = LakalaClient.tradePost(credential, bizParam, LakalaCode.PATH_MICROPAY);
         parseMicropayResp(respData, resp);
     }
@@ -83,12 +86,8 @@ public class LakalaPayService {
         Map<String, Object> bizParam = buildBaseBizParam(req, credential);
         bizParam.put("account_type", req.getAccountType());
         bizParam.put("trans_type", req.getTransType());
-        // 渠道附加参数(JSAPI/MINI 需传 openId)
-        if (StrUtil.isNotBlank(req.getOpenId())) {
-            Map<String, Object> accBusiFields = new LinkedHashMap<>();
-            accBusiFields.put("user_id", req.getOpenId());
-            bizParam.put("acc_busi_fields", accBusiFields);
-        }
+        // 账户业务扩展字段: 支付宝收单上送 store_id, JSAPI/MINI 上送 user_id
+        applyAccBusiFields(bizParam, req, credential, "ALIPAY".equals(req.getAccountType()));
         JSONObject respData = LakalaClient.tradePost(credential, bizParam, LakalaCode.PATH_PREORDER);
         parsePreorderResp(respData, req, resp);
     }
@@ -113,6 +112,34 @@ public class LakalaPayService {
         locationInfo.put("request_ip", req.getClientIp());
         param.put("location_info", locationInfo);
         return param;
+    }
+
+    /// 构建账户业务扩展字段(acc_busi_fields)
+    ///
+    /// 按拉卡拉 V3 接口要求, 不同渠道上送不同扩展参数(对齐商业版 V3LabsTrade*AlipayBus 模型):
+    /// - 支付宝收单(alipayScene=true): 上送 `store_id`(商户门店编号, 文档标注"支付宝收单上送", 条件必填 C)
+    /// - JSAPI/MINI: 上送 `user_id`(微信 openId / 支付宝 buyerId)
+    ///
+    /// @param alipayScene 是否为支付宝收单场景
+    ///                    (preorder 据 accountType 判断; micropay 无法预判渠道, 传 true 兜底, 微信/银联忽略 store_id)
+    private void applyAccBusiFields(Map<String, Object> bizParam, LakalaPayReq req,
+                                    LakalaSdkCredential credential, boolean alipayScene) {
+        Map<String, Object> accBusiFields = null;
+        // 商户门店编号(支付宝收单上送; TODO 门店对接后从门店配置读取)
+        if (alipayScene && StrUtil.isNotBlank(credential.getStoreId())) {
+            accBusiFields = new LinkedHashMap<>();
+//            accBusiFields.put("store_id", credential.getStoreId());
+        }
+        // 用户标识(微信 openId / 支付宝 buyerId, JSAPI/MINI 场景必传)
+        if (StrUtil.isNotBlank(req.getOpenId())) {
+            if (accBusiFields == null) {
+                accBusiFields = new LinkedHashMap<>();
+            }
+            accBusiFields.put("user_id", req.getOpenId());
+        }
+        if (accBusiFields != null) {
+            bizParam.put("acc_busi_fields", accBusiFields);
+        }
     }
 
     /// 解析条码支付响应
