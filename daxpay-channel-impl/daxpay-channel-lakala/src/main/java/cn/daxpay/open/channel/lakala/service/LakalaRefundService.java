@@ -4,7 +4,6 @@ import cn.daxpay.open.channel.lakala.code.LakalaCode;
 import cn.daxpay.open.channel.lakala.req.LakalaRefundReq;
 import cn.daxpay.open.channel.lakala.resp.LakalaRefundResp;
 import cn.daxpay.open.channel.lakala.sdk.LakalaClient;
-import cn.daxpay.open.platform.common.util.PayUtil;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.hutool.core.date.DatePattern;
@@ -40,8 +39,8 @@ public class LakalaRefundService {
         bizParam.put("out_trade_no", req.getOutRefundNo());
         bizParam.put("origin_trade_no", StrUtil.isNotBlank(req.getOriginTradeNo())
                 ? req.getOriginTradeNo() : req.getOriginOutTradeNo());
-        // 退款金额: 分 → 元
-        bizParam.put("refund_amount", PayUtil.conversionFenToYuan(req.getAmount()).toPlainString());
+        // 退款金额: 单位分, 拉卡拉要求整数型字符, 直接透传
+        bizParam.put("refund_amount", String.valueOf(req.getAmount()));
         if (StrUtil.isNotBlank(req.getReason())) {
             bizParam.put("refund_reason", req.getReason());
         }

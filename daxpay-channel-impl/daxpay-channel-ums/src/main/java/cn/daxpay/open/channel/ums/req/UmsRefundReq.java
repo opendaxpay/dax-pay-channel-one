@@ -4,6 +4,8 @@ import cn.daxpay.open.channel.ums.config.UmsSdkCredential;
 import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import lombok.Data;
 
+import java.time.OffsetDateTime;
+
 /// # 银联商务通道退款请求
 ///
 /// 扫码退款与 H5 退款字段名不同(扫码用 billNo, H5 用 merOrderId),
@@ -14,8 +16,8 @@ public class UmsRefundReq {
     /// 原商户订单号(扫码退款作为 billNo, H5 退款作为 merOrderId)
     private String outTradeNo;
 
-    /// 原订单日期(yyyy-MM-dd, 扫码退款必填)
-    private String billDate;
+    /// 原订单创建时间(UTC, 主应用传入), 银联商务要求东八区 yyyy-MM-dd, 由 [UmsDateUtil] 转换
+    private OffsetDateTime billDate;
 
     /// 退款单号(主应用退款单号, 作为银联 refundOrderId)
     private String outRefundNo;

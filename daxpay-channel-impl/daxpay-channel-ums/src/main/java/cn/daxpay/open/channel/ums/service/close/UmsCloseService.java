@@ -4,11 +4,10 @@ import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import cn.daxpay.open.channel.ums.req.UmsCloseReq;
 import cn.daxpay.open.channel.ums.resp.UmsCloseResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
-import cn.hutool.core.date.DateUtil;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class UmsCloseService {
     public UmsCloseResp close(UmsCloseReq req) {
         UmsClient client = new UmsClient(req.getCredential());
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());
         json.put("tid", req.getCredential().getTerminalNo());
 

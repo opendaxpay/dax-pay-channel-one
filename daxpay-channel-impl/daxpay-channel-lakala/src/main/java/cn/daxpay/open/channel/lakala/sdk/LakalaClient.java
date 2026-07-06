@@ -98,7 +98,7 @@ public final class LakalaClient {
             String msg = jsonObject.getStr(msgKey);
             log.error("拉卡拉接口异常: path={}, code={}, msg={}", path, code, msg);
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
-                    "channel.error.lakalaPayFailed", StrUtil.isBlank(msg) ? code : msg);
+                    "channel.error.lakalaRequestFailed", StrUtil.isBlank(msg) ? code : msg);
         }
         return jsonObject.getJSONObject(respDataKey);
     }

@@ -1,6 +1,7 @@
 package cn.daxpay.open.channel.ums.sdk;
 
 import cn.daxpay.open.channel.ums.config.UmsSdkCredential;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.daxpay.open.channel.ums.util.UmsSignUtil;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
@@ -15,8 +16,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 /// # 银联商务 HTTP 客户端
@@ -161,7 +160,7 @@ public class UmsClient {
     /// H5 下单不是服务端直接调用银联, 而是生成带签名的 URL,
     /// 由用户浏览器跳转到银联商务收银台完成支付。
     private String buildH5Url(Map<String, Object> param, String url) {
-        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String timestamp = UmsDateUtil.h5Timestamp();
         String nonce = RandomUtil.randomNumbers(32);
         String reqBody = JSONUtil.toJsonStr(param);
         String signature = UmsSignUtil.getSignature(

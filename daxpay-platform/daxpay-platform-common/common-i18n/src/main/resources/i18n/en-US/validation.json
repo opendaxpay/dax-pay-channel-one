@@ -40,6 +40,15 @@
     },
     "rawParams": {
       "notNull": "Callback raw parameters must not be null"
+    },
+    "credential": {
+      "notNull": "Channel credential must not be null"
+    },
+    "refundNo": {
+      "notBlank": "Refund number must not be blank"
+    },
+    "title": {
+      "notBlank": "Order title must not be blank"
     }
   }
 }

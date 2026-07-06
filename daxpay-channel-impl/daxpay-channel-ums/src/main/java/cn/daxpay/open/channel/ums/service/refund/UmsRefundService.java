@@ -4,13 +4,12 @@ import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import cn.daxpay.open.channel.ums.req.UmsRefundReq;
 import cn.daxpay.open.channel.ums.resp.UmsRefundResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
-import cn.hutool.core.date.DateUtil;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class UmsRefundService {
     public UmsRefundResp refund(UmsRefundReq req) {
         UmsClient client = new UmsClient(req.getCredential());
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());
         json.put("tid", req.getCredential().getTerminalNo());
         json.put("refundOrderId", req.getOutRefundNo());
@@ -43,7 +42,10 @@ public class UmsRefundService {
         if (req.getMethod() == UmsPayMethod.QRCODE) {
             // 扫码退款
             json.put("billNo", req.getOutTradeNo());
-            json.put("billDate", req.getBillDate());
+            // billDate 由主应用以 UTC OffsetDateTime 传入, 按银联商务东八区转换
+            if (req.getBillDate() != null) {
+                json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
+            }
             json.put("instMid", INST_MID_QR);
             response = client.refundQr(json);
             finishTimeField = "refundPayTime";

@@ -4,12 +4,11 @@ import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import cn.daxpay.open.channel.ums.req.UmsSyncReq;
 import cn.daxpay.open.channel.ums.resp.UmsSyncResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
-import cn.hutool.core.date.DateUtil;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,14 +29,17 @@ public class UmsSyncService {
     public UmsSyncResp sync(UmsSyncReq req) {
         UmsClient client = new UmsClient(req.getCredential());
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());
         json.put("tid", req.getCredential().getTerminalNo());
         json.put("instMid", INST_MID_QR);
 
         if (req.getMethod() == UmsPayMethod.QRCODE) {
             json.put("billNo", req.getOutTradeNo());
-            json.put("billDate", req.getBillDate());
+            // billDate 由主应用以 UTC OffsetDateTime 传入, 按银联商务东八区转换
+            if (req.getBillDate() != null) {
+                json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
+            }
             JSONObject response = client.queryQrOrder(json);
             return this.parseQrResp(req.getOutTradeNo(), response);
         } else {

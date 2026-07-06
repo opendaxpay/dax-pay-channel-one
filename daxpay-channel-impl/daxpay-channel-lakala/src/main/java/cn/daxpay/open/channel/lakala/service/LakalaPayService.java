@@ -7,7 +7,6 @@ import cn.daxpay.open.channel.lakala.enums.LakalaPayMethod;
 import cn.daxpay.open.channel.lakala.req.LakalaPayReq;
 import cn.daxpay.open.channel.lakala.resp.LakalaPayResp;
 import cn.daxpay.open.channel.lakala.sdk.LakalaClient;
-import cn.daxpay.open.platform.common.util.PayUtil;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.hutool.core.date.DatePattern;
@@ -30,7 +29,7 @@ import java.util.Objects;
 /// - MICROPAY(条码): 走 `/v3/labs/trans/micropay`, accountType 由拉卡拉据 authCode 自动识别
 /// - PREORDER(预下单): 走 `/v3/labs/trans/preorder`, 按 accountType + transType 决定底层渠道(微信/支付宝/银联)
 ///
-/// 金额: 平台内部单位为「分」(Long), 拉卡拉接口用「元」(String), 调用前用 [PayUtil] 换算。
+/// 金额: 平台内部单位为「分」(Long), 拉卡拉接口也是「分」(整数型字符), 直接透传。
 @Slf4j
 @Service
 public class LakalaPayService {
@@ -100,8 +99,8 @@ public class LakalaPayService {
         param.put("merchant_no", credential.getLakalaMchNo());
         param.put("term_no", credential.getTermNo());
         param.put("out_trade_no", req.getOutTradeNo());
-        // 金额: 分 → 元(String, 2位小数)
-        param.put("total_amount", PayUtil.conversionFenToYuan(req.getAmount()).toPlainString());
+        // 金额: 单位分, 拉卡拉要求整数型字符, 直接透传
+        param.put("total_amount", String.valueOf(req.getAmount()));
         param.put("subject", req.getTitle());
         if (StrUtil.isNotBlank(req.getDescription())) {
             param.put("remark", req.getDescription());

@@ -4,12 +4,11 @@ import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import cn.daxpay.open.channel.ums.req.UmsRefundSyncReq;
 import cn.daxpay.open.channel.ums.resp.UmsRefundSyncResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
-import cn.hutool.core.date.DateUtil;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ public class UmsRefundSyncService {
     public UmsRefundSyncResp sync(UmsRefundSyncReq req) {
         UmsClient client = new UmsClient(req.getCredential());
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());
         json.put("tid", req.getCredential().getTerminalNo());
 
@@ -41,7 +40,7 @@ public class UmsRefundSyncService {
             json.put("billNo", req.getOutTradeNo());
             json.put("refundOrderId", req.getOutRefundNo());
             if (req.getBillDate() != null) {
-                json.put("billDate", req.getBillDate());
+                json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
             }
             JSONObject response = client.queryQrOrder(json);
             return this.parseQrResp(req.getOutRefundNo(), response);

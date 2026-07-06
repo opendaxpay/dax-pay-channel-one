@@ -27,5 +27,16 @@
   "alipayPayCallFailed": "支付宝支付调用失败: {0}",
   "alipayCloseOrderFailed": "支付宝关闭订单失败: {0}",
   "alipayOrderCancelFailed": "支付宝撤销订单失败: {0}",
-  "alipayClientCreateFailed": "创建AlipayClient失败: {0}"
+  "alipayClientCreateFailed": "创建AlipayClient失败: {0}",
+  "umsRequestFailed": "银联商务请求失败: {0}",
+  "lakalaSyncFailed": "拉卡拉订单同步失败: {0}",
+  "lakalaRefundFailed": "拉卡拉退款失败: {0}",
+  "lakalaPayFailed": "拉卡拉支付失败: {0}",
+  "lakalaCloseFailed": "拉卡拉关闭订单失败: {0}",
+  "lakalaRequestFailed": "拉卡拉请求失败: {0}",
+  "douyinRefundFailed": "抖音退款失败: {0}",
+  "douyinPayFailed": "抖音支付调用失败: {0}",
+  "douyinCloseFailed": "抖音关闭订单失败: {0}",
+  "douyinPayMethodNull": "抖音支付方式不能为空",
+  "douyinJsapiNoOpenId": "抖音JSAPI支付必填openId"
 }

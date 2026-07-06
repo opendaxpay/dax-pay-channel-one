@@ -11,9 +11,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -44,7 +42,7 @@ public class UmsSignUtil {
     /// @param body   请求体 JSON 字符串
     /// @return 完整 Authorization 头值
     public String getOpenBodySig(String appId, String appKey, String body) {
-        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String timestamp = UmsDateUtil.h5Timestamp();
         String nonce = UUID.randomUUID().toString().replace("-", "");
         String bodyDigest = sha256Hex(body.getBytes(StandardCharsets.UTF_8));
         String signContent = appId + timestamp + nonce + bodyDigest;

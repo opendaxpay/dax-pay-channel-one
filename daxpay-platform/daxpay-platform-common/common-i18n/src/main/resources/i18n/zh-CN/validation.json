@@ -40,6 +40,15 @@
     },
     "rawParams": {
       "notNull": "回调原始参数不能为空"
+    },
+    "credential": {
+      "notNull": "通道凭证不能为空"
+    },
+    "refundNo": {
+      "notBlank": "退款号不能为空"
+    },
+    "title": {
+      "notBlank": "订单标题不能为空"
     }
   }
 }

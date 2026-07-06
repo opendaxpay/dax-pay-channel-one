@@ -6,13 +6,12 @@ import cn.daxpay.open.channel.ums.enums.UmsPayMethod;
 import cn.daxpay.open.channel.ums.req.UmsPayReq;
 import cn.daxpay.open.channel.ums.resp.UmsPayResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
-import cn.hutool.core.date.DateUtil;
+import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,12 +127,12 @@ public class UmsPayService {
     private Map<String, Object> buildQrBaseParam(UmsPayReq req) {
         UmsSdkCredential cred = req.getCredential();
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", cred.getMerchantNo());
         json.put("tid", cred.getTerminalNo());
         json.put("instMid", INST_MID_QR);
         json.put("billNo", req.getOutTradeNo());
-        json.put("billDate", DateUtil.formatDate(new Date()));
+        json.put("billDate", UmsDateUtil.todayDate());
         json.put("totalAmount", req.getAmount());
         json.put("notifyUrl", req.getNotifyUrl());
         if (Boolean.TRUE.equals(req.getLimitCreditCard())) {
@@ -146,7 +145,7 @@ public class UmsPayService {
     private Map<String, Object> buildH5BaseParam(UmsPayReq req) {
         UmsSdkCredential cred = req.getCredential();
         Map<String, Object> json = new HashMap<>();
-        json.put("requestTimestamp", DateUtil.formatDateTime(new Date()));
+        json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", cred.getMerchantNo());
         json.put("tid", cred.getTerminalNo());
         json.put("instMid", INST_MID_H5);

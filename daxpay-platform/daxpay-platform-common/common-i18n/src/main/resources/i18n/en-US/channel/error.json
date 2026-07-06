@@ -27,5 +27,16 @@
   "alipayPayCallFailed": "Alipay payment call failed: {0}",
   "alipayCloseOrderFailed": "Alipay close order failed: {0}",
   "alipayOrderCancelFailed": "Alipay cancel order failed: {0}",
-  "alipayClientCreateFailed": "Failed to create AlipayClient: {0}"
+  "alipayClientCreateFailed": "Failed to create AlipayClient: {0}",
+  "umsRequestFailed": "UMS (China UnionPay Merchant Services) request failed: {0}",
+  "lakalaSyncFailed": "Lakala order sync failed: {0}",
+  "lakalaRefundFailed": "Lakala refund failed: {0}",
+  "lakalaPayFailed": "Lakala payment failed: {0}",
+  "lakalaCloseFailed": "Lakala close order failed: {0}",
+  "lakalaRequestFailed": "Lakala request failed: {0}",
+  "douyinRefundFailed": "Douyin refund failed: {0}",
+  "douyinPayFailed": "Douyin payment call failed: {0}",
+  "douyinCloseFailed": "Douyin close order failed: {0}",
+  "douyinPayMethodNull": "Douyin payment method must not be null",
+  "douyinJsapiNoOpenId": "openid is required for Douyin JSAPI payment"
 }
