@@ -7,8 +7,10 @@ import cn.daxpay.open.channel.ums.sdk.UmsClient;
 import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +21,17 @@ import java.util.Map;
 /// 退款状态: SUCCESS(成功) / PROCESSING(处理中) / FAIL(失败)。
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UmsRefundService {
+
+    private final RestClient restClient;
 
     private static final String INST_MID_QR = "QRPAYDEFAULT";
     private static final String INST_MID_H5 = "H5DEFAULT";
 
     /// 发起银联商务退款
     public UmsRefundResp refund(UmsRefundReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = new HashMap<>();
         json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());

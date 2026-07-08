@@ -5,8 +5,10 @@ import cn.daxpay.open.channel.ums.req.UmsCloseReq;
 import cn.daxpay.open.channel.ums.resp.UmsCloseResp;
 import cn.daxpay.open.channel.ums.sdk.UmsClient;
 import cn.daxpay.open.channel.ums.util.UmsDateUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +20,16 @@ import java.util.Map;
 /// - **其他 H5**: 需要 merOrderId(即商户订单号)
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UmsCloseService {
+
+    private final RestClient restClient;
 
     private static final String INST_MID_QR = "QRPAYDEFAULT";
 
     /// 关闭银联商务支付订单
     public UmsCloseResp close(UmsCloseReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = new HashMap<>();
         json.put("requestTimestamp", UmsDateUtil.nowDateTime());
         json.put("mid", req.getCredential().getMerchantNo());

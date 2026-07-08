@@ -19,6 +19,8 @@ public enum ChannelErrorCode {
     SDK_CALL_FAILED(10003, "channel.error.sdkCallFailed"),
     /// 回调验签失败
     CALLBACK_VERIFY_FAILED(10004, "channel.error.callbackVerifyFailed"),
+    /// 响应验签失败
+    RESPONSE_VERIFY_FAILED(10008, "channel.error.responseVerifyFailed"),
     /// 并发冲突
     CACHE_CONCURRENT_CONFLICT(10005, "channel.error.cacheConcurrentConflict"),
     /// 系统内部错误

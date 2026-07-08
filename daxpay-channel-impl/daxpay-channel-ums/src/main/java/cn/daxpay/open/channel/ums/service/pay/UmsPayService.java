@@ -9,8 +9,10 @@ import cn.daxpay.open.channel.ums.sdk.UmsClient;
 import cn.daxpay.open.channel.ums.util.UmsDateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,10 @@ import java.util.Map;
 /// H5 支付不是服务端直接调用银联, 而是生成带签名的跳转 URL, 由用户浏览器发起。
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UmsPayService {
+
+    private final RestClient restClient;
 
     /// 扫码业务类型码
     private static final String INST_MID_QR = "QRPAYDEFAULT";
@@ -52,7 +57,7 @@ public class UmsPayService {
 
     /// 扫码支付(主扫, 返回 billQRCode 二维码链接)
     private UmsPayResp qrPay(UmsPayReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = this.buildQrBaseParam(req);
         // 商品名称
         if (StrUtil.isNotBlank(req.getDescription())) {
@@ -73,7 +78,7 @@ public class UmsPayService {
 
     /// 支付宝 H5 支付(返回跳转链接)
     private UmsPayResp alipayH5(UmsPayReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = this.buildH5BaseParam(req);
         String url = client.alipayH5(json);
         return new UmsPayResp()
@@ -84,7 +89,7 @@ public class UmsPayService {
 
     /// 微信 H5 支付(返回跳转链接)
     private UmsPayResp wechatH5(UmsPayReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = this.buildH5BaseParam(req);
         // 微信 H5 场景信息
         json.put("sceneType", "AND_WAP");
@@ -102,7 +107,7 @@ public class UmsPayService {
         if (StrUtil.isBlank(req.getWxAppId())) {
             throw new IllegalArgumentException("微信小程序收银台支付需传入 wxAppId");
         }
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = this.buildH5BaseParam(req);
         json.put("subAppId", req.getWxAppId());
         String url = client.wechatH5ToMini(json);
@@ -114,7 +119,7 @@ public class UmsPayService {
 
     /// 银联云闪付 H5 支付(返回跳转链接)
     private UmsPayResp unionH5(UmsPayReq req) {
-        UmsClient client = new UmsClient(req.getCredential());
+        UmsClient client = new UmsClient(req.getCredential(), restClient);
         Map<String, Object> json = this.buildH5BaseParam(req);
         String url = client.unionH5(json);
         return new UmsPayResp()

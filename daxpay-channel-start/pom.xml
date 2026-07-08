@@ -25,6 +25,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- RestClient 声明式 HTTP 客户端(Spring Boot 4 拆为独立 starter) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
+        </dependency>
+        <!-- 使用 Apache HttpClient 5 作为 http 请求的底层连接池 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+        </dependency>
         <!-- 监控端点 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
