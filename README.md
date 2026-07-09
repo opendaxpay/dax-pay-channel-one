@@ -43,7 +43,6 @@ daxpay-channel-one (根)              daxpay (根)
 
 - Java 25
 - Spring Boot 4.1.0
-- PostgreSQL 14+
 - Lombok / Hutool
 - OpenTelemetry(仅日志链路关联)
 

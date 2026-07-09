@@ -2,9 +2,7 @@
 # 通道适配子应用 - 生产环境配置
 # ====================================================================
 # 部署形态: Docker Compose / 单机容器
-# 凭证注入: 所有敏感字段用 ${VAR} 占位符, 由 docker-compose 的 env_file 注入
-# 启动方式: docker run -e SPRING_PROFILES_ACTIVE=prod \
-#                  -e DB_PASSWORD=... -e ... daxpay-channel-one
+# 启动方式: docker run -e SPRING_PROFILES_ACTIVE=prod daxpay-channel-one
 # ====================================================================
 server:
   # 优雅停机(配合 docker stop 的 10s 宽限期)
@@ -12,19 +10,6 @@ server:
 spring:
   lifecycle:
     timeout-per-shutdown-phase: 30s
-  # PostgreSQL(凭证环境变量注入, 缺失即启动失败)
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST:postgresql}:${DB_PORT:5432}/${DB_NAME:daxpay_channel}?autoReconnect=true&reWriteBatchedInserts=true
-    username: ${DB_USERNAME:?missing DB_USERNAME}
-    password: ${DB_PASSWORD:?missing DB_PASSWORD}
-    hikari:
-      minimumIdle: 10
-      maximumPoolSize: 50
-      leak-detection-threshold: 30000
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
 # 日志(生产只输出 INFO 及以上, 业务包不切 DEBUG, 第三方框架噪音压制到 WARN)
 logging:
   level:
@@ -34,7 +19,7 @@ logging:
     framework: WARN
   group:
     # 框架与中间件包集合, 统一管理噪音级别
-    framework: org.springframework, com.zaxxer.hikari, org.apache.ibatis, io.lettuce.core, org.apache.activemq.artemis, org.springframework.jms
+    framework: org.springframework, io.lettuce.core
 # 监控端点(Docker Compose 场景与业务同端口, 收紧到最小必要集)
 management:
   endpoints:
@@ -44,14 +29,14 @@ management:
         include: health,info,metrics
   endpoint:
     health:
-      # 生产不暴露 DB 内部状态给未授权方
+      # 生产不暴露内部状态给未授权方
       show-details: never
       probes:
         enabled: true
       group:
-        # liveness 仅看进程存活(不级联 DB, 防止 DB 抖动引发雪崩)
+        # liveness 仅看进程存活(轻量探针, 避免级联故障)
         liveness:
           include: ping
-        # readiness 等 DB 就绪后才接流量
+        # readiness: 无 DB 依赖, 进程存活即可接流量
         readiness:
-          include: db
+          include: ping
