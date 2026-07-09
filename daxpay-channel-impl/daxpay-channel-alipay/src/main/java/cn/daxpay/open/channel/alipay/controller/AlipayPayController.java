@@ -1,15 +1,18 @@
 package cn.daxpay.open.channel.alipay.controller;
 
+import cn.daxpay.open.channel.alipay.req.AlipayCallbackParseReq;
 import cn.daxpay.open.channel.alipay.req.AlipayCloseReq;
 import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundSyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
+import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCloseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundSyncResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
+import cn.daxpay.open.channel.alipay.service.callback.AlipayCallbackParseService;
 import cn.daxpay.open.channel.alipay.service.close.AlipayCloseService;
 import cn.daxpay.open.channel.alipay.service.pay.AlipayPayService;
 import cn.daxpay.open.channel.alipay.service.refund.AlipayRefundService;
@@ -39,6 +42,7 @@ public class AlipayPayController {
     private final AlipayCloseService alipayCloseService;
     private final AlipayRefundService alipayRefundService;
     private final AlipayRefundSyncService alipayRefundSyncService;
+    private final AlipayCallbackParseService alipayCallbackParseService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -68,5 +72,17 @@ public class AlipayPayController {
     @PostMapping("/refund-sync")
     public DaxResult<AlipayRefundSyncResp> refundSync(@Valid @RequestBody AlipayRefundSyncReq req) {
         return DaxResult.ok(alipayRefundSyncService.sync(req));
+    }
+
+    /// 支付回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-pay")
+    public DaxResult<AlipayCallbackParseResp> parsePayCallback(@RequestBody AlipayCallbackParseReq req) {
+        return DaxResult.ok(alipayCallbackParseService.parsePay(req));
+    }
+
+    /// 退款回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-refund")
+    public DaxResult<AlipayCallbackParseResp> parseRefundCallback(@RequestBody AlipayCallbackParseReq req) {
+        return DaxResult.ok(alipayCallbackParseService.parseRefund(req));
     }
 }
