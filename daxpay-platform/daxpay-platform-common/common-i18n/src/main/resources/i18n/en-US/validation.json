@@ -49,6 +49,9 @@
     },
     "title": {
       "notBlank": "Order title must not be blank"
+    },
+    "authCode": {
+      "notBlank": "Auth code must not be blank"
     }
   }
 }

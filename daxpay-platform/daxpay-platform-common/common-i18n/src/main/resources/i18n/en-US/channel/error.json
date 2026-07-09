@@ -29,6 +29,7 @@
   "alipayCloseOrderFailed": "{0}",
   "alipayOrderCancelFailed": "{0}",
   "alipayClientCreateFailed": "Failed to create AlipayClient: {0}",
+  "alipayAppAuthTokenFailed": "Failed to exchange Alipay app auth token: {0}",
   "umsRequestFailed": "{0}",
   "lakalaSyncFailed": "Lakala request failed: {0}",
   "lakalaRefundFailed": "Lakala request failed: {0}",

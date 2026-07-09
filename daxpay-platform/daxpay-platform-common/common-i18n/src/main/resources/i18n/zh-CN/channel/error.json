@@ -29,6 +29,7 @@
   "alipayCloseOrderFailed": "{0}",
   "alipayOrderCancelFailed": "{0}",
   "alipayClientCreateFailed": "创建AlipayClient失败: {0}",
+  "alipayAppAuthTokenFailed": "支付宝换取应用授权令牌失败: {0}",
   "umsRequestFailed": "{0}",
   "lakalaSyncFailed": "拉卡拉请求失败: {0}",
   "lakalaRefundFailed": "拉卡拉请求失败: {0}",

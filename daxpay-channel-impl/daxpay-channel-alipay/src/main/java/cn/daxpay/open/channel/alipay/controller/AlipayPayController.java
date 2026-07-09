@@ -1,17 +1,20 @@
 package cn.daxpay.open.channel.alipay.controller;
 
+import cn.daxpay.open.channel.alipay.req.AlipayAppAuthTokenReq;
 import cn.daxpay.open.channel.alipay.req.AlipayCallbackParseReq;
 import cn.daxpay.open.channel.alipay.req.AlipayCloseReq;
 import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundSyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
+import cn.daxpay.open.channel.alipay.resp.AlipayAppAuthTokenResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCloseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundSyncResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
+import cn.daxpay.open.channel.alipay.service.auth.AlipayAppAuthTokenService;
 import cn.daxpay.open.channel.alipay.service.callback.AlipayCallbackParseService;
 import cn.daxpay.open.channel.alipay.service.close.AlipayCloseService;
 import cn.daxpay.open.channel.alipay.service.pay.AlipayPayService;
@@ -43,6 +46,7 @@ public class AlipayPayController {
     private final AlipayRefundService alipayRefundService;
     private final AlipayRefundSyncService alipayRefundSyncService;
     private final AlipayCallbackParseService alipayCallbackParseService;
+    private final AlipayAppAuthTokenService alipayAppAuthTokenService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -84,5 +88,11 @@ public class AlipayPayController {
     @PostMapping("/callback/parse-refund")
     public DaxResult<AlipayCallbackParseResp> parseRefundCallback(@RequestBody AlipayCallbackParseReq req) {
         return DaxResult.ok(alipayCallbackParseService.parseRefund(req));
+    }
+
+    /// 应用授权码换取 app_auth_token(代运营授权)
+    @PostMapping("/auth/app-token")
+    public DaxResult<AlipayAppAuthTokenResp> exchangeAppAuthToken(@Valid @RequestBody AlipayAppAuthTokenReq req) {
+        return DaxResult.ok(alipayAppAuthTokenService.exchange(req));
     }
 }
