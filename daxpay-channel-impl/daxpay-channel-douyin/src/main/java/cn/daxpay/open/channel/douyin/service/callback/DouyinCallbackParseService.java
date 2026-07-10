@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 /// 主应用接收到抖音异步通知后, 将原始 header + body + 凭证转发到本服务,
 /// 使用 [com.douyinpay.api.notification.NotificationParser] 完成平台证书验签与 AES 解密。
 ///
-/// 区分支付回调([parsePay])与退款回调([parseRefund]), 分别解析为
+/// 区分支付回调([#parsePay])与退款回调([#parseRefund]), 分别解析为
 /// [ApiTransaction] / [ApiRefund]。
 @Slf4j
 @Service

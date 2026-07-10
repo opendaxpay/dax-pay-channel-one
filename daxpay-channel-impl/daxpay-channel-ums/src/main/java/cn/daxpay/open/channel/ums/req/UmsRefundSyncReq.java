@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 
 /// # 银联商务通道退款同步请求
 ///
-/// 通过退款单号查询退款最终状态。扫码与 H5 查询接口不同, 通过 [method] 区分。
+/// 通过退款单号查询退款最终状态。扫码与 H5 查询接口不同, 通过 [#method] 区分。
 @Data
 public class UmsRefundSyncReq {
 

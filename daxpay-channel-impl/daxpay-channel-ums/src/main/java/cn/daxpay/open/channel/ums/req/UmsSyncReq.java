@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 /// # 银联商务通道支付同步请求
 ///
 /// 扫码查单(queryQrOrder)与 H5 查单(queryH5Order)接口不同,
-/// 通过 [method] 区分。
+/// 通过 [#method] 区分。
 @Data
 public class UmsSyncReq {
 

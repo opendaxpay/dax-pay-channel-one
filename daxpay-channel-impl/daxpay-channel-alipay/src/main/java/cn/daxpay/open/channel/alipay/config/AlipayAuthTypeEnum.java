@@ -6,8 +6,8 @@ import lombok.Getter;
 /// # 支付宝鉴权方式
 ///
 /// 区分公钥模式与证书模式, 决定支付宝 SDK 的接口调用方式:
-/// - [KEY] 公钥模式: 使用 alipayPublicKey, 调用 `AlipayClient.execute / pageExecute / sdkExecute`
-/// - [CERT] 证书模式: 使用三本证书, 调用 `AlipayClient.certificateExecute / certificatePageExecute / certificateSdkExecute`
+/// - [#KEY] 公钥模式: 使用 alipayPublicKey, 调用 `AlipayClient.execute / pageExecute / sdkExecute`
+/// - [#CERT] 证书模式: 使用三本证书, 调用 `AlipayClient.certificateExecute / certificatePageExecute / certificateSdkExecute`
 ///
 /// 与 [AlipaySdkCredential.getAuthType] 的编码对应。
 @Getter

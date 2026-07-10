@@ -7,7 +7,7 @@ import lombok.Data;
 /// # 银联商务通道支付请求
 ///
 /// 专口专用: 由主应用 dax-pay-open 经声明式 HTTP 客户端转发。
-/// 通过 [method] 区分扫码/H5/小程序等支付方式, 子应用据此路由到对应银联商务接口。
+/// 通过 [#method] 区分扫码/H5/小程序等支付方式, 子应用据此路由到对应银联商务接口。
 @Data
 public class UmsPayReq {
 

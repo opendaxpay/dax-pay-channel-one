@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 /// # 银联商务通道退款请求
 ///
 /// 扫码退款与 H5 退款字段名不同(扫码用 billNo, H5 用 merOrderId),
-/// 通过 [method] 区分, 子应用据此选择对应接口。
+/// 通过 [#method] 区分, 子应用据此选择对应接口。
 @Data
 public class UmsRefundReq {
 

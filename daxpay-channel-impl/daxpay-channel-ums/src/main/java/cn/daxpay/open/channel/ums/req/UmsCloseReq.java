@@ -7,7 +7,7 @@ import lombok.Data;
 /// # 银联商务通道关闭订单请求
 ///
 /// 扫码关单需要 qrCodeId(从支付返回的 billQRCode 链接末段提取),
-/// H5 关单需要 merOrderId(即商户订单号)。通过 [method] 区分。
+/// H5 关单需要 merOrderId(即商户订单号)。通过 [#method] 区分。
 @Data
 public class UmsCloseReq {
 

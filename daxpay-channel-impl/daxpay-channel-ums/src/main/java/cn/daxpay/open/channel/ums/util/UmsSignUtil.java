@@ -56,7 +56,7 @@ public class UmsSignUtil {
 
     /// 生成 H5 接口签名(OPEN-FORM-PARAM 方式的 signature 参数值)
     ///
-    /// 算法与 [getOpenBodySig] 相同, 但 timestamp/nonce 由调用方传入(H5 需拼到 URL 中保持一致),
+    /// 算法与 [#getOpenBodySig] 相同, 但 timestamp/nonce 由调用方传入(H5 需拼到 URL 中保持一致),
     /// 返回纯 Base64 签名串(非完整 Authorization)。
     ///
     /// @param appId     银联商务应用 AppId
@@ -116,7 +116,7 @@ public class UmsSignUtil {
     /// @param timestamp 时间戳
     /// @param nonce     随机串
     /// @param reqBody   请求体 JSON
-    /// @param signature 签名串([getSignature] 返回值)
+    /// @param signature 签名串([#getSignature] 返回值)
     /// @return 完整跳转链接
     public String buildH5Url(String url, String appId, String timestamp, String nonce,
                              String reqBody, String signature) {

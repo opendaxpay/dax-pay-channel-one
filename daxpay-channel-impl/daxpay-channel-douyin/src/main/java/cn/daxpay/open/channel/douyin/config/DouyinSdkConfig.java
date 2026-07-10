@@ -81,7 +81,7 @@ public class DouyinSdkConfig {
 
     /// 构建回调通知解析器(自动拉取平台证书验签)
     ///
-    /// 按 mchId 缓存, 配置变更后需调用 [invalidateNotificationParserCache] 清除
+    /// 按 mchId 缓存, 配置变更后需调用 [#invalidateNotificationParserCache] 清除
     public NotificationParser buildNotificationParser(DouyinSdkCredential credential) {
         return NOTIFICATION_PARSER_CACHE.computeIfAbsent(credential.getMchId(), mchId -> createNotificationParser(credential));
     }
