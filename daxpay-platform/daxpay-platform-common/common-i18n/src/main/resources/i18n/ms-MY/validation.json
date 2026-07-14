@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "Kod saluran tidak boleh kosong"
+    },
+    "bizOrderNo": {
+      "notBlank": "Nombor pesanan perniagaan tidak boleh kosong"
+    },
+    "outTradeNo": {
+      "notBlank": "Nombor dagangan keluar tidak boleh kosong"
+    },
+    "outRequestNo": {
+      "notBlank": "Nombor permintaan bayaran balik tidak boleh kosong"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "Nombor bayaran balik perniagaan tidak boleh kosong"
+    },
+    "amount": {
+      "notNull": "Jumlah tidak boleh batal",
+      "positive": "Jumlah mesti positif"
+    },
+    "subject": {
+      "notBlank": "Subjek pesanan tidak boleh kosong"
+    },
+    "method": {
+      "notBlank": "Kaedah pembayaran tidak boleh kosong",
+      "notNull": "Kaedah pembayaran mestilah tidak batal"
+    },
+    "description": {
+      "notBlank": "Penerangan tidak boleh kosong"
+    },
+    "syncType": {
+      "notBlank": "Jenis penyegerakan tidak boleh kosong"
+    },
+    "callbackType": {
+      "notBlank": "Jenis panggilan balik mestilah tidak kosong"
+    },
+    "config": {
+      "notNull": "Konfigurasi saluran tidak boleh batal"
+    },
+    "rawParams": {
+      "notNull": "Parameter mentah panggil balik mestilah tidak batal"
+    },
+    "credential": {
+      "notNull": "Bukti kelayakan saluran tidak boleh batal"
+    },
+    "refundNo": {
+      "notBlank": "Nombor bayaran balik mestilah tidak kosong"
+    },
+    "title": {
+      "notBlank": "Tajuk pesanan tidak boleh kosong"
+    },
+    "authCode": {
+      "notBlank": "Kod pengesahan tidak boleh kosong"
+    }
+  }
+}

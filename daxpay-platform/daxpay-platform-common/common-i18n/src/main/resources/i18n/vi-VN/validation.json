@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "Mã kênh không được để trống"
+    },
+    "bizOrderNo": {
+      "notBlank": "Số đơn đặt hàng kinh doanh không được để trống"
+    },
+    "outTradeNo": {
+      "notBlank": "Số giao dịch ngoài không được để trống"
+    },
+    "outRequestNo": {
+      "notBlank": "Số yêu cầu hoàn tiền không được để trống"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "Số tiền hoàn lại của doanh nghiệp không được để trống"
+    },
+    "amount": {
+      "notNull": "Số tiền không được rỗng",
+      "positive": "Số tiền phải dương"
+    },
+    "subject": {
+      "notBlank": "Chủ đề đơn hàng không được để trống"
+    },
+    "method": {
+      "notBlank": "Phương thức thanh toán không được để trống",
+      "notNull": "Phương thức thanh toán không được rỗng"
+    },
+    "description": {
+      "notBlank": "Mô tả không được để trống"
+    },
+    "syncType": {
+      "notBlank": "Loại đồng bộ hóa không được để trống"
+    },
+    "callbackType": {
+      "notBlank": "Loại gọi lại không được để trống"
+    },
+    "config": {
+      "notNull": "Cấu hình kênh không được rỗng"
+    },
+    "rawParams": {
+      "notNull": "Tham số thô gọi lại không được rỗng"
+    },
+    "credential": {
+      "notNull": "Thông tin xác thực kênh không được rỗng"
+    },
+    "refundNo": {
+      "notBlank": "Số hoàn tiền không được để trống"
+    },
+    "title": {
+      "notBlank": "Tiêu đề đơn hàng không được để trống"
+    },
+    "authCode": {
+      "notBlank": "Mã xác thực không được để trống"
+    }
+  }
+}

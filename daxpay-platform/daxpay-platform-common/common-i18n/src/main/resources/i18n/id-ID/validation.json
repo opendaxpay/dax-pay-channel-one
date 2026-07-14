@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "Kode saluran wajib diisi"
+    },
+    "bizOrderNo": {
+      "notBlank": "Nomor pesanan bisnis wajib diisi"
+    },
+    "outTradeNo": {
+      "notBlank": "Nomor perdagangan keluar wajib diisi"
+    },
+    "outRequestNo": {
+      "notBlank": "Nomor permintaan pengembalian dana wajib diisi"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "Nomor pengembalian dana bisnis wajib diisi"
+    },
+    "amount": {
+      "notNull": "Jumlah tidak boleh nol",
+      "positive": "Jumlahnya harus positif"
+    },
+    "subject": {
+      "notBlank": "Subjek pesanan wajib diisi"
+    },
+    "method": {
+      "notBlank": "Metode pembayaran wajib diisi",
+      "notNull": "Metode pembayaran tidak boleh nol"
+    },
+    "description": {
+      "notBlank": "Deskripsi wajib diisi"
+    },
+    "syncType": {
+      "notBlank": "Jenis sinkronisasi wajib diisi"
+    },
+    "callbackType": {
+      "notBlank": "Jenis panggilan balik wajib diisi"
+    },
+    "config": {
+      "notNull": "Konfigurasi saluran tidak boleh nol"
+    },
+    "rawParams": {
+      "notNull": "Parameter mentah panggilan balik tidak boleh nol"
+    },
+    "credential": {
+      "notNull": "Kredensial saluran tidak boleh nol"
+    },
+    "refundNo": {
+      "notBlank": "Nomor pengembalian dana wajib diisi"
+    },
+    "title": {
+      "notBlank": "Judul pesanan wajib diisi"
+    },
+    "authCode": {
+      "notBlank": "Kode autentikasi wajib diisi"
+    }
+  }
+}
