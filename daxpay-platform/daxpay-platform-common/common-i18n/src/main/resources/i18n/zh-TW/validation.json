@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "通道編碼不能為空"
+    },
+    "bizOrderNo": {
+      "notBlank": "業務訂單號不能為空"
+    },
+    "outTradeNo": {
+      "notBlank": "商戶訂單號不能為空"
+    },
+    "outRequestNo": {
+      "notBlank": "退款請求號不能為空"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "業務退款號不能為空"
+    },
+    "amount": {
+      "notNull": "金額不能為空",
+      "positive": "金額必須大於0"
+    },
+    "subject": {
+      "notBlank": "訂單標題不能為空"
+    },
+    "method": {
+      "notBlank": "支付方式不能為空",
+      "notNull": "支付方式不能為空"
+    },
+    "description": {
+      "notBlank": "商品描述不能為空"
+    },
+    "syncType": {
+      "notBlank": "同步型別不能為空"
+    },
+    "callbackType": {
+      "notBlank": "回撥型別不能為空"
+    },
+    "config": {
+      "notNull": "通道配置不能為空"
+    },
+    "rawParams": {
+      "notNull": "回撥原始引數不能為空"
+    },
+    "credential": {
+      "notNull": "通道憑證不能為空"
+    },
+    "refundNo": {
+      "notBlank": "退款號不能為空"
+    },
+    "title": {
+      "notBlank": "訂單標題不能為空"
+    },
+    "authCode": {
+      "notBlank": "授權碼不能為空"
+    }
+  }
+}
