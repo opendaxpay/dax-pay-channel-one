@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "채널 코드는 비워둘 수 없습니다."
+    },
+    "bizOrderNo": {
+      "notBlank": "비즈니스 주문 번호는 비워둘 수 없습니다."
+    },
+    "outTradeNo": {
+      "notBlank": "아웃 트레이드 번호는 비워둘 수 없습니다."
+    },
+    "outRequestNo": {
+      "notBlank": "환불 요청 번호는 반드시 입력해야 합니다."
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "비즈니스 환불 번호는 비워둘 수 없습니다."
+    },
+    "amount": {
+      "notNull": "금액은 null일 수 없습니다.",
+      "positive": "금액은 양수여야 합니다."
+    },
+    "subject": {
+      "notBlank": "주문 제목은 비워둘 수 없습니다."
+    },
+    "method": {
+      "notBlank": "결제 방법은 반드시 입력해야 합니다.",
+      "notNull": "결제 방법은 null일 수 없습니다."
+    },
+    "description": {
+      "notBlank": "설명은 반드시 입력해야 합니다."
+    },
+    "syncType": {
+      "notBlank": "동기화 유형은 비워둘 수 없습니다."
+    },
+    "callbackType": {
+      "notBlank": "콜백 유형은 비워둘 수 없습니다."
+    },
+    "config": {
+      "notNull": "채널 구성은 null일 수 없습니다."
+    },
+    "rawParams": {
+      "notNull": "콜백 원시 매개변수는 null이 아니어야 합니다."
+    },
+    "credential": {
+      "notNull": "채널 자격 증명은 null일 수 없습니다."
+    },
+    "refundNo": {
+      "notBlank": "환불 번호는 비워둘 수 없습니다."
+    },
+    "title": {
+      "notBlank": "주문 제목은 비워둘 수 없습니다."
+    },
+    "authCode": {
+      "notBlank": "인증 코드는 비워둘 수 없습니다."
+    }
+  }
+}

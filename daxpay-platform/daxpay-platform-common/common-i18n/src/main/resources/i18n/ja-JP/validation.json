@@ -1,0 +1,57 @@
+{
+  "field": {
+    "channel": {
+      "notBlank": "チャンネルコードを空白にすることはできません"
+    },
+    "bizOrderNo": {
+      "notBlank": "業務注文番号は空白であってはなりません"
+    },
+    "outTradeNo": {
+      "notBlank": "取引番号を空白にすることはできません"
+    },
+    "outRequestNo": {
+      "notBlank": "返金リクエスト番号を空白にすることはできません"
+    },
+    "bizRefundOrderNo": {
+      "notBlank": "ビジネス返金番号は空白であってはなりません"
+    },
+    "amount": {
+      "notNull": "金額はnullであってはなりません",
+      "positive": "金額は正の値である必要があります"
+    },
+    "subject": {
+      "notBlank": "注文の件名を空白にすることはできません"
+    },
+    "method": {
+      "notBlank": "支払い方法を空白にすることはできません",
+      "notNull": "支払い方法を null にすることはできません"
+    },
+    "description": {
+      "notBlank": "説明を空白にすることはできません"
+    },
+    "syncType": {
+      "notBlank": "同期タイプを空白にすることはできません"
+    },
+    "callbackType": {
+      "notBlank": "コールバックタイプを空白にすることはできません"
+    },
+    "config": {
+      "notNull": "チャネル構成は null であってはなりません"
+    },
+    "rawParams": {
+      "notNull": "コールバックの生パラメータは null であってはなりません"
+    },
+    "credential": {
+      "notNull": "チャネル資格情報は null であってはなりません"
+    },
+    "refundNo": {
+      "notBlank": "払い戻し番号を空白にすることはできません"
+    },
+    "title": {
+      "notBlank": "注文タイトルを空白にすることはできません"
+    },
+    "authCode": {
+      "notBlank": "認証コードを空白にすることはできません"
+    }
+  }
+}
