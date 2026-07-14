@@ -91,7 +91,6 @@ public class AlipayRefundService {
             resp.setFundChange(response.getFundChange());
             resp.setBuyerUserId(response.getBuyerUserId());
             resp.setBuyerOpenId(response.getBuyerOpenId());
-            resp.setBuyerLogonId(response.getBuyerLogonId());
 
             // fund_change=Y → 资金已变动, 退款即时成功
             if (FUND_CHANGE_Y.equals(response.getFundChange())) {

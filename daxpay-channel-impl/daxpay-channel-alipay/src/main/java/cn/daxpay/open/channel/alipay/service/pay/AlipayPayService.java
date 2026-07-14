@@ -242,7 +242,6 @@ public class AlipayPayService {
             // 用户标识
             resp.setBuyerUserId(alipayResp.getBuyerUserId());
             resp.setBuyerOpenId(alipayResp.getBuyerOpenId());
-            resp.setBuyerLogonId(alipayResp.getBuyerLogonId());
         }
         // 非支付处理中(10003)的响应码, 进行错误校验(成功码 10000 时 isSuccess 为 true 不会抛异常)
         if (!CODE_IN_PROCESS.equals(code)) {
