@@ -51,7 +51,11 @@
       "notBlank": "Order title must not be blank"
     },
     "authCode": {
-      "notBlank": "Auth code must not be blank"
+      "notBlank": "Payment code cannot be blank",
+      "size": "Payment code cannot exceed 128 characters"
+    },
+    "oauthCode": {
+      "notBlank": "Authorization code cannot be blank"
     }
   }
 }

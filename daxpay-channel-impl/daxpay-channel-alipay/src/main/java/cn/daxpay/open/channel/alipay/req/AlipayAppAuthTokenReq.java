@@ -12,7 +12,7 @@ import lombok.Data;
 public class AlipayAppAuthTokenReq {
 
     /// 应用授权码(支付宝回调回传的 app_auth_code)
-    @NotBlank(message = "{validation.field.authCode.notBlank}")
+    @NotBlank(message = "{validation.field.oauthCode.notBlank}")
     private String authCode;
 
     /// 通道调用凭证(服务商应用密钥/证书)

@@ -51,7 +51,11 @@
       "notBlank": "Tajuk pesanan tidak boleh kosong"
     },
     "authCode": {
-      "notBlank": "Kod pengesahan tidak boleh kosong"
+      "notBlank": "Kod pembayaran tidak boleh kosong",
+      "size": "Kod pembayaran tidak boleh melebihi 128 aksara"
+    },
+    "oauthCode": {
+      "notBlank": "Kod kebenaran tidak boleh kosong"
     }
   }
 }

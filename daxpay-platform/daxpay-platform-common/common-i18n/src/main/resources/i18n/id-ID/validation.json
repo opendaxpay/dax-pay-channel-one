@@ -51,7 +51,11 @@
       "notBlank": "Judul pesanan wajib diisi"
     },
     "authCode": {
-      "notBlank": "Kode autentikasi wajib diisi"
+      "notBlank": "Kode pembayaran tidak boleh kosong",
+      "size": "Kode pembayaran tidak boleh melebihi 128 karakter"
+    },
+    "oauthCode": {
+      "notBlank": "Kode otorisasi tidak boleh kosong"
     }
   }
 }

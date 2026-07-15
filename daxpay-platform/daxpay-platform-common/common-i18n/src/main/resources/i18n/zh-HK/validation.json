@@ -51,7 +51,11 @@
       "notBlank": "訂單標題不能為空"
     },
     "authCode": {
-      "notBlank": "授權碼不能為空"
+      "notBlank": "付款碼不可為空",
+      "size": "付款碼不可超過128位"
+    },
+    "oauthCode": {
+      "notBlank": "授權碼不可為空"
     }
   }
 }
