@@ -108,7 +108,7 @@ public class WechatDirectPayService {
     private void payJsapi(WxPayService service, WechatPayReq req, WechatPayResp resp) throws WxPayException {
         if (StrUtil.isBlank(req.getOpenId())) {
             // 微信: JSAPI/小程序支付必填 openid
-            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS,
+            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
                     "channel.error.wechatOpenIdRequired");
         }
         WxPayUnifiedOrderV3Request request = buildBaseRequest(req);
@@ -135,7 +135,7 @@ public class WechatDirectPayService {
     private void payH5(WxPayService service, WechatPayReq req, WechatPayResp resp) throws WxPayException {
         if (StrUtil.isBlank(req.getPayerClientIp()) || StrUtil.isBlank(req.getWapUrl())) {
             // 微信: H5 支付必填 payerClientIp 与 wapUrl
-            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS,
+            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
                     "channel.error.wechatH5SceneRequired");
         }
         WxPayUnifiedOrderV3Request request = buildBaseRequest(req);
@@ -160,7 +160,7 @@ public class WechatDirectPayService {
     private void payCodepay(WxPayService service, WechatPayReq req, WechatPayResp resp) throws WxPayException {
         if (StrUtil.isBlank(req.getAuthCode())) {
             // 微信: 付款码支付必填 authCode
-            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS,
+            throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
                     "channel.error.wechatAuthCodeRequired");
         }
 
