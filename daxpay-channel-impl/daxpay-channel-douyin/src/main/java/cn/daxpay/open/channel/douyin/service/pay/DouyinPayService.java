@@ -5,10 +5,12 @@ import cn.daxpay.open.channel.douyin.enums.DouyinPayBodyType;
 import cn.daxpay.open.channel.douyin.enums.DouyinPayMethod;
 import cn.daxpay.open.channel.douyin.req.DouyinPayReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinPayResp;
+import cn.daxpay.open.channel.douyin.utils.DouyinJsapiSigner;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
-import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.douyinpay.api.payments.app.models.ApiPrepayRequest;
 import com.douyinpay.api.payments.app.models.Amount;
 import com.douyinpay.api.payments.app.models.ApiSceneInfo;
@@ -18,9 +20,12 @@ import com.douyinpay.exception.DouyinpayException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /// # 抖音通道支付下单服务
 ///
@@ -92,7 +97,12 @@ public class DouyinPayService {
         }
     }
 
-    /// JSAPI 支付(返回 prepayId, 需 openId)
+    /// JSAPI 支付(返回 sdk_info JSON, 需 openId)
+    ///
+    /// 抖音 H5 JSAPI 调起要求前端 `ttcjpay.dypay` 必须传 sdk_info JSON:
+    /// `{appId, timeStamp, nonceStr, package, signType, paySign}`, 其中 paySign 由商户私钥
+    /// 对 4 行签名串(appId / timeStamp / nonceStr / package)做 SHA256withRSA + Base64 得到。
+    /// 与微信 WxJava SDK 内置二次签名不同, 抖音 SDK 只返回 prepayId, 必须在此自行组装。
     private DouyinPayResp jsapiPay(DouyinPayReq req) {
         if (StrUtil.isBlank(req.getOpenId())) {
             throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
@@ -125,10 +135,25 @@ public class DouyinPayService {
                 throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                         "channel.error.douyinPayFailed", "未返回prepay_id");
             }
+            // 组装前端 ttcjpay.dypay 所需 sdk_info JSON
+            String appId = req.getCredential().getDouyinAppId();
+            String timeStamp = String.valueOf(Instant.now().getEpochSecond());
+            String nonceStr = RandomUtil.randomString(32);
+            String packageValue = "prepay_id=" + response.getPrepayId();
+            String paySign = DouyinJsapiSigner.signPayInfo(
+                    appId, timeStamp, nonceStr, response.getPrepayId(),
+                    req.getCredential().getMerchantPrivateKey());
+            Map<String, String> sdkInfo = new LinkedHashMap<>();
+            sdkInfo.put("appId", appId);
+            sdkInfo.put("timeStamp", timeStamp);
+            sdkInfo.put("nonceStr", nonceStr);
+            sdkInfo.put("package", packageValue);
+            sdkInfo.put("signType", "DouyinPay-RSA");
+            sdkInfo.put("paySign", paySign);
             return new DouyinPayResp()
                     .setOutTradeNo(req.getOutTradeNo())
-                    .setPayBody(response.getPrepayId())
-                    .setPayBodyType(DouyinPayBodyType.IDENTIFIER);
+                    .setPayBody(JSONUtil.toJsonStr(sdkInfo))
+                    .setPayBodyType(DouyinPayBodyType.JSAPI);
         } catch (DouyinpayException e) {
             log.error("抖音JSAPI支付失败", e);
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),

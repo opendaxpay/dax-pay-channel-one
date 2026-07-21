@@ -13,7 +13,9 @@ public enum DouyinPayBodyType {
     QR_CODE("QR_CODE"),
     /// 跳转链接(H5 支付, 前端 location.href)
     LINK("LINK"),
-    /// 标识符(JSAPI/APP 支付返回的 prepayId, 由客户端 SDK 唤起)
+    /// JSAPI 调起参数(JSON, 前端通过 ttcjpay.dypay 等通道桥唤起, 含 appId/timeStamp/nonceStr/package/signType/paySign)
+    JSAPI("JSAPI"),
+    /// 标识符(APP 支付返回的 prepayId, 由客户端 SDK 唤起)
     IDENTIFIER("IDENTIFIER");
 
     private final String code;
