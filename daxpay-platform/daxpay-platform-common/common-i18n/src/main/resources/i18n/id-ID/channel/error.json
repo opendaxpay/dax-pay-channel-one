@@ -40,5 +40,15 @@
   "douyinPayFailed": "{0}",
   "douyinCloseFailed": "{0}",
   "douyinPayMethodNull": "Metode pembayaran Douyin tidak boleh nol",
-  "douyinJsapiNoOpenId": "openid diperlukan untuk pembayaran Douyin JSAPI"
+  "douyinJsapiNoOpenId": "openid diperlukan untuk pembayaran Douyin JSAPI",
+  "transportEncrypt": {
+    "appConfigMissing": "Konfigurasi aplikasi saluran kosong: {0}",
+    "configMissing": "Konfigurasi enkripsi transport saluran hilang: {0}",
+    "keyInvalid": "Kunci enkripsi transport saluran harus {0} karakter",
+    "encryptFailed": "Enkripsi transport saluran gagal",
+    "ciphertextInvalid": "Panjang ciphertext transport saluran tidak valid",
+    "decryptFailed": "Dekripsi transport saluran gagal",
+    "responseHeaderMissing": "Respons saluran tidak memiliki header enkripsi transport {0}",
+    "requestHeaderMissing": "Enkripsi transport saluran: permintaan tanpa header enkripsi"
+  }
 }

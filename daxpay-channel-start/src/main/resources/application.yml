@@ -7,6 +7,13 @@ spring:
   profiles:
     # 默认激活开发环境, 生产用 -Dspring.profiles.active=prod 或 SPRING_PROFILES_ACTIVE=prod 覆盖
     active: dev
+
+# 通道传输 AES 加密（强制常开；key 与主应用 daxpay.channel.one.transport-encrypt.key 一致）
+daxpay:
+  channel:
+    transport-encrypt:
+      key: ${CHANNEL_TRANSPORT_KEY:0123456789abcdef0123456789abcdef}
+
 # 监控端点与链路追踪(actuator 配置必须放在顶层, 不能放在 spring: 下)
 management:
   # 链路追踪(仅日志关联, 不导出到后端; 采样率 dev/prod 共享 1.0 全采样,

@@ -40,5 +40,15 @@
   "douyinPayFailed": "{0}",
   "douyinCloseFailed": "{0}",
   "douyinPayMethodNull": "抖音支付方式不能为空",
-  "douyinJsapiNoOpenId": "抖音JSAPI支付必填openId"
+  "douyinJsapiNoOpenId": "抖音JSAPI支付必填openId",
+  "transportEncrypt": {
+    "appConfigMissing": "通道子应用配置不能为空: {0}",
+    "configMissing": "缺少通道传输加密配置: {0}",
+    "keyInvalid": "通道传输加密密钥长度须为 {0} 个字符",
+    "encryptFailed": "通道传输加密失败",
+    "ciphertextInvalid": "通道传输密文长度非法",
+    "decryptFailed": "通道传输解密失败",
+    "responseHeaderMissing": "通道子应用响应未携带传输加密头 {0}",
+    "requestHeaderMissing": "通道传输加密：请求未携带加密头"
+  }
 }

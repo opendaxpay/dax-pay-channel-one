@@ -43,6 +43,12 @@
             <artifactId>common-i18n</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- 通用工具（含通道传输 AES 加密器） -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

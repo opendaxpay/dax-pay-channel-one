@@ -40,5 +40,15 @@
   "douyinPayFailed": "{0}",
   "douyinCloseFailed": "{0}",
   "douyinPayMethodNull": "Douyin payment method must not be null",
-  "douyinJsapiNoOpenId": "openid is required for Douyin JSAPI payment"
+  "douyinJsapiNoOpenId": "openid is required for Douyin JSAPI payment",
+  "transportEncrypt": {
+    "appConfigMissing": "Channel app config is missing: {0}",
+    "configMissing": "Channel transport encrypt config is missing: {0}",
+    "keyInvalid": "Channel transport encrypt key must be {0} characters",
+    "encryptFailed": "Channel transport encrypt failed",
+    "ciphertextInvalid": "Channel transport ciphertext length is invalid",
+    "decryptFailed": "Channel transport decrypt failed",
+    "responseHeaderMissing": "Channel response missing transport encrypt header {0}",
+    "requestHeaderMissing": "Channel transport encrypt: request missing encrypt header"
+  }
 }

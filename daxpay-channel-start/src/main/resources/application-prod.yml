@@ -4,6 +4,11 @@
 # 部署形态: Docker Compose / 单机容器
 # 启动方式: docker run -e SPRING_PROFILES_ACTIVE=prod daxpay-channel-one
 # ====================================================================
+# 通道传输 AES 密钥：生产必须由环境变量注入，无默认值（与主应用 CHANNEL_ONE_TRANSPORT_KEY 同值）
+daxpay:
+  channel:
+    transport-encrypt:
+      key: ${CHANNEL_TRANSPORT_KEY}
 server:
   # 优雅停机(配合 docker stop 的 10s 宽限期)
   shutdown: graceful
