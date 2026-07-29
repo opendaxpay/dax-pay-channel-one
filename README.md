@@ -49,11 +49,12 @@ daxpay-channel-one (根)              daxpay (根)
 ## 构建
 
 ```bash
-mvnd clean install "-Dmaven.test.skip=true" -T 4
+mvnd clean compile "-Dmaven.test.skip=true" -T 4
 ```
 
 > 注意: Spring Boot 4.1 起 `-DskipTests` 不再跳过测试的 AOT 处理，需改用 `-Dmaven.test.skip=true`；
 > PowerShell 下含 `=` 的 `-D` 参数必须加引号，否则会被拆分。
+> 日常编译验证只用 `compile`，禁止 `install`。
 
 ## 运行
 
@@ -91,3 +92,7 @@ cd daxpay-channel-start && mvnd spring-boot:run -Dspring-boot.run.profiles=dev
 2. 通用 DTO/接口已在 `daxpay-platform-core` 定义(`cn.daxpay.open.platform.core.*`); 通道专属配置放新模块自身
 3. 在新模块中提供通道支付服务类(如 `XxxPayService`), 用 `@Service("xxx")` 注册 Bean 名称
 4. 在 `daxpay-channel-start` 中引入新模块依赖
+
+## License
+
+本项目基于 [GNU LGPL v3.0 或更高版本](./LICENSE) 协议开源，同时受[《用户授权使用协议》](./USER-AGREEMENT.txt)约束。在使用前请阅读上述协议，如果不同意请勿进行使用。
