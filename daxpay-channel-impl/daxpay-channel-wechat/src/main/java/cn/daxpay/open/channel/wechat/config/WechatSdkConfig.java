@@ -21,14 +21,37 @@ public class WechatSdkConfig {
     /// 必填字段: wxMchId / wxAppId / apiKeyV3 / privateKey / certSerialNo。
     /// 支付公钥模式 publicKeyId 非空时自动启用。
     public static WxPayService buildService(WechatSdkCredential credential) {
-        // 必填校验
+        // 必填校验(下单签名路径, appId 必填)
         if (StrUtil.hasBlank(credential.getWxMchId(), credential.getWxAppId(),
                 credential.getApiKeyV3(), credential.getPrivateKey(), credential.getCertSerialNo())) {
             // 微信: 通道配置无效
             throw new ChannelServiceException(ChannelErrorCode.INVALID_CONFIG,
                     "channel.error.wechatInvalidConfig");
         }
+        WxPayService service = new WxPayServiceImpl();
+        service.setConfig(toConfig(credential));
+        return service;
+    }
 
+    /// 回调验签专用构建: 不要求 appId
+    ///
+    /// 回调验签+解密仅需 apiKeyV3 与证书(平台证书模式还需 mchId 做证书自动下载鉴权),
+    /// 不依赖 wxAppId; appId 为空时 WxJava 解析回调不受影响。
+    public static WxPayService buildCallbackService(WechatSdkCredential credential) {
+        // 回调必填: apiKeyV3 + 证书 + mchId(平台证书模式证书下载鉴权)
+        if (StrUtil.hasBlank(credential.getWxMchId(), credential.getApiKeyV3(),
+                credential.getPrivateKey(), credential.getCertSerialNo())) {
+            // 微信: 通道配置无效
+            throw new ChannelServiceException(ChannelErrorCode.INVALID_CONFIG,
+                    "channel.error.wechatInvalidConfig");
+        }
+        WxPayService service = new WxPayServiceImpl();
+        service.setConfig(toConfig(credential));
+        return service;
+    }
+
+    /// 凭证 → WxPayConfig(appId 为空时仅影响下单签名, 不影响回调验签)
+    private static WxPayConfig toConfig(WechatSdkCredential credential) {
         WxPayConfig config = new WxPayConfig();
         config.setAppId(credential.getWxAppId());
         config.setMchId(credential.getWxMchId());
@@ -45,17 +68,12 @@ public class WechatSdkConfig {
         }
 
         // 服务商模式: 将特约商户信息(sub_mchid/sub_appid)注入 WxPayConfig
-        // 注意: partner 路径切换由 isv service 显式调 createPartnerOrderV3 等方法决定, 非此配置自动完成
         if (StrUtil.isNotBlank(credential.getSubMchId())) {
             config.setSubMchId(credential.getSubMchId());
-            // subAppId 可选(特约商户未配置自己的应用时留空, SDK 仅用 sp_appid + sub_mchid 走服务商模式)
             if (StrUtil.isNotBlank(credential.getSubAppId())) {
                 config.setSubAppId(credential.getSubAppId());
             }
         }
-
-        WxPayService service = new WxPayServiceImpl();
-        service.setConfig(config);
-        return service;
+        return config;
     }
 }

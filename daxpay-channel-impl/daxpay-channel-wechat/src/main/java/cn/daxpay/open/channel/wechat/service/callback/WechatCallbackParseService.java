@@ -22,7 +22,8 @@ public class WechatCallbackParseService {
     /// 解析支付回调(验签 + 解密)
     public WechatCallbackParseResp parsePay(WechatCallbackParseReq req) {
         try {
-            WxPayService service = WechatSdkConfig.buildService(req.getCredential());
+            // 回调验签不依赖 appId, 用宽松构建(无需通道应用)
+            WxPayService service = WechatSdkConfig.buildCallbackService(req.getCredential());
             SignatureHeader header = this.buildHeader(req);
             WxPayNotifyV3Result notifyResult = service.parseOrderNotifyV3Result(req.getBody(), header);
             // 解密后的业务数据在 getResult() 中
@@ -50,7 +51,8 @@ public class WechatCallbackParseService {
     /// 解析退款回调(验签 + 解密)
     public WechatCallbackParseResp parseRefund(WechatCallbackParseReq req) {
         try {
-            WxPayService service = WechatSdkConfig.buildService(req.getCredential());
+            // 回调验签不依赖 appId, 用宽松构建(无需通道应用)
+            WxPayService service = WechatSdkConfig.buildCallbackService(req.getCredential());
             SignatureHeader header = this.buildHeader(req);
             WxPayRefundNotifyV3Result notifyResult = service.parseRefundNotifyV3Result(req.getBody(), header);
             // 解密后的业务数据在 getResult() 中
