@@ -18,7 +18,9 @@
 | `daxpay-platform-core` | 通用契约 — DTO、枚举、异常、结果封装、通道服务接口 | `daxpay-platform-core` |
 | `daxpay-platform-common`(pom) | 通用技术设施聚合 | `daxpay-platform-common` |
 | ├─ `common-i18n` | JSON 消息源 + 工具类 | `common-i18n` |
-| └─ `common-json` | Jackson 序列化全局配置 | `common-json` |
+| ├─ `common-json` | Jackson 序列化全局配置 | `common-json` |
+| └─ `common-util` | 金额换算等工具(PayUtil) | `common-util` |
+| `daxpay-platform-service` └ `service-system` | web 组装层 — 全局异常处理(ChannelExceptionHandler) | `service-system` |
 
 ## 与主项目的结构对照
 
@@ -28,14 +30,14 @@
 daxpay-channel-one (根)              daxpay (根)
 ├── daxpay-platform/  ←基础层        ├── daxpay-platform/   ←基础层
 │   ├── platform-core  (通用契约)    │   ├── platform-core
-│   └── platform-common(技术设施)    │   ├── platform-common
-├── daxpay-channel-impl (通道实现)   │   ├── platform-capability
-└── daxpay-channel-start            │   └── platform-service
-                                     ├── daxpay-payment / daxpay-channel (业务)
+│   ├── platform-common(技术设施)    │   ├── platform-common
+│   └── platform-service(system)     │   ├── platform-capability
+├── daxpay-channel-impl (通道实现)   │   └── platform-service
+└── daxpay-channel-start             ├── daxpay-payment / daxpay-channel (业务)
                                      └── daxpay-start
 ```
 
-> 本子应用是主项目结构的轻量子集: platform 仅保留 core + common(i18n/json), 不要 capability/service。
+> 本子应用是主项目结构的轻量子集: platform 保留 core + common(i18n/json/util) + service(system), 不要 capability。
 > 通用契约(DTO/接口/异常)放入 `daxpay-platform-core`, 便于后续 channel-2/3/4 复用。
 > 两边独立 git；产品版本与主应用对齐为 4.0.0-beta1，无 maven 依赖，仅结构对标。
 
@@ -88,10 +90,12 @@ cd daxpay-channel-start && mvnd spring-boot:run -Dspring-boot.run.profiles=dev
 
 ## 接入新通道
 
-1. 在 `daxpay-channel-impl` 下新建 `daxpay-channel-xxx` 子模块
-2. 通用 DTO/接口已在 `daxpay-platform-core` 定义(`cn.daxpay.open.platform.core.*`); 通道专属配置放新模块自身
-3. 在新模块中提供通道支付服务类(如 `XxxPayService`), 用 `@Service("xxx")` 注册 Bean 名称
-4. 在 `daxpay-channel-start` 中引入新模块依赖
+1. 在 `daxpay-channel-impl` 下新建 `daxpay-channel-xxx` 子模块, 并在 `daxpay-channel-impl/pom.xml` 的 `<modules>` 中登记
+2. 通用契约(DaxResult/异常/错误码)已在 `daxpay-platform-core` 定义(`cn.daxpay.open.platform.core.*`); 通道专属配置/DTO 放新模块自身
+3. 在新模块中提供通道服务类与 `@RestController`(端点前缀 `/channel/xxx`), 用 `XxxChannelAutoConfig`(`@Configuration` + `@ComponentScan`) 装配
+4. 在 `daxpay-channel-start/pom.xml` 中引入新模块依赖
+5. 通道专属 i18n 键追加到 `common-i18n` 的 `channel/error.json`(zh-CN + en-US 同步)
+6. 主项目 `dax-pay-open` 侧:按 `DaxpayChannelProperties` 路由策略将该通道分配到子应用 `one`
 
 ## License
 
