@@ -6,28 +6,30 @@
 
     <parent>
         <groupId>cn.daxpay.open</groupId>
-        <artifactId>daxpay-channel-one</artifactId>
+        <artifactId>daxpay-channel-impl</artifactId>
         <version>4.0.0-beta1</version>
     </parent>
 
-    <artifactId>daxpay-channel-impl</artifactId>
-    <packaging>pom</packaging>
-    <description>通道实现聚合模块</description>
-
-    <modules>
-        <module>daxpay-channel-alipay</module>
-        <module>daxpay-channel-wechat</module>
-        <module>daxpay-channel-douyin</module>
-        <module>daxpay-channel-ums</module>
-        <module>daxpay-channel-union</module>
-    </modules>
+    <artifactId>daxpay-channel-union</artifactId>
+    <packaging>jar</packaging>
+    <description>云闪付(直连银联 ACP)通道适配模块</description>
 
     <dependencies>
-        <!-- common-util: PayUtil 等通用工具(分↔元换算), 供所有通道子模块共享 -->
         <dependency>
             <groupId>cn.daxpay.open</groupId>
-            <artifactId>common-util</artifactId>
+            <artifactId>daxpay-platform-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <!-- common-json: ObjectMapper(Jackson 3, 解析银联响应) -->
+        <dependency>
+            <groupId>cn.daxpay.open</groupId>
+            <artifactId>common-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -35,4 +37,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

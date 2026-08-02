@@ -31,6 +31,10 @@
   "alipayClientCreateFailed": "Gagal membuat Klien Alipay: {0}",
   "alipayAppAuthTokenFailed": "Gagal menukar token autentikasi aplikasi Alipay: {0}",
   "umsRequestFailed": "{0}",
+  "unionRequestFailed": "{0}",
+  "unionSignFailed": "UnionPay sign failed: {0}",
+  "unionCertLoadFailed": "UnionPay cert load failed: {0}",
+
   "lakalaSyncFailed": "Permintaan Lakala gagal: {0}",
   "lakalaRefundFailed": "Permintaan Lakala gagal: {0}",
   "lakalaPayFailed": "Permintaan Lakala gagal: {0}",

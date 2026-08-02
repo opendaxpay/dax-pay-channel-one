@@ -31,6 +31,10 @@
   "alipayClientCreateFailed": "AlipayClient 생성 실패: {0}",
   "alipayAppAuthTokenFailed": "Alipay 앱 인증 토큰 교환 실패: {0}",
   "umsRequestFailed": "{0}",
+  "unionRequestFailed": "{0}",
+  "unionSignFailed": "유니온페이 서명 실패: {0}",
+  "unionCertLoadFailed": "유니온페이 인증서 로드 실패: {0}",
+
   "lakalaSyncFailed": "Lakala 요청 실패: {0}",
   "lakalaRefundFailed": "Lakala 요청 실패: {0}",
   "lakalaPayFailed": "Lakala 요청 실패: {0}",
