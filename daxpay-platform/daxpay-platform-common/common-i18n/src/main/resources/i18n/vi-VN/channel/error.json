@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "UnionPay sign failed: {0}",
   "unionCertLoadFailed": "UnionPay cert load failed: {0}",
-
   "lakalaSyncFailed": "Yêu cầu Lakala không thành công: {0}",
   "lakalaRefundFailed": "Yêu cầu Lakala không thành công: {0}",
   "lakalaPayFailed": "Yêu cầu Lakala không thành công: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "Giải mã truyền tải kênh thất bại",
     "responseHeaderMissing": "Phản hồi kênh thiếu header mã hóa truyền tải {0}",
     "requestHeaderMissing": "Mã hóa truyền tải kênh: yêu cầu thiếu header mã hóa"
-  }
+  },
+  "resultUnknown": "Kết quả xử lý kênh không xác định, đang xác nhận trạng thái cuối cùng",
+  "wechatPayResultUnknown": "Kết quả thanh toán WeChat không xác định (đơn hàng có thể đã thanh toán/mã ủy quyền đã được sử dụng), đang xác nhận trạng thái cuối cùng: {0}",
+  "alipayPayResultUnknown": "Kết quả thanh toán Alipay không xác định (đơn hàng có thể đã thanh toán/mã ủy quyền đã được sử dụng), đang xác nhận trạng thái cuối cùng: {0}"
 }

@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "雲閃付署名失敗: {0}",
   "unionCertLoadFailed": "雲閃付証明書読み込み失敗: {0}",
-
   "lakalaSyncFailed": "Lakala リクエストが失敗しました: {0}",
   "lakalaRefundFailed": "Lakala リクエストが失敗しました: {0}",
   "lakalaPayFailed": "Lakala リクエストが失敗しました: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "チャネル転送の復号に失敗しました",
     "responseHeaderMissing": "チャネル応答に転送暗号化ヘッダー {0} がありません",
     "requestHeaderMissing": "チャネル転送暗号化: リクエストに暗号化ヘッダーがありません"
-  }
+  },
+  "resultUnknown": "チャネル処理結果が不明です。最終状態を確認中です",
+  "wechatPayResultUnknown": "微信支付結果が不明です（注文が支払済み/支払コードが使用済みの可能性）。最終状態を確認中です: {0}",
+  "alipayPayResultUnknown": "支付宝支付結果が不明です（注文が支払済み/支払コードが使用済みの可能性）。最終状態を確認中です: {0}"
 }

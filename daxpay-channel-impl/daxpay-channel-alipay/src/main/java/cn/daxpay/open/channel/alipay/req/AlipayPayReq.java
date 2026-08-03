@@ -42,6 +42,12 @@ public class AlipayPayReq {
     /// 异步通知地址(由子应用透传给支付宝)
     private String notifyUrl;
 
+    /// 同步跳转地址(仅 PC/WAP 网页支付生效)
+    /// 支付完成后用户浏览器被带回此地址, 作为"用户回来了"的触发信号;
+    /// 不可信(支付中/未完成都可能触发), 真实状态以异步通知/查单为准。
+    /// 通常由主应用拼为平台 H5 结果页 {paymentGatewayBaseUrl}/pay-result/{tradeNo}
+    private String returnUrl;
+
     /// 付款码(BARCODE 付款码支付必填, 用户出示的被扫码)
     private String authCode;
 

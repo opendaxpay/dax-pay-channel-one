@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "UnionPay sign failed: {0}",
   "unionCertLoadFailed": "UnionPay cert load failed: {0}",
-
   "lakalaSyncFailed": "คำขอ Lakala ล้มเหลว: {0}",
   "lakalaRefundFailed": "คำขอ Lakala ล้มเหลว: {0}",
   "lakalaPayFailed": "คำขอ Lakala ล้มเหลว: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "การถอดรหัสการส่งช่องทางล้มเหลว",
     "responseHeaderMissing": "การตอบกลับช่องทางไม่มีส่วนหัวเข้ารหัสการส่ง {0}",
     "requestHeaderMissing": "การเข้ารหัสการส่งช่องทาง: คำขอไม่มีส่วนหัวเข้ารหัส"
-  }
+  },
+  "resultUnknown": "ไม่ทราบผลการประมวลผลช่องทาง กำลังยืนยันสถานะสุดท้าย",
+  "wechatPayResultUnknown": "ไม่ทราบผลการชำระเงิน WeChat (คำสั่งซื้ออาจชำระแล้ว/รหัสผู้ใช้ถูกใช้แล้ว) กำลังยืนยันสถานะสุดท้าย: {0}",
+  "alipayPayResultUnknown": "ไม่ทราบผลการชำระเงิน Alipay (คำสั่งซื้ออาจชำระแล้ว/รหัสผู้ใช้ถูกใช้แล้ว) กำลังยืนยันสถานะสุดท้าย: {0}"
 }

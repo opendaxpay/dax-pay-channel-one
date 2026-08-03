@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "UnionPay sign failed: {0}",
   "unionCertLoadFailed": "UnionPay cert load failed: {0}",
-
   "lakalaSyncFailed": "Permintaan Lakala gagal: {0}",
   "lakalaRefundFailed": "Permintaan Lakala gagal: {0}",
   "lakalaPayFailed": "Permintaan Lakala gagal: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "Dekripsi transport saluran gagal",
     "responseHeaderMissing": "Respons saluran tidak memiliki header enkripsi transport {0}",
     "requestHeaderMissing": "Enkripsi transport saluran: permintaan tanpa header enkripsi"
-  }
+  },
+  "resultUnknown": "Hasil pemrosesan kanal tidak diketahui, sedang mengonfirmasi status akhir",
+  "wechatPayResultUnknown": "Hasil pembayaran WeChat tidak diketahui (pesanan mungkin sudah dibayar/kode otorisasi sudah digunakan), sedang mengonfirmasi status akhir: {0}",
+  "alipayPayResultUnknown": "Hasil pembayaran Alipay tidak diketahui (pesanan mungkin sudah dibayar/kode otorisasi sudah digunakan), sedang mengonfirmasi status akhir: {0}"
 }

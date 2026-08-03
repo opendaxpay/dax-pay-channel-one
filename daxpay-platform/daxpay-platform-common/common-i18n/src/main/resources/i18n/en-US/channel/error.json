@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "UnionPay sign failed: {0}",
   "unionCertLoadFailed": "UnionPay cert load failed: {0}",
-
   "lakalaSyncFailed": "Lakala request failed: {0}",
   "lakalaRefundFailed": "Lakala request failed: {0}",
   "lakalaPayFailed": "Lakala request failed: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "Channel transport decrypt failed",
     "responseHeaderMissing": "Channel response missing transport encrypt header {0}",
     "requestHeaderMissing": "Channel transport encrypt: request missing encrypt header"
-  }
+  },
+  "resultUnknown": "Channel result unknown, confirming final status",
+  "wechatPayResultUnknown": "WeChat payment result unknown (order may be paid / auth code already used), confirming final status: {0}",
+  "alipayPayResultUnknown": "Alipay payment result unknown (order may be paid / auth code already used), confirming final status: {0}"
 }

@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "云闪付签名失败: {0}",
   "unionCertLoadFailed": "云闪付证书加载失败: {0}",
-
   "lakalaSyncFailed": "拉卡拉请求失败: {0}",
   "lakalaRefundFailed": "拉卡拉请求失败: {0}",
   "lakalaPayFailed": "拉卡拉请求失败: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "通道传输解密失败",
     "responseHeaderMissing": "通道子应用响应未携带传输加密头 {0}",
     "requestHeaderMissing": "通道传输加密：请求未携带加密头"
-  }
+  },
+  "resultUnknown": "通道处理结果未知，正在确认最终状态",
+  "wechatPayResultUnknown": "微信支付结果未知（订单可能已支付/付款码已被使用），正在确认最终状态: {0}",
+  "alipayPayResultUnknown": "支付宝支付结果未知（订单可能已支付/付款码已被使用），正在确认最终状态: {0}"
 }

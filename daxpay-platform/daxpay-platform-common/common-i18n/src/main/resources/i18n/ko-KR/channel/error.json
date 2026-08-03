@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "유니온페이 서명 실패: {0}",
   "unionCertLoadFailed": "유니온페이 인증서 로드 실패: {0}",
-
   "lakalaSyncFailed": "Lakala 요청 실패: {0}",
   "lakalaRefundFailed": "Lakala 요청 실패: {0}",
   "lakalaPayFailed": "Lakala 요청 실패: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "채널 전송 복호화에 실패했습니다",
     "responseHeaderMissing": "채널 응답에 전송 암호화 헤더 {0}가 없습니다",
     "requestHeaderMissing": "채널 전송 암호화: 요청에 암호화 헤더가 없습니다"
-  }
+  },
+  "resultUnknown": "채널 처리 결과를 알 수 없습니다. 최종 상태를 확인 중입니다",
+  "wechatPayResultUnknown": "위챗 결제 결과를 알 수 없습니다(주문 결제 완료/결제 코드 사용됨 가능성). 최종 상태를 확인 중입니다: {0}",
+  "alipayPayResultUnknown": "알리페이 결제 결과를 알 수 없습니다(주문 결제 완료/결제 코드 사용됨 가능성). 최종 상태를 확인 중입니다: {0}"
 }

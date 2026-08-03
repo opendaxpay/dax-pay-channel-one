@@ -84,6 +84,12 @@ public class WechatIsvPayService {
         } catch (WxPayException e) {
             log.error("微信服务商支付调用失败: outTradeNo={}, errCode={}, errMsg={}",
                     req.getOutTradeNo(), e.getErrCode(), e.getErrCodeDes());
+            // 订单已支付 / 付款码已被使用: 实际可能是之前请求已成功(结果未知), 归入结果未知由主应用查单确认
+            String errCode = e.getErrCode();
+            if (Objects.equals(errCode, "ORDERPAID") || Objects.equals(errCode, "AUTH_CODE_USED")) {
+                throw new ChannelServiceException(ChannelErrorCode.RESULT_UNKNOWN.getCode(),
+                        "channel.error.wechatPayResultUnknown", e.getMessage());
+            }
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                     "channel.error.wechatPayCallFailed", e.getMessage());
         } catch (Exception e) {
@@ -199,10 +205,10 @@ public class WechatIsvPayService {
         try {
             responseBody = service.postV3(url, GSON.toJson(body));
         } catch (WxPayException e) {
-            // 用户支付中 / 系统错误: 微信要求商户轮询查询确认最终状态
+            // 用户支付中 / 系统错误: 微信要求商户轮询查询确认最终状态, 归入结果未知由主应用同步确认
             if (Objects.equals(e.getErrCode(), WxPayConstants.WxpayTradeStatus.USER_PAYING)
                     || Objects.equals(e.getResultCode(), WxPayErrorCode.UnifiedOrder.SYSTEMERROR)) {
-                throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                throw new ChannelServiceException(ChannelErrorCode.RESULT_UNKNOWN.getCode(),
                         "channel.error.wechatCodepayUserPaying", e.getMessage());
             }
             throw e;

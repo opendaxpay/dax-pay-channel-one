@@ -34,7 +34,6 @@
   "unionRequestFailed": "{0}",
   "unionSignFailed": "UnionPay sign failed: {0}",
   "unionCertLoadFailed": "UnionPay cert load failed: {0}",
-
   "lakalaSyncFailed": "Permintaan Lakala gagal: {0}",
   "lakalaRefundFailed": "Permintaan Lakala gagal: {0}",
   "lakalaPayFailed": "Permintaan Lakala gagal: {0}",
@@ -54,5 +53,8 @@
     "decryptFailed": "Penyahsulitan pengangkutan saluran gagal",
     "responseHeaderMissing": "Respons saluran tiada pengepala penyulitan pengangkutan {0}",
     "requestHeaderMissing": "Penyulitan pengangkutan saluran: permintaan tiada pengepala penyulitan"
-  }
+  },
+  "resultUnknown": "Keputusan pemprosesan saluran tidak diketahui, sedang mengesahkan status akhir",
+  "wechatPayResultUnknown": "Keputusan pembayaran WeChat tidak diketahui (pesanan mungkin telah dibayar/kod kebenaran telah digunakan), sedang mengesahkan status akhir: {0}",
+  "alipayPayResultUnknown": "Keputusan pembayaran Alipay tidak diketahui (pesanan mungkin telah dibayar/kod kebenaran telah digunakan), sedang mengesahkan status akhir: {0}"
 }

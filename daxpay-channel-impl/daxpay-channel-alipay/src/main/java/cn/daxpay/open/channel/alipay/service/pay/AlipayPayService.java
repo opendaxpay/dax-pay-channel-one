@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 
 /// # 支付宝通道支付服务
 ///
@@ -108,6 +109,10 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
+        // 同步跳转地址: 支付完成后浏览器带回此地址(平台 H5 结果页), 仅 WAP 网页支付生效
+        if (StrUtil.isNotBlank(req.getReturnUrl())) {
+            request.setReturnUrl(req.getReturnUrl());
+        }
         if (req.getExpireTime() != null) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
@@ -164,6 +169,10 @@ public class AlipayPayService {
         }
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
+        }
+        // 同步跳转地址: 支付完成后浏览器带回此地址(平台 H5 结果页), 仅 PC 网页支付生效
+        if (StrUtil.isNotBlank(req.getReturnUrl())) {
+            request.setReturnUrl(req.getReturnUrl());
         }
         if (req.getExpireTime() != null) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
@@ -295,11 +304,18 @@ public class AlipayPayService {
     }
 
     /// 校验支付宝响应是否成功, 失败则抛业务异常(保留 subCode/subMsg 错误信息)
+    ///
+    /// 交易已存在/付款码已使用(ACQ.TRADE_HAS_SUCCESS 等): 实际可能是之前请求已成功, 结果未知,
+    /// 抛 RESULT_UNKNOWN 由主应用保持处理中并查单确认, 避免误判 FAIL 资金悬挂。
     private void verifySuccess(AlipayResponse alipayResponse) {
         if (!alipayResponse.isSuccess()) {
             String errorMsg = StrUtil.blankToDefault(alipayResponse.getSubMsg(), alipayResponse.getMsg());
             log.error("支付宝支付失败: code={}, subCode={}, subMsg={}",
                     alipayResponse.getCode(), alipayResponse.getSubCode(), alipayResponse.getSubMsg());
+            if (Objects.equals(alipayResponse.getSubCode(), "ACQ.TRADE_HAS_SUCCESS")) {
+                throw new ChannelServiceException(ChannelErrorCode.RESULT_UNKNOWN.getCode(),
+                        "channel.error.alipayPayResultUnknown", errorMsg);
+            }
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                     "channel.error.alipayPayCallFailed", errorMsg);
         }

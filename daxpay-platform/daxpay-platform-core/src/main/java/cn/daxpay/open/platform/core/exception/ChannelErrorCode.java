@@ -26,7 +26,9 @@ public enum ChannelErrorCode {
     /// 系统内部错误
     SYSTEM_ERROR(10006, "channel.error.systemError"),
     /// 参数校验失败
-    VALIDATE_PARAMS(10007, "channel.error.validateParams");
+    VALIDATE_PARAMS(10007, "channel.error.validateParams"),
+    /// 结果未知(用户支付中/付款码已使用/订单已支付等, 需主应用查单确认最终状态)
+    RESULT_UNKNOWN(10009, "channel.error.resultUnknown");
 
     private final int code;
     private final String messageKey;
