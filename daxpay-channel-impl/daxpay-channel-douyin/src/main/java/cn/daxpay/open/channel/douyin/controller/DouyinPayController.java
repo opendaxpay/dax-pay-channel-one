@@ -6,18 +6,21 @@ import cn.daxpay.open.channel.douyin.req.DouyinPayReq;
 import cn.daxpay.open.channel.douyin.req.DouyinRefundReq;
 import cn.daxpay.open.channel.douyin.req.DouyinRefundSyncReq;
 import cn.daxpay.open.channel.douyin.req.DouyinSyncReq;
+import cn.daxpay.open.channel.douyin.req.DouyinTransferReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinCloseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinPayResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinRefundResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinRefundSyncResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinSyncResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
 import cn.daxpay.open.channel.douyin.service.callback.DouyinCallbackParseService;
 import cn.daxpay.open.channel.douyin.service.close.DouyinCloseService;
 import cn.daxpay.open.channel.douyin.service.pay.DouyinPayService;
 import cn.daxpay.open.channel.douyin.service.refund.DouyinRefundService;
 import cn.daxpay.open.channel.douyin.service.refund.DouyinRefundServiceSync;
 import cn.daxpay.open.channel.douyin.service.sync.DouyinSyncService;
+import cn.daxpay.open.channel.douyin.service.transfer.DouyinTransferService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +45,7 @@ public class DouyinPayController {
     private final DouyinRefundService douyinRefundService;
     private final DouyinSyncService douyinSyncService;
     private final DouyinRefundServiceSync douyinRefundServiceSync;
+    private final DouyinTransferService douyinTransferService;
     private final DouyinCallbackParseService douyinCallbackParseService;
 
     /// 支付下单
@@ -72,6 +76,18 @@ public class DouyinPayController {
     @PostMapping("/refund-sync")
     public DaxResult<DouyinRefundSyncResp> refundSync(@Valid @RequestBody DouyinRefundSyncReq req) {
         return DaxResult.ok(douyinRefundServiceSync.sync(req));
+    }
+
+    /// 转账(商家转账)
+    @PostMapping("/transfer")
+    public DaxResult<DouyinTransferResp> transfer(@Valid @RequestBody DouyinTransferReq req) {
+        return DaxResult.ok(douyinTransferService.transfer(req));
+    }
+
+    /// 转账同步(查询转账状态)
+    @PostMapping("/transfer-sync")
+    public DaxResult<DouyinTransferResp> transferSync(@Valid @RequestBody DouyinTransferReq req) {
+        return DaxResult.ok(douyinTransferService.sync(req));
     }
 
     /// 支付回调验签解析(主应用转发)

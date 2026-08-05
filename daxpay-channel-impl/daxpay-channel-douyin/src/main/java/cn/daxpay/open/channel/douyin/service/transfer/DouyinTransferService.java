@@ -1,0 +1,135 @@
+package cn.daxpay.open.channel.douyin.service.transfer;
+
+import cn.daxpay.open.channel.douyin.config.DouyinSdkConfig;
+import cn.daxpay.open.channel.douyin.req.DouyinTransferReq;
+import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
+import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
+import cn.daxpay.open.platform.core.exception.ChannelServiceException;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.douyinpay.api.DefaultDouyinpayClient;
+import com.douyinpay.api.DouyinpayClient;
+import com.douyinpay.api.DouyinpayRequest;
+import com.douyinpay.api.DouyinpayResponse;
+import com.douyinpay.component.crypto.CryptorFactory;
+import com.douyinpay.component.crypto.ICryptor;
+import com.douyinpay.component.http.HttpMethod;
+import com.douyinpay.exception.DouyinpayException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
+
+/// # 抖音通道转账服务
+///
+/// 商家转账原生 API(/v1/fund_trade/mch-transfer/transfer-bills)经 SDK 通用客户端调用。
+/// 金额单位: 分 → 元字符串; 收款人姓名经平台证书 RSA 加密上送。
+/// 状态映射见主应用 [cn.daxpay.open.channel.douyin.service.payment.transfer.DouyinTransferService]。
+@Slf4j
+@Service
+public class DouyinTransferService {
+
+    private static final String BASE_URL = "https://api.douyinpay.com";
+    private static final String TRANSFER_CREATE_PATH = "/v1/fund_trade/mch-transfer/transfer-bills";
+    private static final String TRANSFER_QUERY_BY_BILL_NO = "/v1/fund_trade/mch-transfer/transfer-bills/transfer-bill-no/%s";
+    private static final String TRANSFER_QUERY_BY_OUT_BILL_NO = "/v1/fund_trade/mch-transfer/transfer-bills/out-bill-no/%s";
+
+    /// 发起商家转账
+    @SuppressWarnings("unchecked")
+    public DouyinTransferResp transfer(DouyinTransferReq req) {
+        DouyinpayClient client = DouyinSdkConfig.buildClient(req.getCredential());
+        JSONObject body = new JSONObject();
+        body.set("appid", req.getCredential().getDouyinAppId());
+        body.set("out_bill_no", req.getOutBillNo());
+        body.set("transfer_scene_id", req.getScene());
+        body.set("openid", req.getOpenid());
+        body.set("transfer_amount", fenToYuan(req.getAmount()));
+        body.set("transfer_remark", StrUtil.sub(req.getRemark(), 0, 32));
+        body.set("notify_url", req.getNotifyUrl());
+        if (StrUtil.isNotBlank(req.getPerception())) {
+            body.set("user_recv_perception", StrUtil.sub(req.getPerception(), 0, 64));
+        }
+
+        // 收款人姓名: 金额>=2000元必传, 需平台证书 RSA 加密
+        Map<String, String> extraHeaders = null;
+        if (StrUtil.isNotBlank(req.getUserName())) {
+            String encrypted = encryptUserName(req.getUserName(), client);
+            body.set("user_name", encrypted);
+            X509Certificate platformCert = ((DefaultDouyinpayClient) client).getPlatformCertificate();
+            extraHeaders = new HashMap<>();
+            extraHeaders.put("Douyinpay-Serial", platformCert.getSerialNumber().toString());
+        }
+
+        var request = new DouyinpayRequest(HttpMethod.POST, BASE_URL + TRANSFER_CREATE_PATH,
+                JSONUtil.toJsonStr(body), extraHeaders, req.getCredential().getMerchantSerialNumber());
+        DouyinTransferResp resp = new DouyinTransferResp();
+        try {
+            DouyinpayResponse<Map> response = client.execute(request, Map.class);
+            response.validate();
+            Map<String, Object> data = response.getApiResponse();
+            if (data != null) {
+                resp.setTransferBillNo((String) data.get("transfer_bill_no"));
+                resp.setState((String) data.get("state"));
+            }
+        } catch (DouyinpayException e) {
+            log.error("抖音转账调用失败: outBillNo={}", req.getOutBillNo(), e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinTransferFailed", e.getMessage());
+        }
+        return resp;
+    }
+
+    /// 同步查询转账状态
+    @SuppressWarnings("unchecked")
+    public DouyinTransferResp sync(DouyinTransferReq req) {
+        DouyinpayClient client = DouyinSdkConfig.buildClient(req.getCredential());
+        DouyinTransferResp resp = new DouyinTransferResp();
+        String queryPath;
+        if (StrUtil.isNotBlank(req.getOutBillNo()) && !StrUtil.equals(req.getOutBillNo(), req.getTransferNo())) {
+            queryPath = String.format(TRANSFER_QUERY_BY_BILL_NO, req.getOutBillNo());
+        } else {
+            queryPath = String.format(TRANSFER_QUERY_BY_OUT_BILL_NO, req.getTransferNo());
+        }
+        var request = new DouyinpayRequest(HttpMethod.GET, BASE_URL + queryPath,
+                null, null, req.getCredential().getMerchantSerialNumber());
+        try {
+            DouyinpayResponse<Map> response = client.execute(request, Map.class);
+            response.validate();
+            Map<String, Object> data = response.getApiResponse();
+            if (data != null) {
+                resp.setTransferBillNo((String) data.get("transfer_bill_no"));
+                resp.setState((String) data.get("state"));
+                resp.setFailReason((String) data.get("fail_reason"));
+            }
+        } catch (DouyinpayException e) {
+            log.error("抖音转账查询失败: billNo={}", req.getOutBillNo(), e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinTransferQueryFailed", e.getMessage());
+        }
+        return resp;
+    }
+
+    /// 分 → 元字符串(抖音金额单位为元, 保留两位)
+    private String fenToYuan(Long amount) {
+        return BigDecimal.valueOf(amount).movePointLeft(2)
+                .setScale(2, RoundingMode.UNNECESSARY).toPlainString();
+    }
+
+    /// 平台证书 RSA 加密收款人姓名
+    private String encryptUserName(String userName, DouyinpayClient client) {
+        try {
+            X509Certificate platformCert = ((DefaultDouyinpayClient) client).getPlatformCertificate();
+            ICryptor cryptor = CryptorFactory.getByName("RSA");
+            return cryptor.encrypt(userName, platformCert);
+        } catch (Exception e) {
+            log.error("抖音转账收款人姓名加密失败", e);
+            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                    "channel.error.douyinTransferEncryptFailed", e.getMessage());
+        }
+    }
+}

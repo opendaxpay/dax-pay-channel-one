@@ -6,18 +6,21 @@ import cn.daxpay.open.channel.wechat.req.WechatPayReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
+import cn.daxpay.open.channel.wechat.req.WechatTransferReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
+import cn.daxpay.open.channel.wechat.resp.WechatTransferResp;
 import cn.daxpay.open.channel.wechat.service.callback.WechatCallbackParseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectCloseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectPayService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundSyncService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectSyncService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectTransferService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +45,7 @@ public class WechatDirectPayController {
     private final WechatDirectCloseService wechatCloseService;
     private final WechatDirectRefundService wechatRefundService;
     private final WechatDirectRefundSyncService wechatRefundSyncService;
+    private final WechatDirectTransferService wechatDirectTransferService;
     private final WechatCallbackParseService wechatCallbackParseService;
 
     /// 支付下单
@@ -72,6 +76,18 @@ public class WechatDirectPayController {
     @PostMapping("/refund-sync")
     public DaxResult<WechatRefundSyncResp> refundSync(@Valid @RequestBody WechatRefundSyncReq req) {
         return DaxResult.ok(wechatRefundSyncService.sync(req));
+    }
+
+    /// 转账(商家转账到零钱 V3)
+    @PostMapping("/transfer")
+    public DaxResult<WechatTransferResp> transfer(@Valid @RequestBody WechatTransferReq req) {
+        return DaxResult.ok(wechatDirectTransferService.transfer(req));
+    }
+
+    /// 转账同步(查询转账状态)
+    @PostMapping("/transfer-sync")
+    public DaxResult<WechatTransferResp> transferSync(@Valid @RequestBody WechatTransferReq req) {
+        return DaxResult.ok(wechatDirectTransferService.sync(req));
     }
 
     /// 支付回调验签解析(主应用转发)

@@ -7,6 +7,7 @@ import cn.daxpay.open.channel.alipay.req.AlipayPayReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundReq;
 import cn.daxpay.open.channel.alipay.req.AlipayRefundSyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
+import cn.daxpay.open.channel.alipay.req.AlipayTransferReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayAppAuthTokenResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCloseResp;
@@ -14,6 +15,7 @@ import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundSyncResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
+import cn.daxpay.open.channel.alipay.resp.AlipayTransferResp;
 import cn.daxpay.open.channel.alipay.service.auth.AlipayAppAuthTokenService;
 import cn.daxpay.open.channel.alipay.service.callback.AlipayCallbackParseService;
 import cn.daxpay.open.channel.alipay.service.close.AlipayCloseService;
@@ -21,6 +23,7 @@ import cn.daxpay.open.channel.alipay.service.pay.AlipayPayService;
 import cn.daxpay.open.channel.alipay.service.refund.AlipayRefundService;
 import cn.daxpay.open.channel.alipay.service.refund.AlipayRefundSyncService;
 import cn.daxpay.open.channel.alipay.service.sync.AlipaySyncService;
+import cn.daxpay.open.channel.alipay.service.transfer.AlipayTransferService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +48,7 @@ public class AlipayPayController {
     private final AlipayCloseService alipayCloseService;
     private final AlipayRefundService alipayRefundService;
     private final AlipayRefundSyncService alipayRefundSyncService;
+    private final AlipayTransferService alipayTransferService;
     private final AlipayCallbackParseService alipayCallbackParseService;
     private final AlipayAppAuthTokenService alipayAppAuthTokenService;
 
@@ -76,6 +80,18 @@ public class AlipayPayController {
     @PostMapping("/refund-sync")
     public DaxResult<AlipayRefundSyncResp> refundSync(@Valid @RequestBody AlipayRefundSyncReq req) {
         return DaxResult.ok(alipayRefundSyncService.sync(req));
+    }
+
+    /// 转账(单笔转账)
+    @PostMapping("/transfer")
+    public DaxResult<AlipayTransferResp> transfer(@Valid @RequestBody AlipayTransferReq req) {
+        return DaxResult.ok(alipayTransferService.transfer(req));
+    }
+
+    /// 转账同步(查询转账状态)
+    @PostMapping("/transfer-sync")
+    public DaxResult<AlipayTransferResp> transferSync(@Valid @RequestBody AlipayTransferReq req) {
+        return DaxResult.ok(alipayTransferService.sync(req));
     }
 
     /// 支付回调验签解析(主应用转发)
