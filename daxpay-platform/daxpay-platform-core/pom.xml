@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.daxpay.open</groupId>
+        <groupId>cn.daxpay.open.channel.one</groupId>
         <artifactId>daxpay-platform</artifactId>
         <version>4.0.0-beta2</version>
         <relativePath>../pom.xml</relativePath>
@@ -18,7 +18,7 @@
     <dependencies>
         <!-- common-i18n: I18nUtil(ChannelErrorCode/Exception 的 getMessage 调用) -->
         <dependency>
-            <groupId>cn.daxpay.open</groupId>
+            <groupId>cn.daxpay.open.channel.one</groupId>
             <artifactId>common-i18n</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.daxpay.open</groupId>
+        <groupId>cn.daxpay.open.channel.one</groupId>
         <artifactId>daxpay-channel-one</artifactId>
         <version>4.0.0-beta2</version>
     </parent>
@@ -25,7 +25,7 @@
     <dependencies>
         <!-- common-util: PayUtil 等通用工具(分↔元换算), 供所有通道子模块共享 -->
         <dependency>
-            <groupId>cn.daxpay.open</groupId>
+            <groupId>cn.daxpay.open.channel.one</groupId>
             <artifactId>common-util</artifactId>
             <version>${project.version}</version>
         </dependency>
