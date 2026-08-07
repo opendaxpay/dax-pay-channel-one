@@ -4,6 +4,7 @@ import cn.daxpay.open.channel.alipay.config.AlipayAuthTypeEnum;
 import cn.daxpay.open.channel.alipay.config.AlipaySdkCredential;
 import cn.daxpay.open.channel.alipay.req.AlipayCallbackParseReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
+import cn.daxpay.open.channel.alipay.resp.AlipayTransferCallbackParseResp;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.internal.util.AlipaySignature;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,31 @@ public class AlipayCallbackParseService {
     /// 解析退款回调
     public AlipayCallbackParseResp parseRefund(AlipayCallbackParseReq req) {
         return doParse(req, true);
+    }
+
+    /// 解析转账回调
+    public AlipayTransferCallbackParseResp parseTransfer(AlipayCallbackParseReq req) {
+        AlipayTransferCallbackParseResp resp = new AlipayTransferCallbackParseResp();
+        Map<String, String> params = req.getParams();
+        if (params == null || params.isEmpty()) {
+            log.error("支付宝转账回调参数为空");
+            return resp.setSuccess(false);
+        }
+        // 验签
+        if (!verifySign(req.getCredential(), params)) {
+            log.error("支付宝转账回调验签失败");
+            return resp.setSuccess(false);
+        }
+        resp.setSuccess(true);
+        // 转账回调: out_biz_no=商户转账单号(平台 transferNo) / order_id=支付宝转账单号(outTransferNo)
+        resp.setOutBizNo(params.get("out_biz_no"));
+        resp.setOrderId(params.get("order_id"));
+        resp.setTransferStatus(params.get("status"));
+        // 失败原因: sub_msg 优先, 缺失回退 pay_date 场景无失败原因
+        resp.setFailReason(params.get("sub_msg"));
+        // 完成时间(pay_date, 东八区本地时间字面量)
+        resp.setFinishTime(parseCst(params.get("pay_date")));
+        return resp;
     }
 
     /// 通用解析逻辑(支付/退款共用)

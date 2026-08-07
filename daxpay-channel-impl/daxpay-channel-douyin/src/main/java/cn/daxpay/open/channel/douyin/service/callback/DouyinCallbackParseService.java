@@ -3,10 +3,12 @@ package cn.daxpay.open.channel.douyin.service.callback;
 import cn.daxpay.open.channel.douyin.config.DouyinSdkConfig;
 import cn.daxpay.open.channel.douyin.req.DouyinCallbackParseReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinTransferCallbackParseResp;
 import cn.hutool.core.util.StrUtil;
 import com.douyinpay.api.notification.RequestParam;
 import com.douyinpay.api.payments.common.ApiTransaction;
 import com.douyinpay.api.refund.model.ApiRefund;
+import com.douyinpay.api.transfer.models.TransferPayeeNotification;
 import com.douyinpay.define.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,6 +71,26 @@ public class DouyinCallbackParseService {
         } catch (Exception e) {
             log.error("抖音退款回调验签解析失败", e);
             return new DouyinCallbackParseResp().setVerified(false);
+        }
+    }
+
+    /// 解析转账回调(验签 + 解密为 TransferPayeeNotification)
+    ///
+    /// 抖音商家转账异步通知, 通知体仅含 order_id(通道转账单号), 不含商户单号 out_bill_no。
+    public DouyinTransferCallbackParseResp parseTransfer(DouyinCallbackParseReq req) {
+        try {
+            RequestParam requestParam = buildRequestParam(req);
+            TransferPayeeNotification notification = DouyinSdkConfig.buildNotificationParser(req.getCredential())
+                    .parse(requestParam, TransferPayeeNotification.class);
+            return new DouyinTransferCallbackParseResp()
+                    .setVerified(true)
+                    .setTransferBillNo(notification.getOrderId())
+                    .setTransferState(notification.getStatus())
+                    .setTransferStatusDesc(notification.getStatusDesc())
+                    .setSuccessTime(notification.getSuccessTime());
+        } catch (Exception e) {
+            log.error("抖音转账回调验签解析失败", e);
+            return new DouyinTransferCallbackParseResp().setVerified(false);
         }
     }
 

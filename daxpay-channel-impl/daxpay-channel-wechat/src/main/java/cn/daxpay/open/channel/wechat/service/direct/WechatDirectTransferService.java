@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /// # 微信通道转账服务
 ///
@@ -42,6 +44,7 @@ public class WechatDirectTransferService {
                 .transferAmount(req.getAmount().intValue())
                 .transferRemark(StrUtil.sub(req.getRemark(), 0, 32))
                 .notifyUrl(req.getNotifyUrl())
+                .transferSceneReportInfos(buildReportInfos(req.getReportInfos()))
                 .build();
         if (StrUtil.isNotBlank(req.getUserName())) {
             request.setUserName(req.getUserName());
@@ -58,6 +61,25 @@ public class WechatDirectTransferService {
                     "channel.error.wechatTransferFailed", e.getMessage());
         }
         return resp;
+    }
+
+    /// 构建转账场景报备信息
+    ///
+    /// 微信 `/transfer-bills` 的 `transfer_scene_report_infos` 为必填字段。
+    /// 商户传入的 [reportInfos] 按 infoType 匹配; 未匹配的字段用默认值 `-` 兜底。
+    private List<TransferBillsRequest.TransferSceneReportInfo> buildReportInfos(
+            List<WechatTransferReq.ReportInfo> reportInfos) {
+        List<TransferBillsRequest.TransferSceneReportInfo> result = new ArrayList<>();
+        if (reportInfos != null) {
+            for (WechatTransferReq.ReportInfo info : reportInfos) {
+                var reportInfo = new TransferBillsRequest.TransferSceneReportInfo();
+                reportInfo.setInfoType(info.getInfoType());
+                // 留空用 `-` 兜底
+                reportInfo.setInfoContent(StrUtil.isBlank(info.getInfoContent()) ? "-" : info.getInfoContent());
+                result.add(reportInfo);
+            }
+        }
+        return result;
     }
 
     /// 同步查询转账状态

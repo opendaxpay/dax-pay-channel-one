@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 /// 子应用使用 [com.alipay.api.internal.util.AlipaySignature] 验签通过后,
 /// 将标准化业务字段回传主应用。主应用据此更新支付单/退款单状态。
 ///
-/// 兼容支付与退款两种回调: 通过 tradeType 区分, 支付回调填充支付字段, 退款回调填充退款字段。
+/// 仅承载支付/退款回调; 转账回调见 [AlipayTransferCallbackParseResp]。通过 tradeType 区分, 支付回调填充支付字段, 退款回调填充退款字段。
 @Data
 @Accessors(chain = true)
 public class AlipayCallbackParseResp {

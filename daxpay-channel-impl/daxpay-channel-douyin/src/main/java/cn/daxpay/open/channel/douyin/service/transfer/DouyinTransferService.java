@@ -6,6 +6,7 @@ import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.douyinpay.api.DefaultDouyinpayClient;
@@ -47,19 +48,42 @@ public class DouyinTransferService {
         body.set("appid", req.getCredential().getDouyinAppId());
         body.set("out_bill_no", req.getOutBillNo());
         body.set("transfer_scene_id", req.getScene());
-        body.set("openid", req.getOpenid());
+        // 收款人: openid 与手机号二选一(手机号走敏感字段加密)
+        if (StrUtil.isNotBlank(req.getPhoneNumber())) {
+            body.set("phone_number", req.getPhoneNumber());
+        } else {
+            body.set("openid", req.getOpenid());
+        }
         body.set("transfer_amount", fenToYuan(req.getAmount()));
         body.set("transfer_remark", StrUtil.sub(req.getRemark(), 0, 32));
         body.set("notify_url", req.getNotifyUrl());
         if (StrUtil.isNotBlank(req.getPerception())) {
             body.set("user_recv_perception", StrUtil.sub(req.getPerception(), 0, 64));
         }
+        // 转账场景报备信息(按场景要求的 info_type 填写)
+        if (req.getReportInfos() != null && !req.getReportInfos().isEmpty()) {
+            JSONArray reportArray = new JSONArray();
+            for (DouyinTransferReq.ReportInfo info : req.getReportInfos()) {
+                JSONObject item = new JSONObject();
+                item.set("info_type", info.getInfoType());
+                item.set("info_content", info.getInfoContent());
+                reportArray.add(item);
+            }
+            body.set("transfer_scene_report_infos", reportArray);
+        }
 
-        // 收款人姓名: 金额>=2000元必传, 需平台证书 RSA 加密
+        // 敏感字段(收款人姓名/手机号): 需平台证书 RSA 加密, 并携带证书序列号
         Map<String, String> extraHeaders = null;
+        boolean needSerial = false;
         if (StrUtil.isNotBlank(req.getUserName())) {
-            String encrypted = encryptUserName(req.getUserName(), client);
-            body.set("user_name", encrypted);
+            body.set("user_name", encryptSensitive(req.getUserName(), client));
+            needSerial = true;
+        }
+        if (StrUtil.isNotBlank(req.getPhoneNumber())) {
+            body.set("phone_number", encryptSensitive(req.getPhoneNumber(), client));
+            needSerial = true;
+        }
+        if (needSerial) {
             X509Certificate platformCert = ((DefaultDouyinpayClient) client).getPlatformCertificate();
             extraHeaders = new HashMap<>();
             extraHeaders.put("Douyinpay-Serial", platformCert.getSerialNumber().toString());
@@ -120,14 +144,14 @@ public class DouyinTransferService {
                 .setScale(2, RoundingMode.UNNECESSARY).toPlainString();
     }
 
-    /// 平台证书 RSA 加密收款人姓名
-    private String encryptUserName(String userName, DouyinpayClient client) {
+    /// 平台证书 RSA 加密敏感字段(收款人姓名/手机号)
+    private String encryptSensitive(String text, DouyinpayClient client) {
         try {
             X509Certificate platformCert = ((DefaultDouyinpayClient) client).getPlatformCertificate();
             ICryptor cryptor = CryptorFactory.getByName("RSA");
-            return cryptor.encrypt(userName, platformCert);
+            return cryptor.encrypt(text, platformCert);
         } catch (Exception e) {
-            log.error("抖音转账收款人姓名加密失败", e);
+            log.error("抖音转账敏感字段加密失败", e);
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                     "channel.error.douyinTransferEncryptFailed", e.getMessage());
         }

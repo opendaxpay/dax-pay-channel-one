@@ -6,6 +6,7 @@ import cn.daxpay.open.channel.alipay.resp.AlipayTransferResp;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayApiException;
@@ -39,6 +40,10 @@ public class AlipayTransferService {
         AlipayClient client = AlipaySdkConfig.buildClient(req.getCredential());
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
         request.setBizContent(JSONUtil.toJsonStr(buildTransferBizContent(req)));
+        // 异步通知地址(支付宝→平台)
+        if (StrUtil.isNotBlank(req.getNotifyUrl())) {
+            request.setNotifyUrl(req.getNotifyUrl());
+        }
         try {
             AlipayFundTransUniTransferResponse response =
                     AlipaySdkConfig.execute(client, req.getCredential(), request);
@@ -46,6 +51,8 @@ public class AlipayTransferService {
             resp.setOrderId(response.getOrderId());
             resp.setStatus(response.getStatus());
             resp.setFailReason(response.getSubMsg());
+            resp.setPayFundOrderId(response.getPayFundOrderId());
+            resp.setTransDate(response.getTransDate());
             return resp;
         } catch (AlipayApiException e) {
             log.error("支付宝转账调用失败: outBizNo={}", req.getOutBizNo(), e);
@@ -71,6 +78,8 @@ public class AlipayTransferService {
             resp.setStatus(response.getStatus());
             resp.setFailReason(response.getFailReason());
             resp.setFinishTime(response.getPayDate());
+            resp.setPayFundOrderId(response.getPayFundOrderId());
+            resp.setErrorCode(response.getErrorCode());
             return resp;
         } catch (AlipayApiException e) {
             log.error("支付宝转账查询失败: outBizNo={}", req.getOutBizNo(), e);
@@ -88,18 +97,32 @@ public class AlipayTransferService {
         bizContent.set("product_code", PRODUCT_CODE);
         bizContent.set("biz_scene", BIZ_SCENE);
         if (StrUtil.isNotBlank(req.getTitle())) {
-            bizContent.set("order_title", StrUtil.sub(req.getTitle(), 0, 64));
+            bizContent.set("order_title", StrUtil.sub(req.getTitle(), 0, 128));
         }
-        // 收款人信息: 账号类型映射支付宝身份类型
+        // 收款人信息: name 必须放在 payee_info 内部, 顶层 payee_name 支付宝不识别
         JSONObject payeeInfo = new JSONObject();
         payeeInfo.set("identity", req.getPayeeAccount());
         payeeInfo.set("identity_type", mapIdentityType(req.getPayeeType()));
-        bizContent.set("payee_info", payeeInfo);
         if (StrUtil.isNotBlank(req.getPayeeName())) {
-            bizContent.set("payee_name", req.getPayeeName());
+            payeeInfo.set("name", req.getPayeeName());
         }
+        bizContent.set("payee_info", payeeInfo);
         if (StrUtil.isNotBlank(req.getRemark())) {
             bizContent.set("remark", StrUtil.sub(req.getRemark(), 0, 200));
+        }
+        // 转账场景: 2026 年起新接入商户必填
+        if (StrUtil.isNotBlank(req.getTransferSceneName())) {
+            bizContent.set("transfer_scene_name", req.getTransferSceneName());
+        }
+        if (req.getReportInfos() != null && !req.getReportInfos().isEmpty()) {
+            JSONArray reportInfos = new JSONArray();
+            for (var info : req.getReportInfos()) {
+                JSONObject item = new JSONObject();
+                item.set("info_type", info.getInfoType());
+                item.set("info_content", info.getInfoContent());
+                reportInfos.add(item);
+            }
+            bizContent.set("transfer_scene_report_infos", reportInfos);
         }
         return bizContent;
     }

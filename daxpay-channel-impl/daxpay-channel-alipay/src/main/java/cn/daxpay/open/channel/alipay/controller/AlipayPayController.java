@@ -10,6 +10,7 @@ import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipayTransferReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayAppAuthTokenResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
+import cn.daxpay.open.channel.alipay.resp.AlipayTransferCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCloseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayPayResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayRefundResp;
@@ -104,6 +105,12 @@ public class AlipayPayController {
     @PostMapping("/callback/parse-refund")
     public DaxResult<AlipayCallbackParseResp> parseRefundCallback(@RequestBody AlipayCallbackParseReq req) {
         return DaxResult.ok(alipayCallbackParseService.parseRefund(req));
+    }
+
+    /// 转账回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-transfer")
+    public DaxResult<AlipayTransferCallbackParseResp> parseTransferCallback(@RequestBody AlipayCallbackParseReq req) {
+        return DaxResult.ok(alipayCallbackParseService.parseTransfer(req));
     }
 
     /// 应用授权码换取 app_auth_token(代运营授权)

@@ -8,6 +8,7 @@ import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatTransferReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
+import cn.daxpay.open.channel.wechat.resp.WechatTransferCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
@@ -100,5 +101,11 @@ public class WechatDirectPayController {
     @PostMapping("/callback/parse-refund")
     public DaxResult<WechatCallbackParseResp> parseRefundCallback(@RequestBody WechatCallbackParseReq req) {
         return DaxResult.ok(wechatCallbackParseService.parseRefund(req));
+    }
+
+    /// 转账回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-transfer")
+    public DaxResult<WechatTransferCallbackParseResp> parseTransferCallback(@RequestBody WechatCallbackParseReq req) {
+        return DaxResult.ok(wechatCallbackParseService.parseTransfer(req));
     }
 }

@@ -3,9 +3,11 @@ package cn.daxpay.open.channel.wechat.service.callback;
 import cn.daxpay.open.channel.wechat.config.WechatSdkConfig;
 import cn.daxpay.open.channel.wechat.req.WechatCallbackParseReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
+import cn.daxpay.open.channel.wechat.resp.WechatTransferCallbackParseResp;
 import com.github.binarywang.wxpay.bean.notify.SignatureHeader;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyV3Result;
 import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyV3Result;
+import com.github.binarywang.wxpay.bean.transfer.TransferBillsNotifyResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,32 @@ public class WechatCallbackParseService {
         } catch (Exception e) {
             log.error("微信退款回调验签解析失败", e);
             return new WechatCallbackParseResp().setVerified(false);
+        }
+    }
+
+    /// 解析转账回调(验签 + 解密)
+    ///
+    /// 商家转账到零钱 V3 异步通知, 调用 [WxPayService#getTransferService] 的
+    /// parseTransferBillsNotifyResult 完成平台证书验签与 AES 解密。
+    public WechatTransferCallbackParseResp parseTransfer(WechatCallbackParseReq req) {
+        try {
+            // 回调验签不依赖 appId, 用宽松构建(无需通道应用)
+            WxPayService service = WechatSdkConfig.buildCallbackService(req.getCredential());
+            SignatureHeader header = this.buildHeader(req);
+            TransferBillsNotifyResult notifyResult = service.getTransferService()
+                    .parseTransferBillsNotifyResult(req.getBody(), header);
+            // 解密后的业务数据在 getResult() 中
+            TransferBillsNotifyResult.DecryptNotifyResult result = notifyResult.getResult();
+            return new WechatTransferCallbackParseResp()
+                    .setVerified(true)
+                    .setOutBillNo(result.getOutBillNo())
+                    .setTransferBillNo(result.getTransferBillNo())
+                    .setTransferState(result.getState())
+                    .setFailReason(result.getFailReason())
+                    .setUpdateTime(result.getUpdateTime());
+        } catch (Exception e) {
+            log.error("微信转账回调验签解析失败", e);
+            return new WechatTransferCallbackParseResp().setVerified(false);
         }
     }
 
