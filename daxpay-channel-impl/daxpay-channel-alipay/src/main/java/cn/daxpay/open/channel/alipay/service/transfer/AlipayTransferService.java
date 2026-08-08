@@ -36,6 +36,9 @@ public class AlipayTransferService {
     private static final String BIZ_SCENE = "DIRECT_TRANSFER";
 
     /// 发起单笔转账
+    ///
+    /// 业务失败码(如收款人信息错误)不会触发 [AlipayApiException], 需通过 [AlipayFundTransUniTransferResponse#isSuccess]
+    /// 判断; 失败时透传 code/subCode/subMsg, 由主应用决策。
     public AlipayTransferResp transfer(AlipayTransferReq req) {
         AlipayClient client = AlipaySdkConfig.buildClient(req.getCredential());
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
@@ -48,6 +51,16 @@ public class AlipayTransferService {
             AlipayFundTransUniTransferResponse response =
                     AlipaySdkConfig.execute(client, req.getCredential(), request);
             AlipayTransferResp resp = new AlipayTransferResp();
+            // 透传网关返回码与业务失败信息
+            resp.setCode(response.getCode());
+            resp.setSubCode(response.getSubCode());
+            resp.setSubMsg(response.getSubMsg());
+            // 业务失败时业务字段均为 null, 不再组装, 直接返回让主应用决策
+            if (!response.isSuccess()) {
+                log.warn("支付宝转账发起业务失败: outBizNo={}, code={}, subCode={}, subMsg={}",
+                        req.getOutBizNo(), response.getCode(), response.getSubCode(), response.getSubMsg());
+                return resp;
+            }
             resp.setOrderId(response.getOrderId());
             resp.setStatus(response.getStatus());
             resp.setFailReason(response.getSubMsg());
@@ -62,6 +75,9 @@ public class AlipayTransferService {
     }
 
     /// 同步查询转账状态
+    ///
+    /// 业务失败码(如 ORDER_NOT_EXIST)不会触发 [AlipayApiException], 需通过 [AlipayFundTransCommonQueryResponse#isSuccess]
+    /// 判断; 失败时透传 code/subCode/subMsg, 由主应用按 subCode 决策资金态。
     public AlipayTransferResp sync(AlipayTransferReq req) {
         AlipayClient client = AlipaySdkConfig.buildClient(req.getCredential());
         AlipayFundTransCommonQueryRequest request = new AlipayFundTransCommonQueryRequest();
@@ -74,6 +90,16 @@ public class AlipayTransferService {
             AlipayFundTransCommonQueryResponse response =
                     AlipaySdkConfig.execute(client, req.getCredential(), request);
             AlipayTransferResp resp = new AlipayTransferResp();
+            // 透传网关返回码与业务失败信息
+            resp.setCode(response.getCode());
+            resp.setSubCode(response.getSubCode());
+            resp.setSubMsg(response.getSubMsg());
+            // 业务失败时业务字段均为 null, 不再组装, 直接返回让主应用按 subCode 决策
+            if (!response.isSuccess()) {
+                log.warn("支付宝转账查询业务失败: outBizNo={}, code={}, subCode={}, subMsg={}",
+                        req.getOutBizNo(), response.getCode(), response.getSubCode(), response.getSubMsg());
+                return resp;
+            }
             resp.setOrderId(response.getOrderId());
             resp.setStatus(response.getStatus());
             resp.setFailReason(response.getFailReason());
