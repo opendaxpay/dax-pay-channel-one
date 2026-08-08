@@ -2,6 +2,7 @@ package cn.daxpay.open.channel.douyin.service.transfer;
 
 import cn.daxpay.open.channel.douyin.config.DouyinSdkConfig;
 import cn.daxpay.open.channel.douyin.req.DouyinTransferReq;
+import cn.daxpay.open.channel.douyin.resp.DouyinTransferApiResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
@@ -20,8 +21,6 @@ import com.douyinpay.exception.DouyinpayException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,6 @@ public class DouyinTransferService {
     private static final String TRANSFER_QUERY_BY_OUT_BILL_NO = "/v1/fund_trade/mch-transfer/transfer-bills/out-bill-no/%s";
 
     /// 发起商家转账
-    @SuppressWarnings("unchecked")
     public DouyinTransferResp transfer(DouyinTransferReq req) {
         DouyinpayClient client = DouyinSdkConfig.buildClient(req.getCredential());
         JSONObject body = new JSONObject();
@@ -54,7 +52,8 @@ public class DouyinTransferService {
         } else {
             body.set("openid", req.getOpenid());
         }
-        body.set("transfer_amount", fenToYuan(req.getAmount()));
+        // 转账金额: 抖音要求整数单位分, req.getAmount() 已为分
+        body.set("transfer_amount", req.getAmount());
         body.set("transfer_remark", StrUtil.sub(req.getRemark(), 0, 32));
         body.set("notify_url", req.getNotifyUrl());
         if (StrUtil.isNotBlank(req.getPerception())) {
@@ -89,16 +88,16 @@ public class DouyinTransferService {
             extraHeaders.put("Douyinpay-Serial", platformCert.getSerialNumber().toString());
         }
 
-        var request = new DouyinpayRequest(HttpMethod.POST, BASE_URL + TRANSFER_CREATE_PATH,
-                JSONUtil.toJsonStr(body), extraHeaders, req.getCredential().getMerchantSerialNumber());
+        var request = new DouyinpayRequest(HttpMethod.POST, BASE_URL, TRANSFER_CREATE_PATH,
+                extraHeaders, JSONUtil.toJsonStr(body));
         DouyinTransferResp resp = new DouyinTransferResp();
         try {
-            DouyinpayResponse<Map> response = client.execute(request, Map.class);
+            DouyinpayResponse<DouyinTransferApiResp> response = client.execute(request, DouyinTransferApiResp.class);
             response.validate();
-            Map<String, Object> data = response.getApiResponse();
+            DouyinTransferApiResp data = response.getApiResponse();
             if (data != null) {
-                resp.setTransferBillNo((String) data.get("transfer_bill_no"));
-                resp.setState((String) data.get("state"));
+                resp.setTransferBillNo(data.getTransferBillNo());
+                resp.setState(data.getState());
             }
         } catch (DouyinpayException e) {
             log.error("抖音转账调用失败: outBillNo={}", req.getOutBillNo(), e);
@@ -109,7 +108,6 @@ public class DouyinTransferService {
     }
 
     /// 同步查询转账状态
-    @SuppressWarnings("unchecked")
     public DouyinTransferResp sync(DouyinTransferReq req) {
         DouyinpayClient client = DouyinSdkConfig.buildClient(req.getCredential());
         DouyinTransferResp resp = new DouyinTransferResp();
@@ -119,16 +117,16 @@ public class DouyinTransferService {
         } else {
             queryPath = String.format(TRANSFER_QUERY_BY_OUT_BILL_NO, req.getTransferNo());
         }
-        var request = new DouyinpayRequest(HttpMethod.GET, BASE_URL + queryPath,
-                null, null, req.getCredential().getMerchantSerialNumber());
+        var request = new DouyinpayRequest(HttpMethod.GET, BASE_URL, queryPath,
+                null, null);
         try {
-            DouyinpayResponse<Map> response = client.execute(request, Map.class);
+            DouyinpayResponse<DouyinTransferApiResp> response = client.execute(request, DouyinTransferApiResp.class);
             response.validate();
-            Map<String, Object> data = response.getApiResponse();
+            DouyinTransferApiResp data = response.getApiResponse();
             if (data != null) {
-                resp.setTransferBillNo((String) data.get("transfer_bill_no"));
-                resp.setState((String) data.get("state"));
-                resp.setFailReason((String) data.get("fail_reason"));
+                resp.setTransferBillNo(data.getTransferBillNo());
+                resp.setState(data.getState());
+                resp.setFailReason(data.getFailReason());
             }
         } catch (DouyinpayException e) {
             log.error("抖音转账查询失败: billNo={}", req.getOutBillNo(), e);
@@ -136,12 +134,6 @@ public class DouyinTransferService {
                     "channel.error.douyinTransferQueryFailed", e.getMessage());
         }
         return resp;
-    }
-
-    /// 分 → 元字符串(抖音金额单位为元, 保留两位)
-    private String fenToYuan(Long amount) {
-        return BigDecimal.valueOf(amount).movePointLeft(2)
-                .setScale(2, RoundingMode.UNNECESSARY).toPlainString();
     }
 
     /// 平台证书 RSA 加密敏感字段(收款人姓名/手机号)
