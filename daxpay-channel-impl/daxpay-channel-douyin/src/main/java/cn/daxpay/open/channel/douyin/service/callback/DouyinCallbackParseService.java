@@ -4,14 +4,20 @@ import cn.daxpay.open.channel.douyin.config.DouyinSdkConfig;
 import cn.daxpay.open.channel.douyin.req.DouyinCallbackParseReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferCallbackParseResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinAllocCallbackParseResp;
 import cn.hutool.core.util.StrUtil;
 import com.douyinpay.api.notification.RequestParam;
 import com.douyinpay.api.payments.common.ApiTransaction;
 import com.douyinpay.api.refund.model.ApiRefund;
+import com.douyinpay.api.splitfund.models.ApiQuerySplitFundResponse;
+import com.douyinpay.api.splitfund.models.ReceiverSplitResultDto;
 import com.douyinpay.api.transfer.models.TransferPayeeNotification;
 import com.douyinpay.define.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /// # 抖音回调验签解析服务
 ///
@@ -91,6 +97,39 @@ public class DouyinCallbackParseService {
         } catch (Exception e) {
             log.error("抖音转账回调验签解析失败", e);
             return new DouyinTransferCallbackParseResp().setVerified(false);
+        }
+    }
+
+    /// 解析分账回调(验签 + 解密为 ApiQuerySplitFundResponse)
+    ///
+    /// 抖音分账异步通知, SDK 无专用通知模型, 通知体与分账查询响应字段同构,
+    /// 复用 [ApiQuerySplitFundResponse] 解析(含逐明细 receiverSplitResultDtos)。
+    public DouyinAllocCallbackParseResp parseAlloc(DouyinCallbackParseReq req) {
+        try {
+            RequestParam requestParam = buildRequestParam(req);
+            ApiQuerySplitFundResponse response = DouyinSdkConfig.buildNotificationParser(req.getCredential())
+                    .parse(requestParam, ApiQuerySplitFundResponse.class);
+            DouyinAllocCallbackParseResp resp = new DouyinAllocCallbackParseResp()
+                    .setVerified(true)
+                    .setOrderId(response.getOrderId())
+                    .setState(response.getState())
+                    .setSplitFinishTime(response.getSplitFinishTime());
+            // 映射逐明细结果
+            List<DouyinAllocCallbackParseResp.ReceiverResult> results = new ArrayList<>();
+            if (response.getReceiverSplitResultDtos() != null) {
+                for (ReceiverSplitResultDto r : response.getReceiverSplitResultDtos()) {
+                    results.add(new DouyinAllocCallbackParseResp.ReceiverResult()
+                            .setAccount(r.getAccount())
+                            .setSplitStatus(r.getResult())
+                            .setFailReason(r.getFailReason())
+                            .setFinishTime(r.getFinishTime()));
+                }
+            }
+            resp.setReceiverResults(results);
+            return resp;
+        } catch (Exception e) {
+            log.error("抖音分账回调验签解析失败", e);
+            return new DouyinAllocCallbackParseResp().setVerified(false);
         }
     }
 

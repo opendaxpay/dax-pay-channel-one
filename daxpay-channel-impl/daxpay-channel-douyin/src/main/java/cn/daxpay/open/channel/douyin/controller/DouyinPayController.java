@@ -7,14 +7,18 @@ import cn.daxpay.open.channel.douyin.req.DouyinRefundReq;
 import cn.daxpay.open.channel.douyin.req.DouyinRefundSyncReq;
 import cn.daxpay.open.channel.douyin.req.DouyinSyncReq;
 import cn.daxpay.open.channel.douyin.req.DouyinTransferReq;
+import cn.daxpay.open.channel.douyin.req.DouyinAllocReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferCallbackParseResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinAllocCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinCloseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinPayResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinRefundResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinRefundSyncResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinSyncResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinAllocResp;
+import cn.daxpay.open.channel.douyin.service.alloc.DouyinAllocService;
 import cn.daxpay.open.channel.douyin.service.callback.DouyinCallbackParseService;
 import cn.daxpay.open.channel.douyin.service.close.DouyinCloseService;
 import cn.daxpay.open.channel.douyin.service.pay.DouyinPayService;
@@ -47,6 +51,7 @@ public class DouyinPayController {
     private final DouyinSyncService douyinSyncService;
     private final DouyinRefundServiceSync douyinRefundServiceSync;
     private final DouyinTransferService douyinTransferService;
+    private final DouyinAllocService douyinAllocService;
     private final DouyinCallbackParseService douyinCallbackParseService;
 
     /// 支付下单
@@ -91,6 +96,18 @@ public class DouyinPayController {
         return DaxResult.ok(douyinTransferService.sync(req));
     }
 
+    /// 发起分账(抖音 splitFund)
+    @PostMapping("/alloc")
+    public DaxResult<DouyinAllocResp> alloc(@Valid @RequestBody DouyinAllocReq req) {
+        return DaxResult.ok(douyinAllocService.alloc(req));
+    }
+
+    /// 分账同步(查询分账状态 querySplitFund)
+    @PostMapping("/alloc-sync")
+    public DaxResult<DouyinAllocResp> allocSync(@Valid @RequestBody DouyinAllocReq req) {
+        return DaxResult.ok(douyinAllocService.sync(req));
+    }
+
     /// 支付回调验签解析(主应用转发)
     @PostMapping("/callback/parse-pay")
     public DaxResult<DouyinCallbackParseResp> parsePayCallback(@RequestBody DouyinCallbackParseReq req) {
@@ -107,5 +124,11 @@ public class DouyinPayController {
     @PostMapping("/callback/parse-transfer")
     public DaxResult<DouyinTransferCallbackParseResp> parseTransferCallback(@RequestBody DouyinCallbackParseReq req) {
         return DaxResult.ok(douyinCallbackParseService.parseTransfer(req));
+    }
+
+    /// 分账回调验签解析(主应用转发)
+    @PostMapping("/callback/parse-alloc")
+    public DaxResult<DouyinAllocCallbackParseResp> parseAllocCallback(@RequestBody DouyinCallbackParseReq req) {
+        return DaxResult.ok(douyinCallbackParseService.parseAlloc(req));
     }
 }

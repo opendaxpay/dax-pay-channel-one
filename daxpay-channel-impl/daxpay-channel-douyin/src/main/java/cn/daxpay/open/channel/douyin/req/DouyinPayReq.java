@@ -37,6 +37,9 @@ public class DouyinPayReq {
     /// 异步通知地址(由子应用透传给抖音)
     private String notifyUrl;
 
+    /// 是否分账订单(透传抖音分账标识)
+    private Boolean allocation;
+
     /// 通道调用凭证
     private DouyinSdkCredential credential;
 }

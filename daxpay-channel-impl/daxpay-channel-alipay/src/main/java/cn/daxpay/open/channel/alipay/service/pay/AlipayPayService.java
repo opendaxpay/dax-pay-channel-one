@@ -101,6 +101,8 @@ public class AlipayPayService {
         model.setSubject(req.getSubject());
         model.setBody(req.getBody());
         model.setProductCode("QUICK_WAP_WAY");
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -134,6 +136,8 @@ public class AlipayPayService {
         model.setSubject(req.getSubject());
         model.setBody(req.getBody());
         model.setProductCode("QUICK_MSECURITY_PAY");
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -162,6 +166,8 @@ public class AlipayPayService {
         model.setSubject(req.getSubject());
         model.setBody(req.getBody());
         model.setProductCode("FAST_INSTANT_TRADE_PAY");
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -194,6 +200,8 @@ public class AlipayPayService {
         model.setTotalAmount(amount);
         model.setSubject(req.getSubject());
         model.setBody(req.getBody());
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -223,6 +231,8 @@ public class AlipayPayService {
         model.setBody(req.getBody());
         model.setScene(SCENE_BAR_CODE);
         model.setAuthCode(req.getAuthCode());
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -277,6 +287,8 @@ public class AlipayPayService {
         } else {
             model.setOpBuyerOpenId(openId);
         }
+        // 分账订单: 透传 royalty_freeze=true 冻结分账资金
+        applyAllocation(model, req);
         request.setBizModel(model);
         // 服务商模式: 注入应用授权令牌
         if (StrUtil.isNotBlank(req.getCredential().getAppAuthToken())) {
@@ -301,6 +313,27 @@ public class AlipayPayService {
             return null;
         }
         return (long) PayUtil.conversionYuanToFenHalfUp(yuan);
+    }
+
+    /// 分账订单标识透传: 构建 ExtendParams 并设置到各支付 Model 上
+    ///
+    /// 支付宝各支付方式 Model(AlipayTradeWapPayModel 等)均有 setExtendParams 方法但无公共接口,
+    /// 此处按运行时类型反射调用, 统一收敛分账标识透传逻辑。
+    /// 非 allocation 订单或无 setExtendParams 方法的 Model 静默跳过。
+    private static void applyAllocation(Object model, AlipayPayReq req) {
+        if (!Boolean.TRUE.equals(req.getAllocation())) {
+            return;
+        }
+        try {
+            var method = model.getClass().getMethod("setExtendParams", ExtendParams.class);
+            ExtendParams extendParams = new ExtendParams();
+            extendParams.setRoyaltyFreeze(Boolean.TRUE.toString());
+            method.invoke(model, extendParams);
+        } catch (NoSuchMethodException e) {
+            // 该 Model 无 setExtendParams 方法(不应发生), 静默跳过
+        } catch (Exception e) {
+            throw new SdkCallException("设置分账标识失败: " + e.getMessage(), e);
+        }
     }
 
     /// 校验支付宝响应是否成功, 失败则抛业务异常(保留 subCode/subMsg 错误信息)

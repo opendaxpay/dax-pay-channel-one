@@ -7,6 +7,7 @@ import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatTransferReq;
+import cn.daxpay.open.channel.wechat.req.WechatAllocReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatTransferCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
@@ -15,6 +16,7 @@ import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatTransferResp;
+import cn.daxpay.open.channel.wechat.resp.WechatAllocResp;
 import cn.daxpay.open.channel.wechat.service.callback.WechatCallbackParseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectCloseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectPayService;
@@ -22,6 +24,7 @@ import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundSyncService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectSyncService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectTransferService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectAllocService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,7 @@ public class WechatDirectPayController {
     private final WechatDirectRefundService wechatRefundService;
     private final WechatDirectRefundSyncService wechatRefundSyncService;
     private final WechatDirectTransferService wechatDirectTransferService;
+    private final WechatDirectAllocService wechatDirectAllocService;
     private final WechatCallbackParseService wechatCallbackParseService;
 
     /// 支付下单
@@ -89,6 +93,18 @@ public class WechatDirectPayController {
     @PostMapping("/transfer-sync")
     public DaxResult<WechatTransferResp> transferSync(@Valid @RequestBody WechatTransferReq req) {
         return DaxResult.ok(wechatDirectTransferService.sync(req));
+    }
+
+    /// 发起分账(V3 profitsharing/orders)
+    @PostMapping("/alloc")
+    public DaxResult<WechatAllocResp> alloc(@Valid @RequestBody WechatAllocReq req) {
+        return DaxResult.ok(wechatDirectAllocService.alloc(req));
+    }
+
+    /// 分账同步(查询分账状态)
+    @PostMapping("/alloc-sync")
+    public DaxResult<WechatAllocResp> allocSync(@Valid @RequestBody WechatAllocReq req) {
+        return DaxResult.ok(wechatDirectAllocService.sync(req));
     }
 
     /// 支付回调验签解析(主应用转发)

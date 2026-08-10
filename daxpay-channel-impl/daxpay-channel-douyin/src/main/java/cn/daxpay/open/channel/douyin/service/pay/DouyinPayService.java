@@ -68,6 +68,8 @@ public class DouyinPayService {
         request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
         request.setOutTradeNo(req.getOutTradeNo());
         request.setNotifyUrl(req.getNotifyUrl());
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        applyAllocation(request, req);
         if (req.getExpiredTime() != null) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
@@ -114,6 +116,8 @@ public class DouyinPayService {
         request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
         request.setOutTradeNo(req.getOutTradeNo());
         request.setNotifyUrl(req.getNotifyUrl());
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        applyAllocation(request, req);
         if (req.getExpiredTime() != null) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
@@ -169,6 +173,8 @@ public class DouyinPayService {
         request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
         request.setOutTradeNo(req.getOutTradeNo());
         request.setNotifyUrl(req.getNotifyUrl());
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        applyAllocation(request, req);
         if (req.getExpiredTime() != null) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
@@ -206,6 +212,8 @@ public class DouyinPayService {
         request.setDescription(StrUtil.sub(req.getDescription(), 0, 127));
         request.setOutTradeNo(req.getOutTradeNo());
         request.setNotifyUrl(req.getNotifyUrl());
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        applyAllocation(request, req);
         if (req.getExpiredTime() != null) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
@@ -241,5 +249,27 @@ public class DouyinPayService {
     /// OffsetDateTime 转 RFC3339 字符串(抖音要求 ISO_OFFSET_DATETIME 格式)
     private String formatRfc3339(OffsetDateTime time) {
         return time.withOffsetSameInstant(ZoneOffset.ofHours(8)).format(RFC3339);
+    }
+
+    /// 分账订单标识透传: 反射构建 SettleInfo 并设置 profit_sharing=true
+    ///
+    /// 抖音各支付方式 ApiPrepayRequest 分属不同包(nativepay/app/h5/jsapi),
+    /// ApiSettleInfo 也各自独立, 此处反射统一处理。
+    private static void applyAllocation(Object request, DouyinPayReq req) {
+        if (!Boolean.TRUE.equals(req.getAllocation())) {
+            return;
+        }
+        try {
+            // 按请求类型找到同包的 ApiSettleInfo
+            String settleClassName = request.getClass().getPackageName() + ".ApiSettleInfo";
+            Class<?> settleClass = Class.forName(settleClassName);
+            var settleInfo = settleClass.getDeclaredConstructor().newInstance();
+            var setProfitSharing = settleClass.getMethod("setProfitSharing", Boolean.class);
+            setProfitSharing.invoke(settleInfo, Boolean.TRUE);
+            var setSettleInfo = request.getClass().getMethod("setSettleInfo", settleClass);
+            setSettleInfo.invoke(request, settleInfo);
+        } catch (Exception e) {
+            // SettleInfo 类不存在(不应发生), 静默跳过
+        }
     }
 }

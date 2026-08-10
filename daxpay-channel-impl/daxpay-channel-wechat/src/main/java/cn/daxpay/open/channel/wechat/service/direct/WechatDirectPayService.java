@@ -191,6 +191,12 @@ public class WechatDirectPayService {
         if (StrUtil.isNotBlank(req.getAttach())) {
             request.setAttach(req.getAttach());
         }
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        if (Boolean.TRUE.equals(req.getAllocation())) {
+            var settleInfo = new WxPayCodepayRequest.SettleInfo();
+            settleInfo.setProfitSharing(true);
+            request.setSettleInfo(settleInfo);
+        }
 
         WxPayCodepayResult result;
         try {
@@ -250,6 +256,12 @@ public class WechatDirectPayService {
         // 过期时间(RFC3339, 无小数秒, 东八区)
         if (req.getExpireTime() != null) {
             request.setTimeExpire(formatExpire(req.getExpireTime()));
+        }
+        // 分账订单: 透传 settle_info.profit_sharing=true
+        if (Boolean.TRUE.equals(req.getAllocation())) {
+            var settleInfo = new WxPayUnifiedOrderV3Request.SettleInfo();
+            settleInfo.setProfitSharing(true);
+            request.setSettleInfo(settleInfo);
         }
         return request;
     }
