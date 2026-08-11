@@ -21,6 +21,12 @@
             <artifactId>service-system</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- common-config: 部署模式 fail-fast 校验(裁剪拷贝自主应用, 通过 spring.factories SPI 自动注册) -->
+        <dependency>
+            <groupId>cn.daxpay.open.channel.one</groupId>
+            <artifactId>common-config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

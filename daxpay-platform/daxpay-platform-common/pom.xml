@@ -19,5 +19,7 @@
         <module>common-i18n</module>
         <module>common-json</module>
         <module>common-util</module>
+        <!-- 部署模式 fail-fast 校验(裁剪拷贝自主应用 common-config, 仅 actuator/health 两项) -->
+        <module>common-config</module>
     </modules>
 </project>

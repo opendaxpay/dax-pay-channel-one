@@ -2,13 +2,20 @@
 # 通道适配子应用 - 生产环境配置
 # ====================================================================
 # 部署形态: Docker Compose / 单机容器
-# 启动方式: docker run -e SPRING_PROFILES_ACTIVE=prod daxpay-channel-one
+# 启动方式: docker run -e SPRING_PROFILES_ACTIVE=prod -e DEPLOY_MODE=PROD daxpay-channel-one
+# 部署模式(DEPLOY_MODE): PROD 触发 fail-fast 校验 / DEV 联调放开, 与主应用共享同值(installer 注入)
 # ====================================================================
 # 通道传输 AES 密钥：生产必须由环境变量注入，无默认值（与主应用 CHANNEL_ONE_TRANSPORT_KEY 同值）
 daxpay:
   channel:
     transport-encrypt:
       key: ${CHANNEL_TRANSPORT_KEY}
+  # 部署模式: PROD 触发启动期 fail-fast 校验(actuator 端点/health 详情), 由 installer 表单注入(DEPLOY_MODE)
+  # 不显式配置时 DeploymentModeEnforcer 按 spring.profiles.active 推断(prod → PROD)
+  # 与主应用联动: 共享 .env.biz 的 DEPLOY_MODE, 切换主应用模式后重启本容器自动跟随
+  platform:
+    deployment:
+      mode: ${DEPLOY_MODE:PROD}
 server:
   # 优雅停机(配合 docker stop 的 10s 宽限期)
   shutdown: graceful

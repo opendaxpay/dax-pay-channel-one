@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.daxpay.open.channel.one</groupId>
+        <artifactId>daxpay-platform-common</artifactId>
+        <version>4.0.0-beta3</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>common-config</artifactId>
+    <description>通道适配子应用部署模式校验(裁剪拷贝自主应用 common-config, 仅保留 actuator/health 校验)</description>
+
+    <dependencies>
+        <!-- EnvironmentPostProcessor 接口位于 spring-boot(由 autoconfigure 传递), 用于启动期 fail-fast 校验 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
