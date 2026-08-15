@@ -18,6 +18,7 @@ import com.douyinpay.component.crypto.CryptorFactory;
 import com.douyinpay.component.crypto.ICryptor;
 import com.douyinpay.component.http.HttpMethod;
 import com.douyinpay.exception.DouyinpayException;
+import com.douyinpay.util.PemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -85,7 +86,9 @@ public class DouyinTransferService {
         if (needSerial) {
             X509Certificate platformCert = ((DefaultDouyinpayClient) client).getPlatformCertificate();
             extraHeaders = new HashMap<>();
-            extraHeaders.put("Douyinpay-Serial", platformCert.getSerialNumber().toString());
+            // 证书序列号须为十六进制大写(与 SDK PemUtil#getSerialNumber 一致, 分账请求头同源),
+            // 直接用 getSerialNumber().toString() 是十进制, 平台会匹配不到证书
+            extraHeaders.put("Douyinpay-Serial", PemUtil.getSerialNumber(platformCert));
         }
 
         var request = new DouyinpayRequest(HttpMethod.POST, BASE_URL, TRANSFER_CREATE_PATH,
