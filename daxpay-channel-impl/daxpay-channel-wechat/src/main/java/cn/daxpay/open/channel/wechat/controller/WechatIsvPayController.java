@@ -5,16 +5,19 @@ import cn.daxpay.open.channel.wechat.req.WechatPayReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundReq;
 import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
+import cn.daxpay.open.channel.wechat.req.WechatAllocReceiverReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatPayResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundResp;
 import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
+import cn.daxpay.open.channel.wechat.resp.WechatAllocReceiverResp;
 import cn.daxpay.open.channel.wechat.service.isv.WechatIsvCloseService;
 import cn.daxpay.open.channel.wechat.service.isv.WechatIsvPayService;
 import cn.daxpay.open.channel.wechat.service.isv.WechatIsvRefundService;
 import cn.daxpay.open.channel.wechat.service.isv.WechatIsvRefundSyncService;
 import cn.daxpay.open.channel.wechat.service.isv.WechatIsvSyncService;
+import cn.daxpay.open.channel.wechat.service.isv.WechatIsvAllocReceiverService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,7 @@ public class WechatIsvPayController {
     private final WechatIsvCloseService wechatIsvCloseService;
     private final WechatIsvRefundService wechatIsvRefundService;
     private final WechatIsvRefundSyncService wechatIsvRefundSyncService;
+    private final WechatIsvAllocReceiverService wechatIsvAllocReceiverService;
 
     /// 支付下单
     @PostMapping("/pay")
@@ -57,6 +61,18 @@ public class WechatIsvPayController {
     @PostMapping("/close")
     public DaxResult<WechatCloseResp> close(@Valid @RequestBody WechatCloseReq req) {
         return DaxResult.ok(wechatIsvCloseService.close(req));
+    }
+
+    /// 绑定分账接收方(V3 profitsharing/receivers/add, sub_mchid 维度)
+    @PostMapping("/alloc-receiver/bind")
+    public DaxResult<WechatAllocReceiverResp> allocReceiverBind(@Valid @RequestBody WechatAllocReceiverReq req) {
+        return DaxResult.ok(wechatIsvAllocReceiverService.bind(req));
+    }
+
+    /// 解绑分账接收方(V3 profitsharing/receivers/delete, sub_mchid 维度)
+    @PostMapping("/alloc-receiver/unbind")
+    public DaxResult<WechatAllocReceiverResp> allocReceiverUnbind(@Valid @RequestBody WechatAllocReceiverReq req) {
+        return DaxResult.ok(wechatIsvAllocReceiverService.unbind(req));
     }
 
     /// 退款

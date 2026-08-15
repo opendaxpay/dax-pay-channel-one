@@ -8,6 +8,7 @@ import cn.daxpay.open.channel.wechat.req.WechatRefundSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatSyncReq;
 import cn.daxpay.open.channel.wechat.req.WechatTransferReq;
 import cn.daxpay.open.channel.wechat.req.WechatAllocReq;
+import cn.daxpay.open.channel.wechat.req.WechatAllocReceiverReq;
 import cn.daxpay.open.channel.wechat.resp.WechatCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatTransferCallbackParseResp;
 import cn.daxpay.open.channel.wechat.resp.WechatCloseResp;
@@ -17,6 +18,7 @@ import cn.daxpay.open.channel.wechat.resp.WechatRefundSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatSyncResp;
 import cn.daxpay.open.channel.wechat.resp.WechatTransferResp;
 import cn.daxpay.open.channel.wechat.resp.WechatAllocResp;
+import cn.daxpay.open.channel.wechat.resp.WechatAllocReceiverResp;
 import cn.daxpay.open.channel.wechat.service.callback.WechatCallbackParseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectCloseService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectPayService;
@@ -25,6 +27,7 @@ import cn.daxpay.open.channel.wechat.service.direct.WechatDirectRefundSyncServic
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectSyncService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectTransferService;
 import cn.daxpay.open.channel.wechat.service.direct.WechatDirectAllocService;
+import cn.daxpay.open.channel.wechat.service.direct.WechatDirectAllocReceiverService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,7 @@ public class WechatDirectPayController {
     private final WechatDirectRefundSyncService wechatRefundSyncService;
     private final WechatDirectTransferService wechatDirectTransferService;
     private final WechatDirectAllocService wechatDirectAllocService;
+    private final WechatDirectAllocReceiverService wechatDirectAllocReceiverService;
     private final WechatCallbackParseService wechatCallbackParseService;
 
     /// 支付下单
@@ -105,6 +109,18 @@ public class WechatDirectPayController {
     @PostMapping("/alloc-sync")
     public DaxResult<WechatAllocResp> allocSync(@Valid @RequestBody WechatAllocReq req) {
         return DaxResult.ok(wechatDirectAllocService.sync(req));
+    }
+
+    /// 绑定分账接收方(V3 profitsharing/receivers/add)
+    @PostMapping("/alloc-receiver/bind")
+    public DaxResult<WechatAllocReceiverResp> allocReceiverBind(@Valid @RequestBody WechatAllocReceiverReq req) {
+        return DaxResult.ok(wechatDirectAllocReceiverService.bind(req));
+    }
+
+    /// 解绑分账接收方(V3 profitsharing/receivers/delete)
+    @PostMapping("/alloc-receiver/unbind")
+    public DaxResult<WechatAllocReceiverResp> allocReceiverUnbind(@Valid @RequestBody WechatAllocReceiverReq req) {
+        return DaxResult.ok(wechatDirectAllocReceiverService.unbind(req));
     }
 
     /// 支付回调验签解析(主应用转发)

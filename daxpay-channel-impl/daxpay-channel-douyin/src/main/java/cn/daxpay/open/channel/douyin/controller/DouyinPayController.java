@@ -8,6 +8,7 @@ import cn.daxpay.open.channel.douyin.req.DouyinRefundSyncReq;
 import cn.daxpay.open.channel.douyin.req.DouyinSyncReq;
 import cn.daxpay.open.channel.douyin.req.DouyinTransferReq;
 import cn.daxpay.open.channel.douyin.req.DouyinAllocReq;
+import cn.daxpay.open.channel.douyin.req.DouyinAllocReceiverReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinAllocCallbackParseResp;
@@ -18,7 +19,9 @@ import cn.daxpay.open.channel.douyin.resp.DouyinRefundSyncResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinSyncResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinAllocResp;
+import cn.daxpay.open.channel.douyin.resp.DouyinAllocReceiverResp;
 import cn.daxpay.open.channel.douyin.service.alloc.DouyinAllocService;
+import cn.daxpay.open.channel.douyin.service.alloc.DouyinAllocReceiverService;
 import cn.daxpay.open.channel.douyin.service.callback.DouyinCallbackParseService;
 import cn.daxpay.open.channel.douyin.service.close.DouyinCloseService;
 import cn.daxpay.open.channel.douyin.service.pay.DouyinPayService;
@@ -52,6 +55,7 @@ public class DouyinPayController {
     private final DouyinRefundServiceSync douyinRefundServiceSync;
     private final DouyinTransferService douyinTransferService;
     private final DouyinAllocService douyinAllocService;
+    private final DouyinAllocReceiverService douyinAllocReceiverService;
     private final DouyinCallbackParseService douyinCallbackParseService;
 
     /// 支付下单
@@ -106,6 +110,18 @@ public class DouyinPayController {
     @PostMapping("/alloc-sync")
     public DaxResult<DouyinAllocResp> allocSync(@Valid @RequestBody DouyinAllocReq req) {
         return DaxResult.ok(douyinAllocService.sync(req));
+    }
+
+    /// 绑定分账接收方(addSplitReceiver)
+    @PostMapping("/alloc-receiver/bind")
+    public DaxResult<DouyinAllocReceiverResp> allocReceiverBind(@Valid @RequestBody DouyinAllocReceiverReq req) {
+        return DaxResult.ok(douyinAllocReceiverService.bind(req));
+    }
+
+    /// 解绑分账接收方(deleteSplitReceiver)
+    @PostMapping("/alloc-receiver/unbind")
+    public DaxResult<DouyinAllocReceiverResp> allocReceiverUnbind(@Valid @RequestBody DouyinAllocReceiverReq req) {
+        return DaxResult.ok(douyinAllocReceiverService.unbind(req));
     }
 
     /// 支付回调验签解析(主应用转发)

@@ -9,6 +9,7 @@ import cn.daxpay.open.channel.alipay.req.AlipayRefundSyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipaySyncReq;
 import cn.daxpay.open.channel.alipay.req.AlipayTransferReq;
 import cn.daxpay.open.channel.alipay.req.AlipayAllocReq;
+import cn.daxpay.open.channel.alipay.req.AlipayAllocReceiverReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayAppAuthTokenResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayTransferCallbackParseResp;
@@ -19,6 +20,7 @@ import cn.daxpay.open.channel.alipay.resp.AlipayRefundSyncResp;
 import cn.daxpay.open.channel.alipay.resp.AlipaySyncResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayTransferResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayAllocResp;
+import cn.daxpay.open.channel.alipay.resp.AlipayAllocReceiverResp;
 import cn.daxpay.open.channel.alipay.service.auth.AlipayAppAuthTokenService;
 import cn.daxpay.open.channel.alipay.service.callback.AlipayCallbackParseService;
 import cn.daxpay.open.channel.alipay.service.close.AlipayCloseService;
@@ -28,6 +30,7 @@ import cn.daxpay.open.channel.alipay.service.refund.AlipayRefundSyncService;
 import cn.daxpay.open.channel.alipay.service.sync.AlipaySyncService;
 import cn.daxpay.open.channel.alipay.service.transfer.AlipayTransferService;
 import cn.daxpay.open.channel.alipay.service.alloc.AlipayAllocService;
+import cn.daxpay.open.channel.alipay.service.alloc.AlipayAllocReceiverService;
 import cn.daxpay.open.platform.core.result.DaxResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +57,7 @@ public class AlipayPayController {
     private final AlipayRefundSyncService alipayRefundSyncService;
     private final AlipayTransferService alipayTransferService;
     private final AlipayAllocService alipayAllocService;
+    private final AlipayAllocReceiverService alipayAllocReceiverService;
     private final AlipayCallbackParseService alipayCallbackParseService;
     private final AlipayAppAuthTokenService alipayAppAuthTokenService;
 
@@ -109,6 +113,18 @@ public class AlipayPayController {
     @PostMapping("/alloc-sync")
     public DaxResult<AlipayAllocResp> allocSync(@Valid @RequestBody AlipayAllocReq req) {
         return DaxResult.ok(alipayAllocService.sync(req));
+    }
+
+    /// 绑定分账接收方(alipay.trade.royalty.relation.bind, 直连/服务商共用)
+    @PostMapping("/alloc-receiver/bind")
+    public DaxResult<AlipayAllocReceiverResp> allocReceiverBind(@Valid @RequestBody AlipayAllocReceiverReq req) {
+        return DaxResult.ok(alipayAllocReceiverService.bind(req));
+    }
+
+    /// 解绑分账接收方(alipay.trade.royalty.relation.unbind, 直连/服务商共用)
+    @PostMapping("/alloc-receiver/unbind")
+    public DaxResult<AlipayAllocReceiverResp> allocReceiverUnbind(@Valid @RequestBody AlipayAllocReceiverReq req) {
+        return DaxResult.ok(alipayAllocReceiverService.unbind(req));
     }
 
     /// 支付回调验签解析(主应用转发)
