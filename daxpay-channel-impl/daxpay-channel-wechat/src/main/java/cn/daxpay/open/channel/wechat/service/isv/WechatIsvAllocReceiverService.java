@@ -17,9 +17,14 @@ import org.springframework.stereotype.Service;
 /// 状态回写与失败处理见主应用 [cn.daxpay.open.channel.wechat.service.isv.WechatIsvAllocReceiverService]。
 ///
 /// 注: 微信 ISV 的分账**执行**链路(profitsharing/orders)当前未接, 本服务仅覆盖接收方注册。
+/// 解绑遇"接收方不存在"视为幂等成功(对齐支付宝 USER_NOT_EXIST 容错)。
 @Slf4j
 @Service
 public class WechatIsvAllocReceiverService {
+
+    /// 微信"资源不存在"类错误码(解绑幂等容错)
+    private static final String ERR_CODE_NOT_FOUND = "NOT_FOUND";
+    private static final String ERR_CODE_RESOURCE_NOT_EXISTS = "RESOURCE_NOT_EXISTS";
 
     /// 添加分账接收方(服务商, sub_mchid 维度)
     public WechatAllocReceiverResp bind(WechatAllocReceiverReq req) {
@@ -59,6 +64,12 @@ public class WechatIsvAllocReceiverService {
             wxPayService.getProfitSharingService().removeReceiverV3(v3Req);
             return new WechatAllocReceiverResp();
         } catch (WxPayException e) {
+            // 分账接收方不存在视为幂等成功(通道侧已无绑定关系)
+            if (this.isReceiverNotExist(e)) {
+                log.info("微信服务商分账接收方解绑幂等成功(接收方不存在): subMchId={}, account={}",
+                        req.getCredential().getSubMchId(), req.getReceiverAccount());
+                return new WechatAllocReceiverResp();
+            }
             log.error("微信服务商分账接收方解绑失败: subMchId={}, account={}",
                     req.getCredential().getSubMchId(), req.getReceiverAccount(), e);
             WechatAllocReceiverResp resp = new WechatAllocReceiverResp();
@@ -66,6 +77,22 @@ public class WechatIsvAllocReceiverService {
             resp.setErrorMsg(StrUtil.blankToDefault(e.getErrCodeDes(), e.getMessage()));
             return resp;
         }
+    }
+
+    /// 是否为"分账接收方不存在"(解绑幂等容错)
+    ///
+    /// 微信对该场景无文档化错误码, 采用错误码精确匹配 + 描述组合匹配:
+    /// 描述须同时含"接收方/receiver"与"不存在/not exist"语义, 避免误吞"商户不存在"等其他错误。
+    private boolean isReceiverNotExist(WxPayException e) {
+        String code = e.getErrCode();
+        if (ERR_CODE_NOT_FOUND.equals(code) || ERR_CODE_RESOURCE_NOT_EXISTS.equals(code)) {
+            return true;
+        }
+        String text = StrUtil.blankToDefault(e.getErrCodeDes(), e.getMessage());
+        boolean cnHit = text.contains("接收方") && text.contains("不存在");
+        String lower = text.toLowerCase();
+        boolean enHit = lower.contains("receiver") && lower.contains("not exist");
+        return cnHit || enHit;
     }
 
     /// 填充接收方公共字段(类型/账号/名称/关系)
