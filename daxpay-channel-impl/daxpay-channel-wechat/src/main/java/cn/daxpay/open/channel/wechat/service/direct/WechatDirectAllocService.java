@@ -39,6 +39,9 @@ public class WechatDirectAllocService {
         v3Req.setTransactionId(req.getTransactionId());
         v3Req.setOutOrderNo(req.getOutOrderNo());
         v3Req.setUnfreezeUnsplit(true);
+        // appid 必传: 接收方类型含 PERSONAL_OPENID 时微信强制校验(openid 是 appid 维度账号),
+        // MERCHANT_ID 类型下多传无害; WxJava profitSharingV3 直接序列化请求体, 不会从 config 自动补
+        v3Req.setAppid(req.getCredential().getWxAppId());
         // 接收方列表
         List<ProfitSharingV3Request.Receiver> receivers = new ArrayList<>();
         if (req.getReceivers() != null) {
