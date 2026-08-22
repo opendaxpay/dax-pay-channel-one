@@ -5,6 +5,7 @@ import cn.daxpay.open.channel.douyin.req.DouyinCallbackParseReq;
 import cn.daxpay.open.channel.douyin.resp.DouyinCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinTransferCallbackParseResp;
 import cn.daxpay.open.channel.douyin.resp.DouyinAllocCallbackParseResp;
+import cn.daxpay.open.channel.douyin.utils.DouyinDateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.douyinpay.api.notification.RequestParam;
 import com.douyinpay.api.payments.common.ApiTransaction;
@@ -112,8 +113,11 @@ public class DouyinCallbackParseService {
             DouyinAllocCallbackParseResp resp = new DouyinAllocCallbackParseResp()
                     .setVerified(true)
                     .setOrderId(response.getOrderId())
+                    // 商户分账单号(平台 allocNo), 供主应用回调按 allocNo 定位分账单
+                    .setOutTradeNo(response.getOutTradeNo())
                     .setState(response.getState())
-                    .setSplitFinishTime(response.getSplitFinishTime());
+                    // 完成时间解析为 OffsetDateTime(无时区字面量按东八区)
+                    .setSplitFinishTime(DouyinDateUtil.parse(response.getSplitFinishTime()));
             // 映射逐明细结果
             List<DouyinAllocCallbackParseResp.ReceiverResult> results = new ArrayList<>();
             if (response.getReceiverSplitResultDtos() != null) {
@@ -122,7 +126,7 @@ public class DouyinCallbackParseService {
                             .setAccount(r.getAccount())
                             .setSplitStatus(r.getResult())
                             .setFailReason(r.getFailReason())
-                            .setFinishTime(r.getFinishTime()));
+                            .setFinishTime(DouyinDateUtil.parse(r.getFinishTime())));
                 }
             }
             resp.setReceiverResults(results);

@@ -3,6 +3,7 @@ package cn.daxpay.open.channel.douyin.resp;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /// # 抖音通道分账响应(发起/同步共用)
@@ -43,7 +44,7 @@ public class DouyinAllocResp {
         /// 失败原因
         private String failReason;
 
-        /// 明细完成时间(字符串, 东八区 yyyy-MM-dd HH:mm:ss)
-        private String finishTime;
+        /// 明细完成时间(子应用侧已解析, 无时区字面量按东八区补偏移)
+        private OffsetDateTime finishTime;
     }
 }
