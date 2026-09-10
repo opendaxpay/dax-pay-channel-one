@@ -19,6 +19,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 /// # 云闪付 RSA2 证书签名工具
 ///
@@ -112,7 +113,7 @@ public class UnionSignUtil {
     /// 构建待签名字符串(过滤空值、排除 signature、按 key 字典序)
     public String buildSignString(Map<String, ?> params) {
         return new TreeMap<>(params).entrySet().stream()
-                .filter(e -> e.getValue() != null && !"".equals(e.getValue()))
+                .filter(e -> Objects.nonNull(e.getValue()) && !"".equals(e.getValue()))
                 .filter(e -> !"signature".equals(e.getKey()))
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining("&"));

@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 银联商务通道退款同步服务
 ///
@@ -44,7 +45,7 @@ public class UmsRefundSyncService {
             json.put("instMid", INST_MID_QR);
             json.put("billNo", req.getOutTradeNo());
             json.put("refundOrderId", req.getOutRefundNo());
-            if (req.getBillDate() != null) {
+            if (Objects.nonNull(req.getBillDate())) {
                 json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
             }
             JSONObject response = client.queryQrOrder(json);
@@ -62,7 +63,7 @@ public class UmsRefundSyncService {
     private UmsRefundSyncResp parseQrResp(String outRefundNo, JSONObject response) {
         UmsRefundSyncResp resp = new UmsRefundSyncResp().setOutRefundNo(outRefundNo);
         JSONObject refundBillPayment = response.getJSONObject("refundBillPayment");
-        if (refundBillPayment != null) {
+        if (Objects.nonNull(refundBillPayment)) {
             String status = refundBillPayment.getStr("status");
             switch (status) {
                 case "TRADE_SUCCESS" -> resp.setRefundStatus("SUCCESS");

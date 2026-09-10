@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /// # 支付宝通道转账服务
 ///
@@ -140,7 +141,7 @@ public class AlipayTransferService {
         if (StrUtil.isNotBlank(req.getTransferSceneName())) {
             bizContent.set("transfer_scene_name", req.getTransferSceneName());
         }
-        if (req.getReportInfos() != null && !req.getReportInfos().isEmpty()) {
+        if (Objects.nonNull(req.getReportInfos()) && !req.getReportInfos().isEmpty()) {
             JSONArray reportInfos = new JSONArray();
             for (var info : req.getReportInfos()) {
                 JSONObject item = new JSONObject();

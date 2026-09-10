@@ -21,6 +21,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /// # 支付宝通道退款服务
 ///
@@ -96,7 +97,7 @@ public class AlipayRefundService {
             if (FUND_CHANGE_Y.equals(response.getFundChange())) {
                 resp.setComplete(true);
                 Date gmtRefundPay = response.getGmtRefundPay();
-                if (gmtRefundPay != null) {
+                if (Objects.nonNull(gmtRefundPay)) {
                     resp.setFinishTime(OffsetDateTime.ofInstant(gmtRefundPay.toInstant(), ZoneId.systemDefault()));
                 }
             }

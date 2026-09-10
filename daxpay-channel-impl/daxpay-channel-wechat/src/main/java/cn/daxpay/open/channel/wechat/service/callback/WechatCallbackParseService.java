@@ -11,6 +11,7 @@ import com.github.binarywang.wxpay.bean.transfer.TransferBillsNotifyResult;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.Objects;
 
 /// # 微信回调验签解析服务
 ///
@@ -37,10 +38,10 @@ public class WechatCallbackParseService {
                     .setTransactionId(result.getTransactionId())
                     .setTradeState(result.getTradeState())
                     .setSuccessTime(result.getSuccessTime());
-            if (result.getAmount() != null) {
+            if (Objects.nonNull(result.getAmount())) {
                 resp.setAmount(result.getAmount().getTotal().longValue());
             }
-            if (result.getPayer() != null) {
+            if (Objects.nonNull(result.getPayer())) {
                 resp.setOpenid(result.getPayer().getOpenid());
             }
             return resp;
@@ -66,7 +67,7 @@ public class WechatCallbackParseService {
                     .setRefundId(result.getRefundId())
                     .setRefundStatus(result.getRefundStatus())
                     .setSuccessTime(result.getSuccessTime());
-            if (result.getAmount() != null) {
+            if (Objects.nonNull(result.getAmount())) {
                 resp.setAmount(result.getAmount().getRefund().longValue());
             }
             return resp;

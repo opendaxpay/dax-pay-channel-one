@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /// # 支付宝通道分账服务
 ///
@@ -52,7 +53,7 @@ public class AlipayAllocService {
         bizContent.set("royalty_mode", StrUtil.blankToDefault(req.getRoyaltyMode(), ROYALTY_MODE_ASYNC));
         // 分账子参数
         JSONArray royaltyParams = new JSONArray();
-        if (req.getRoyaltyParameters() != null) {
+        if (Objects.nonNull(req.getRoyaltyParameters())) {
             for (AlipayAllocReq.RoyaltyParam rp : req.getRoyaltyParameters()) {
                 JSONObject item = new JSONObject();
                 item.set("trans_in", rp.getTransIn());
@@ -113,7 +114,7 @@ public class AlipayAllocService {
             resp.setSettleNo(response.getOutRequestNo());
             // 映射逐明细结果(查询响应不返回 settleNo, outRequestNo 即平台 allocNo)
             List<AlipayAllocResp.RoyaltyDetailResult> detailResults = new ArrayList<>();
-            if (response.getRoyaltyDetailList() != null) {
+            if (Objects.nonNull(response.getRoyaltyDetailList())) {
                 for (var r : response.getRoyaltyDetailList()) {
                     AlipayAllocResp.RoyaltyDetailResult dr = new AlipayAllocResp.RoyaltyDetailResult();
                     dr.setDetailId(r.getDetailId());
@@ -135,7 +136,7 @@ public class AlipayAllocService {
 
     /// 分 → 元字符串(支付宝金额单位为元)
     private String fenToYuan(Long amount) {
-        if (amount == null) {
+        if (Objects.isNull(amount)) {
             return "0";
         }
         return BigDecimal.valueOf(amount).movePointLeft(2)
@@ -144,7 +145,7 @@ public class AlipayAllocService {
 
     /// Date → 东八区时间字符串(yyyy-MM-dd HH:mm:ss)
     private String formatDate(Date date) {
-        if (date == null) {
+        if (Objects.isNull(date)) {
             return null;
         }
         return date.toInstant()

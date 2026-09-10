@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /// # OffsetDateTime 反序列化器, 支持三种格式:
 /// ## - ISO 8601 带偏移: 2026-06-13T08:30:00Z 或 2026-06-13T16:30:00+08:00
@@ -23,7 +24,7 @@ public class DaxpayOffsetDateTimeDeserializer extends ValueDeserializer<OffsetDa
     @Override
     public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
         String text = p.getString();
-        if (text == null || text.isBlank()) {
+        if (Objects.isNull(text) || text.isBlank()) {
             return null;
         }
         try {

@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /// # 微信通道转账服务
 ///
@@ -70,7 +71,7 @@ public class WechatDirectTransferService {
     private List<TransferBillsRequest.TransferSceneReportInfo> buildReportInfos(
             List<WechatTransferReq.ReportInfo> reportInfos) {
         List<TransferBillsRequest.TransferSceneReportInfo> result = new ArrayList<>();
-        if (reportInfos != null) {
+        if (Objects.nonNull(reportInfos)) {
             for (WechatTransferReq.ReportInfo info : reportInfos) {
                 var reportInfo = new TransferBillsRequest.TransferSceneReportInfo();
                 reportInfo.setInfoType(info.getInfoType());

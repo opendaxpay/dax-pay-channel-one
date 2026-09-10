@@ -16,6 +16,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 云闪付(直连银联 ACP) HTTP 客户端
 ///
@@ -130,7 +131,7 @@ public class UnionClient {
         signParam(param);
         String url = String.format(urlTemplate, host);
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        param.forEach((k, v) -> formData.add(k, v == null ? "" : String.valueOf(v)));
+        param.forEach((k, v) -> formData.add(k, Objects.isNull(v) ? "" : String.valueOf(v)));
         String resStr;
         try {
             resStr = restClient.post()
@@ -190,7 +191,7 @@ public class UnionClient {
         StringBuilder sb = new StringBuilder();
         sb.append("<form action=\"").append(action).append("\" method=\"post\">");
         param.forEach((k, v) -> sb.append("<input type=\"hidden\" name=\"")
-                .append(k).append("\" value=\"").append(v == null ? "" : v).append("\"/>"));
+                .append(k).append("\" value=\"").append(Objects.isNull(v) ? "" : v).append("\"/>"));
         sb.append("</form>");
         sb.append("<script>document.forms[0].submit();</script>");
         return sb.toString();

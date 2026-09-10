@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /// # 微信通道分账服务
 ///
@@ -44,7 +45,7 @@ public class WechatDirectAllocService {
         v3Req.setAppid(req.getCredential().getWxAppId());
         // 接收方列表
         List<ProfitSharingV3Request.Receiver> receivers = new ArrayList<>();
-        if (req.getReceivers() != null) {
+        if (Objects.nonNull(req.getReceivers())) {
             for (WechatAllocReq.Receiver r : req.getReceivers()) {
                 ProfitSharingV3Request.Receiver receiver = new ProfitSharingV3Request.Receiver();
                 receiver.setType(r.getType());
@@ -82,11 +83,11 @@ public class WechatDirectAllocService {
             resp.setState(result.getState());
             // 映射逐明细结果
             List<WechatAllocResp.ReceiverResult> receiverResults = new ArrayList<>();
-            if (result.getReceivers() != null) {
+            if (Objects.nonNull(result.getReceivers())) {
                 for (ProfitSharingV3Result.Receiver r : result.getReceivers()) {
                     WechatAllocResp.ReceiverResult rr = new WechatAllocResp.ReceiverResult();
                     rr.setAccount(r.getAccount());
-                    rr.setAmount(r.getAmount() != null ? r.getAmount().longValue() : null);
+                    rr.setAmount(Objects.nonNull(r.getAmount()) ? r.getAmount().longValue() : null);
                     rr.setResult(r.getResult());
                     rr.setFailReason(r.getFailReason());
                     rr.setFinishTime(parseDate(r.getFinishTime()));

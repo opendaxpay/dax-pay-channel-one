@@ -14,6 +14,7 @@ import com.douyinpay.define.DomainName;
 import lombok.experimental.UtilityClass;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 /// # 抖音支付 SDK 客户端构建与调用工具
 ///
@@ -103,7 +104,7 @@ public class DouyinSdkConfig {
 
     /// 构建客户端失败时抛出 SDK 调用异常(保留原始凭证标识便于排查)
     public static void assertClientNotNull(DouyinpayClient client, String mchId) {
-        if (client == null) {
+        if (Objects.isNull(client)) {
             throw new SdkCallException("抖音 SDK 客户端构建失败: mchId=" + mchId);
         }
     }

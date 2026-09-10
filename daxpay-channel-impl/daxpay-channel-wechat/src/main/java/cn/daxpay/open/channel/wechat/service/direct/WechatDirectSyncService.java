@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /// # 微信通道支付同步服务
 ///
@@ -48,16 +49,16 @@ public class WechatDirectSyncService {
                 resp.setSuccessTime(OffsetDateTime.parse(result.getSuccessTime(), RFC3339_FORMATTER));
             }
             // 金额(支付成功时返回, 分)
-            if (result.getAmount() != null) {
-                if (result.getAmount().getTotal() != null) {
+            if (Objects.nonNull(result.getAmount())) {
+                if (Objects.nonNull(result.getAmount().getTotal())) {
                     resp.setTotalAmount(result.getAmount().getTotal().longValue());
                 }
-                if (result.getAmount().getPayerTotal() != null) {
+                if (Objects.nonNull(result.getAmount().getPayerTotal())) {
                     resp.setPayerTotal(result.getAmount().getPayerTotal().longValue());
                 }
             }
             // 用户标识(支付成功时返回)
-            if (result.getPayer() != null) {
+            if (Objects.nonNull(result.getPayer())) {
                 resp.setOpenId(result.getPayer().getOpenid());
             }
             return resp;

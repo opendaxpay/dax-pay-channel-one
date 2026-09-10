@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 云闪付通道支付下单服务
 ///
@@ -48,7 +49,7 @@ public class UnionPayService {
         log.info("云闪付通道收到支付请求: outTradeNo={}, amount={}, method={}",
                 req.getOutTradeNo(), req.getAmount(), req.getMethod());
         UnionPayMethod method = req.getMethod();
-        if (method == null) {
+        if (Objects.isNull(method)) {
             throw new IllegalArgumentException("支付方式(method)不能为空");
         }
         return switch (method) {

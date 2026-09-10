@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /// # 微信服务商通道退款服务
 ///
@@ -82,11 +83,11 @@ public class WechatIsvRefundService {
                 resp.setFinishTime(OffsetDateTime.parse(result.getSuccessTime(), RFC3339_FORMATTER));
             }
             // 金额(分)
-            if (result.getAmount() != null) {
-                if (result.getAmount().getRefund() != null) {
+            if (Objects.nonNull(result.getAmount())) {
+                if (Objects.nonNull(result.getAmount().getRefund())) {
                     resp.setRefundAmount(result.getAmount().getRefund().longValue());
                 }
-                if (result.getAmount().getPayerRefund() != null) {
+                if (Objects.nonNull(result.getAmount().getPayerRefund())) {
                     resp.setPayerRefund(result.getAmount().getPayerRefund().longValue());
                 }
             }

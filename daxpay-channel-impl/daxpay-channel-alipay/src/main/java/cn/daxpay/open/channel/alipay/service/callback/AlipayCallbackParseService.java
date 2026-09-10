@@ -54,7 +54,7 @@ public class AlipayCallbackParseService {
     public AlipayTransferCallbackParseResp parseTransfer(AlipayCallbackParseReq req) {
         AlipayTransferCallbackParseResp resp = new AlipayTransferCallbackParseResp();
         Map<String, String> params = req.getParams();
-        if (params == null || params.isEmpty()) {
+        if (Objects.isNull(params) || params.isEmpty()) {
             log.error("支付宝转账回调参数为空");
             return resp.setSuccess(false);
         }
@@ -80,7 +80,7 @@ public class AlipayCallbackParseService {
         AlipayCallbackParseResp resp = new AlipayCallbackParseResp()
                 .setTradeType(refund ? "REFUND" : "PAY");
         Map<String, String> params = req.getParams();
-        if (params == null || params.isEmpty()) {
+        if (Objects.isNull(params) || params.isEmpty()) {
             log.error("支付宝回调参数为空: refund={}", refund);
             return resp.setSuccess(false);
         }
@@ -115,7 +115,7 @@ public class AlipayCallbackParseService {
 
     /// 验证支付宝回调签名(公钥模式 rsaCheckV1 / 证书模式 rsaCertCheckV1)
     private boolean verifySign(AlipaySdkCredential credential, Map<String, String> params) {
-        if (credential == null) {
+        if (Objects.isNull(credential)) {
             return false;
         }
         String signType = StrUtil.isBlank(credential.getSignType()) ? "RSA2" : credential.getSignType();

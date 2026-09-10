@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 /// # 银联商务回调验签解析服务
 ///
@@ -72,7 +73,7 @@ public class UmsCallbackParseService {
         resp.setRealAmount(param.getLong("receiptAmount"));
         // 扫码明细在 billPayment 嵌套对象中
         JSONObject billPayment = param.getJSONObject("billPayment");
-        if (billPayment != null) {
+        if (Objects.nonNull(billPayment)) {
             resp.setFinishTime(billPayment.getStr("payTime"));
             resp.setBuyerId(billPayment.getStr("buyerId"));
             resp.setTargetSys(billPayment.getStr("targetSys"));

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Objects;
 
 /// # 支付宝通道支付同步服务
 ///
@@ -53,7 +54,7 @@ public class AlipaySyncService {
             resp.setOutTradeNo(response.getOutTradeNo());
             // 付款时间(Date → OffsetDateTime)
             Date sendPayDate = response.getSendPayDate();
-            if (sendPayDate != null) {
+            if (Objects.nonNull(sendPayDate)) {
                 resp.setSendPayDate(OffsetDateTime.ofInstant(sendPayDate.toInstant(), ZoneId.systemDefault()));
             }
             resp.setBuyerUserId(response.getBuyerUserId());

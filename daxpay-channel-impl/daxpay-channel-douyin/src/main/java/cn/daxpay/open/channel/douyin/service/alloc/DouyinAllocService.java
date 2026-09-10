@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /// # 抖音通道分账服务
 ///
@@ -52,7 +53,7 @@ public class DouyinAllocService {
         }
         // 接收方列表
         List<ReceiverInfoDto> receiverInfos = new ArrayList<>();
-        if (req.getReceiverInfoDtos() != null) {
+        if (Objects.nonNull(req.getReceiverInfoDtos())) {
             for (DouyinAllocReq.ReceiverInfo r : req.getReceiverInfoDtos()) {
                 ReceiverInfoDto dto = new ReceiverInfoDto();
                 dto.setType(r.getType());
@@ -95,11 +96,11 @@ public class DouyinAllocService {
             resp.setStatus(response.getState());
             // 映射逐明细结果
             List<DouyinAllocResp.ReceiverSplitResult> results = new ArrayList<>();
-            if (response.getReceiverSplitResultDtos() != null) {
+            if (Objects.nonNull(response.getReceiverSplitResultDtos())) {
                 for (ReceiverSplitResultDto r : response.getReceiverSplitResultDtos()) {
                     DouyinAllocResp.ReceiverSplitResult rr = new DouyinAllocResp.ReceiverSplitResult();
                     rr.setAccount(r.getAccount());
-                    rr.setAmount(r.getAmount() != null ? r.getAmount().longValue() : null);
+                    rr.setAmount(Objects.nonNull(r.getAmount()) ? r.getAmount().longValue() : null);
                     rr.setSplitStatus(r.getResult());
                     rr.setFailReason(r.getFailReason());
                     // 明细完成时间解析为 OffsetDateTime(无时区字面量按东八区), 与主应用镜像字段类型对齐
@@ -137,9 +138,9 @@ public class DouyinAllocService {
         String msg = StrUtil.blankToDefault(e.getErrorMessage(), e.getMessage());
         try {
             JsonObject body = GsonUtil.getGson().fromJson(e.getResponseBody(), JsonObject.class);
-            if (body != null && body.has("detail") && body.get("detail").isJsonObject()) {
+            if (Objects.nonNull(body) && body.has("detail") && body.get("detail").isJsonObject()) {
                 JsonElement issue = body.getAsJsonObject("detail").get("issue");
-                if (issue != null && !issue.isJsonNull() && StrUtil.isNotBlank(issue.getAsString())) {
+                if (Objects.nonNull(issue) && !issue.isJsonNull() && StrUtil.isNotBlank(issue.getAsString())) {
                     msg = msg + ": " + issue.getAsString();
                 }
             }

@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 /// # 支付金额工具类
 ///
@@ -49,7 +50,7 @@ public class PayUtil {
     /// @param allowNull 是否允许为空
     /// @return 分
     public int conversionYuanToFen(BigDecimal yuan, boolean allowNull) {
-        if (allowNull && yuan == null) {
+        if (allowNull && Objects.isNull(yuan)) {
             return 0;
         }
         return conversionYuanToFen(yuan);

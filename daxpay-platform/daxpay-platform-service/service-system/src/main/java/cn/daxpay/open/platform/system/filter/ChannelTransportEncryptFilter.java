@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /// # 通道传输报文加解密过滤器
 ///
@@ -61,7 +62,7 @@ public class ChannelTransportEncryptFilter extends OncePerRequestFilter implemen
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         HttpServletRequest wrappedRequest = decryptRequest(request, response);
-        if (wrappedRequest == null) {
+        if (Objects.isNull(wrappedRequest)) {
             // 已写 400
             return;
         }
@@ -94,7 +95,7 @@ public class ChannelTransportEncryptFilter extends OncePerRequestFilter implemen
         } catch (Exception e) {
             log.warn("通道传输解密失败 path={} type={}", request.getRequestURI(), e.getClass().getSimpleName());
             // 通道传输解密失败（优先用异常上的 messageKey）
-            String key = e.getMessage() != null ? e.getMessage() : ChannelAesGcmEncryptor.MSG_DECRYPT_FAILED;
+            String key = Objects.nonNull(e.getMessage()) ? e.getMessage() : ChannelAesGcmEncryptor.MSG_DECRYPT_FAILED;
             writeBadRequest(response, I18nUtil.get(key));
             return null;
         }

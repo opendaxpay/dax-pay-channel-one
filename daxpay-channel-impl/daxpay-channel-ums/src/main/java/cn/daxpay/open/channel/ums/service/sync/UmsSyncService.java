@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 银联商务通道支付同步服务
 ///
@@ -42,7 +43,7 @@ public class UmsSyncService {
         if (req.getMethod() == UmsPayMethod.QRCODE) {
             json.put("billNo", req.getOutTradeNo());
             // billDate 由主应用以 UTC OffsetDateTime 传入, 按银联商务东八区转换
-            if (req.getBillDate() != null) {
+            if (Objects.nonNull(req.getBillDate())) {
                 json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
             }
             JSONObject response = client.queryQrOrder(json);
@@ -64,7 +65,7 @@ public class UmsSyncService {
                 resp.setTotalAmount(response.getLong("totalAmount"));
                 // 扫码支付明细在 billPayment 嵌套对象中
                 JSONObject billPayment = response.getJSONObject("billPayment");
-                if (billPayment != null) {
+                if (Objects.nonNull(billPayment)) {
                     resp.setRealAmount(billPayment.getLong("buyerPayAmount"));
                     resp.setPayTime(billPayment.getStr("payTime"));
                     resp.setBuyerId(billPayment.getStr("buyerId"));

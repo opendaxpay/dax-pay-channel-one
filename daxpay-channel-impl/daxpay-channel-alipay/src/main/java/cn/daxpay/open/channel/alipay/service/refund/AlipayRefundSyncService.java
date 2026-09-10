@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Objects;
 
 /// # 支付宝通道退款同步服务
 ///
@@ -69,7 +70,7 @@ public class AlipayRefundSyncService {
 
             // 退款完成时间(Date → OffsetDateTime)
             Date gmtRefundPay = response.getGmtRefundPay();
-            if (gmtRefundPay != null) {
+            if (Objects.nonNull(gmtRefundPay)) {
                 resp.setFinishTime(OffsetDateTime.ofInstant(gmtRefundPay.toInstant(), ZoneId.systemDefault()));
             }
 

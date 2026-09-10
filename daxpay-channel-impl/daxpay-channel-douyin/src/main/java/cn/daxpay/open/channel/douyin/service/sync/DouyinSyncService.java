@@ -8,6 +8,7 @@ import com.douyinpay.api.payments.nativepay.models.ApiQueryOrderByOutTradeNoRequ
 import com.douyinpay.exception.DouyinpayException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.Objects;
 
 /// # 抖音通道支付同步服务
 ///
@@ -32,10 +33,10 @@ public class DouyinSyncService {
                     .setTransactionId(result.getTransactionId())
                     .setTradeState(result.getTradeState())
                     .setSuccessTime(result.getSuccessTime());
-            if (result.getAmount() != null) {
+            if (Objects.nonNull(result.getAmount())) {
                 resp.setTotalAmount(result.getAmount().getTotal().longValue());
             }
-            if (result.getPayer() != null) {
+            if (Objects.nonNull(result.getPayer())) {
                 resp.setOpenid(result.getPayer().getOpenid());
             }
             return resp;

@@ -3,6 +3,7 @@ package cn.daxpay.open.channel.ums.util;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /// # 银联商务通道日期工具
 ///
@@ -55,7 +56,7 @@ public final class UmsDateUtil {
     /// 主应用存储统一为 UTC, 银联商务 billDate 要求北京时间字面量,
     /// 查询/退款/退款同步场景由子应用调用本方法按通道时区转换。
     public static String formatCstDate(OffsetDateTime time) {
-        if (time == null) {
+        if (Objects.isNull(time)) {
             return null;
         }
         return time.withOffsetSameInstant(CST).format(DATE_FORMATTER);

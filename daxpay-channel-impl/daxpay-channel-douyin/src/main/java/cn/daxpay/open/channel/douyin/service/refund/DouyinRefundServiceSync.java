@@ -8,6 +8,7 @@ import com.douyinpay.api.refund.model.ApiQueryByOutRefundNoRequest;
 import com.douyinpay.exception.DouyinpayException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.Objects;
 
 /// # 抖音通道退款同步服务
 ///
@@ -28,7 +29,7 @@ public class DouyinRefundServiceSync {
                     .setRefundId(result.getRefundId())
                     .setRefundStatus(result.getRefundStatus())
                     .setFinishTime(result.getSuccessTime());
-            if (result.getAmount() != null) {
+            if (Objects.nonNull(result.getAmount())) {
                 resp.setRefundAmount(result.getAmount().getRefund().longValue());
             }
             return resp;

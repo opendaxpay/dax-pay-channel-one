@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 银联商务通道支付下单服务
 ///
@@ -43,7 +44,7 @@ public class UmsPayService {
         log.info("银联商务通道收到支付请求: outTradeNo={}, amount={}, method={}",
                 req.getOutTradeNo(), req.getAmount(), req.getMethod());
         UmsPayMethod method = req.getMethod();
-        if (method == null) {
+        if (Objects.isNull(method)) {
             throw new IllegalArgumentException("支付方式(method)不能为空");
         }
         return switch (method) {

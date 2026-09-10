@@ -26,6 +26,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 抖音通道支付下单服务
 ///
@@ -48,7 +49,7 @@ public class DouyinPayService {
         log.info("抖音通道收到支付请求: outTradeNo={}, amount={}, method={}",
                 req.getOutTradeNo(), req.getAmount(), req.getMethod());
         DouyinPayMethod method = req.getMethod();
-        if (method == null) {
+        if (Objects.isNull(method)) {
             throw new ChannelServiceException(ChannelErrorCode.VALIDATE_PARAMS.getCode(),
                     "channel.error.douyinPayMethodNull");
         }
@@ -70,7 +71,7 @@ public class DouyinPayService {
         request.setNotifyUrl(req.getNotifyUrl());
         // 分账订单: 透传 settle_info.profit_sharing=true
         applyAllocation(request, req);
-        if (req.getExpiredTime() != null) {
+        if (Objects.nonNull(req.getExpiredTime())) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
         var amount = new com.douyinpay.api.payments.nativepay.models.Amount();
@@ -84,7 +85,7 @@ public class DouyinPayService {
         }
         try {
             var response = DouyinSdkConfig.nativeService(req.getCredential()).prepay(request);
-            if (response == null || StrUtil.isBlank(response.getCodeUrl())) {
+            if (Objects.isNull(response) || StrUtil.isBlank(response.getCodeUrl())) {
                 throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                         "channel.error.douyinPayFailed", "未返回二维码链接");
             }
@@ -118,7 +119,7 @@ public class DouyinPayService {
         request.setNotifyUrl(req.getNotifyUrl());
         // 分账订单: 透传 settle_info.profit_sharing=true
         applyAllocation(request, req);
-        if (req.getExpiredTime() != null) {
+        if (Objects.nonNull(req.getExpiredTime())) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
         var amount = new com.douyinpay.api.payments.jsapi.models.Amount();
@@ -135,7 +136,7 @@ public class DouyinPayService {
         request.setPayerInfo(payer);
         try {
             var response = DouyinSdkConfig.jsapiService(req.getCredential()).prepay(request);
-            if (response == null || StrUtil.isBlank(response.getPrepayId())) {
+            if (Objects.isNull(response) || StrUtil.isBlank(response.getPrepayId())) {
                 throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                         "channel.error.douyinPayFailed", "未返回prepay_id");
             }
@@ -175,7 +176,7 @@ public class DouyinPayService {
         request.setNotifyUrl(req.getNotifyUrl());
         // 分账订单: 透传 settle_info.profit_sharing=true
         applyAllocation(request, req);
-        if (req.getExpiredTime() != null) {
+        if (Objects.nonNull(req.getExpiredTime())) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
         var amount = new Amount();
@@ -189,7 +190,7 @@ public class DouyinPayService {
         }
         try {
             var response = DouyinSdkConfig.appService(req.getCredential()).prepay(request);
-            if (response == null || StrUtil.isBlank(response.getPrepayId())) {
+            if (Objects.isNull(response) || StrUtil.isBlank(response.getPrepayId())) {
                 throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                         "channel.error.douyinPayFailed", "未返回prepay_id");
             }
@@ -214,7 +215,7 @@ public class DouyinPayService {
         request.setNotifyUrl(req.getNotifyUrl());
         // 分账订单: 透传 settle_info.profit_sharing=true
         applyAllocation(request, req);
-        if (req.getExpiredTime() != null) {
+        if (Objects.nonNull(req.getExpiredTime())) {
             request.setTimeExpire(formatRfc3339(req.getExpiredTime()));
         }
         var amount = new com.douyinpay.api.payments.h5.models.Amount();
@@ -231,7 +232,7 @@ public class DouyinPayService {
         request.setSceneInfo(sceneInfo);
         try {
             var response = DouyinSdkConfig.h5Service(req.getCredential()).prepay(request);
-            if (response == null || StrUtil.isBlank(response.getH5Url())) {
+            if (Objects.isNull(response) || StrUtil.isBlank(response.getH5Url())) {
                 throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
                         "channel.error.douyinPayFailed", "未返回h5_url");
             }

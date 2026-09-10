@@ -226,11 +226,11 @@ public class WechatIsvPayService {
             }
         }
         // 金额(分)
-        if (result.amount != null) {
-            if (result.amount.total != null) {
+        if (Objects.nonNull(result.amount)) {
+            if (Objects.nonNull(result.amount.total)) {
                 resp.setTotalAmount(result.amount.total.longValue());
             }
-            if (result.amount.payerTotal != null) {
+            if (Objects.nonNull(result.amount.payerTotal)) {
                 resp.setPayerTotal(result.amount.payerTotal.longValue());
             }
         }
@@ -253,7 +253,7 @@ public class WechatIsvPayService {
         amount.setCurrency("CNY");
         request.setAmount(amount);
         // 过期时间(RFC3339, 无小数秒, 东八区)
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             request.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         return request;

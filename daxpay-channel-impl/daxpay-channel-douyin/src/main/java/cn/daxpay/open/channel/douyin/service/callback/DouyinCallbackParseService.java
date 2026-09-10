@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /// # 抖音回调验签解析服务
 ///
@@ -44,10 +45,10 @@ public class DouyinCallbackParseService {
                     .setTransactionId(transaction.getTransactionId())
                     .setTradeState(transaction.getTradeState())
                     .setSuccessTime(transaction.getSuccessTime());
-            if (transaction.getAmount() != null) {
+            if (Objects.nonNull(transaction.getAmount())) {
                 resp.setAmount(transaction.getAmount().getTotal().longValue());
             }
-            if (transaction.getPayer() != null) {
+            if (Objects.nonNull(transaction.getPayer())) {
                 resp.setOpenid(transaction.getPayer().getOpenid());
             }
             return resp;
@@ -71,7 +72,7 @@ public class DouyinCallbackParseService {
                     .setRefundId(refund.getRefundId())
                     .setRefundStatus(refund.getRefundStatus())
                     .setSuccessTime(refund.getSuccessTime());
-            if (refund.getAmount() != null) {
+            if (Objects.nonNull(refund.getAmount())) {
                 resp.setAmount(refund.getAmount().getRefund().longValue());
             }
             return resp;
@@ -120,7 +121,7 @@ public class DouyinCallbackParseService {
                     .setSplitFinishTime(DouyinDateUtil.parse(response.getSplitFinishTime()));
             // 映射逐明细结果
             List<DouyinAllocCallbackParseResp.ReceiverResult> results = new ArrayList<>();
-            if (response.getReceiverSplitResultDtos() != null) {
+            if (Objects.nonNull(response.getReceiverSplitResultDtos())) {
                 for (ReceiverSplitResultDto r : response.getReceiverSplitResultDtos()) {
                     results.add(new DouyinAllocCallbackParseResp.ReceiverResult()
                             .setAccount(r.getAccount())

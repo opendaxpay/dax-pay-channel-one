@@ -115,7 +115,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getReturnUrl())) {
             request.setReturnUrl(req.getReturnUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         // GET 方式返回可直接跳转的 URL
@@ -146,7 +146,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradeAppPayResponse alipayResp = client.sdkExecute(request);
@@ -180,7 +180,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getReturnUrl())) {
             request.setReturnUrl(req.getReturnUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         // GET 方式返回可直接跳转的 URL
@@ -210,7 +210,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradePrecreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
@@ -241,7 +241,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradePayResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);
@@ -251,7 +251,7 @@ public class AlipayPayService {
             resp.setTradeNo(alipayResp.getTradeNo());
             resp.setComplete(true);
             Date gmtPayment = alipayResp.getGmtPayment();
-            if (gmtPayment != null) {
+            if (Objects.nonNull(gmtPayment)) {
                 resp.setFinishTime(OffsetDateTime.ofInstant(gmtPayment.toInstant(), ZoneId.systemDefault()));
             }
             // 金额(元转分)
@@ -297,7 +297,7 @@ public class AlipayPayService {
         if (StrUtil.isNotBlank(req.getNotifyUrl())) {
             request.setNotifyUrl(req.getNotifyUrl());
         }
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             model.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         AlipayTradeCreateResponse alipayResp = AlipaySdkConfig.execute(client, req.getCredential(), request);

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /// # 云闪付通道日期工具
 ///
@@ -33,7 +34,7 @@ public final class UnionDateUtil {
     /// 银联返回无时区时间字面量, 先用 [LocalDateTime] 接住再附加东八区偏移。
     /// (通道时间解析中间步骤, 最终落入实体的仍是 OffsetDateTime)
     public static OffsetDateTime parseCst(String text) {
-        if (text == null || text.isBlank()) {
+        if (Objects.isNull(text) || text.isBlank()) {
             return null;
         }
         return LocalDateTime.parse(text, TXN_TIME_FORMATTER).atOffset(CST);

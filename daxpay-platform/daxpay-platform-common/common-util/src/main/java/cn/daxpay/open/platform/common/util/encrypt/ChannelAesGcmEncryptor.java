@@ -7,6 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Objects;
 
 /// # 通道传输 AES-256-GCM 加密器（单密钥、无版本前缀）
 ///
@@ -42,7 +43,7 @@ public class ChannelAesGcmEncryptor {
 
     /// 校验密钥长度
     public static void validateKey(String key) {
-        if (key == null || key.length() != KEY_LENGTH) {
+        if (Objects.isNull(key) || key.length() != KEY_LENGTH) {
             // 通道传输加密密钥长度非法（message 为 i18n key，参数由调用方传入 I18nUtil）
             throw new IllegalArgumentException(MSG_KEY_INVALID);
         }
@@ -50,7 +51,7 @@ public class ChannelAesGcmEncryptor {
 
     /// 加密明文
     public String encrypt(String plaintext) {
-        if (plaintext == null) {
+        if (Objects.isNull(plaintext)) {
             return null;
         }
         try {
@@ -76,7 +77,7 @@ public class ChannelAesGcmEncryptor {
 
     /// 解密密文
     public String decrypt(String ciphertext) {
-        if (ciphertext == null) {
+        if (Objects.isNull(ciphertext)) {
             return null;
         }
         try {

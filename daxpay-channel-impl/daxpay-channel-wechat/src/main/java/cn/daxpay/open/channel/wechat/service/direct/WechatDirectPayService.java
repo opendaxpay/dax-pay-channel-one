@@ -227,11 +227,11 @@ public class WechatDirectPayService {
         }
         // 金额(分)
         WxPayCodepayResult.Amount resultAmount = result.getAmount();
-        if (resultAmount != null) {
-            if (resultAmount.getTotal() != null) {
+        if (Objects.nonNull(resultAmount)) {
+            if (Objects.nonNull(resultAmount.getTotal())) {
                 resp.setTotalAmount(resultAmount.getTotal().longValue());
             }
-            if (resultAmount.getPayerTotal() != null) {
+            if (Objects.nonNull(resultAmount.getPayerTotal())) {
                 resp.setPayerTotal(resultAmount.getPayerTotal().longValue());
             }
         }
@@ -254,7 +254,7 @@ public class WechatDirectPayService {
         amount.setCurrency("CNY");
         request.setAmount(amount);
         // 过期时间(RFC3339, 无小数秒, 东八区)
-        if (req.getExpireTime() != null) {
+        if (Objects.nonNull(req.getExpireTime())) {
             request.setTimeExpire(formatExpire(req.getExpireTime()));
         }
         // 分账订单: 透传 settle_info.profit_sharing=true

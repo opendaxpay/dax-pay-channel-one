@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 /// # 通道适配子应用生产部署模式启动期校验器
 ///
@@ -65,7 +66,7 @@ public class DeploymentModeEnforcer implements EnvironmentPostProcessor {
     /// 推断部署模式: 显式配置优先, 否则按 active profile 推断
     private String resolveMode(ConfigurableEnvironment env) {
         String explicit = env.getProperty("daxpay.platform.deployment.mode");
-        if (explicit != null && !explicit.isBlank()) {
+        if (Objects.nonNull(explicit) && !explicit.isBlank()) {
             return explicit.toUpperCase();
         }
         // 未显式配置: 含 prod profile → PROD, 否则 → DEV

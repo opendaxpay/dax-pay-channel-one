@@ -14,6 +14,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 银联商务通道退款服务
 ///
@@ -48,7 +49,7 @@ public class UmsRefundService {
             // 扫码退款
             json.put("billNo", req.getOutTradeNo());
             // billDate 由主应用以 UTC OffsetDateTime 传入, 按银联商务东八区转换
-            if (req.getBillDate() != null) {
+            if (Objects.nonNull(req.getBillDate())) {
                 json.put("billDate", UmsDateUtil.formatCstDate(req.getBillDate()));
             }
             json.put("instMid", INST_MID_QR);

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /// # 抖音通道转账服务
 ///
@@ -61,7 +62,7 @@ public class DouyinTransferService {
             body.set("user_recv_perception", StrUtil.sub(req.getPerception(), 0, 64));
         }
         // 转账场景报备信息(按场景要求的 info_type 填写)
-        if (req.getReportInfos() != null && !req.getReportInfos().isEmpty()) {
+        if (Objects.nonNull(req.getReportInfos()) && !req.getReportInfos().isEmpty()) {
             JSONArray reportArray = new JSONArray();
             for (DouyinTransferReq.ReportInfo info : req.getReportInfos()) {
                 JSONObject item = new JSONObject();
@@ -98,7 +99,7 @@ public class DouyinTransferService {
             DouyinpayResponse<DouyinTransferApiResp> response = client.execute(request, DouyinTransferApiResp.class);
             response.validate();
             DouyinTransferApiResp data = response.getApiResponse();
-            if (data != null) {
+            if (Objects.nonNull(data)) {
                 resp.setTransferBillNo(data.getTransferBillNo());
                 resp.setState(data.getState());
             }
@@ -126,7 +127,7 @@ public class DouyinTransferService {
             DouyinpayResponse<DouyinTransferApiResp> response = client.execute(request, DouyinTransferApiResp.class);
             response.validate();
             DouyinTransferApiResp data = response.getApiResponse();
-            if (data != null) {
+            if (Objects.nonNull(data)) {
                 resp.setTransferBillNo(data.getTransferBillNo());
                 resp.setState(data.getState());
                 resp.setFailReason(data.getFailReason());

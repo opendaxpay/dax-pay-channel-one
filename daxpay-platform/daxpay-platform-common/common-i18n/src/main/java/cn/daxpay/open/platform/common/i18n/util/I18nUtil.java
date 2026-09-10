@@ -4,6 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /// # 国际化工具类
 ///
@@ -26,7 +27,7 @@ public final class I18nUtil {
     /// @param args 消息参数 (可选, 对应 JSON 中的 {0}、{1} 占位符)
     /// @return 翻译后的文本; 若 messageSource 未初始化或 key 不存在则返回 code 本身
     public static String get(String code, Object... args) {
-        if (messageSource == null) {
+        if (Objects.isNull(messageSource)) {
             return code;
         }
         var locale = LocaleContextHolder.getLocale();
@@ -44,7 +45,7 @@ public final class I18nUtil {
     /// @param args 消息参数(可选)
     /// @return 翻译后的文本; 若 messageSource 未初始化或 key 不存在则返回 code 本身
     public static String get(String code, Locale locale, Object... args) {
-        if (messageSource == null) {
+        if (Objects.isNull(messageSource)) {
             return code;
         }
         try {
