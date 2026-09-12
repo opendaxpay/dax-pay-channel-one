@@ -13,7 +13,7 @@
 
     <groupId>cn.daxpay.open.channel.one</groupId>
     <artifactId>daxpay-channel-one</artifactId>
-    <version>4.0.0-beta5</version>
+    <version>4.0.0-beta6</version>
     <packaging>pom</packaging>
     <name>daxpay-channel-one</name>
     <description>通道适配子应用 - 通道对接服务</description>

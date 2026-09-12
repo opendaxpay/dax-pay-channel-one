@@ -39,7 +39,7 @@ daxpay-channel-one (根)              daxpay (根)
 
 > 本子应用是主项目结构的轻量子集: platform 保留 core + common(i18n/json/util) + service(system), 不要 capability。
 > 通用契约(DTO/接口/异常)放入 `daxpay-platform-core`, 便于后续 channel-2/3/4 复用。
-> 两边独立 git；产品版本与主应用对齐为 4.0.0-beta5，无 maven 依赖，仅结构对标。
+> 两边独立 git；产品版本与主应用对齐为 4.0.0-beta6，无 maven 依赖，仅结构对标。
 
 ## 技术栈
 
