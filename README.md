@@ -44,7 +44,7 @@ daxpay-channel-one (根)              daxpay (根)
 ## 技术栈
 
 - Java 25
-- Spring Boot 4.1.0
+- Spring Boot 4.1.1
 - Lombok / Hutool
 - OpenTelemetry(仅日志链路关联)
 
