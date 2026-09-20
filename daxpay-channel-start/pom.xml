@@ -92,6 +92,12 @@
             <artifactId>daxpay-channel-ums</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- 云闪付 -->
+        <dependency>
+            <groupId>cn.daxpay.open.channel.one</groupId>
+            <artifactId>daxpay-channel-union</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
