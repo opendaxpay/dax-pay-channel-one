@@ -22,7 +22,7 @@ import java.util.Objects;
 /// # 云闪付通道支付下单服务
 ///
 /// 按 [UnionPayReq.getMethod] 分发到对应支付方式:
-/// - **QRCODE**: 主扫(申请二维码, 返回 qrNo, 前端渲染二维码)
+/// - **QRCODE**: 主扫(申请二维码, 返回 qrCode, 前端渲染二维码)
 /// - **BARCODE**: 被扫(付款码消费, 同步返回结果, 主应用走 sync 确认)
 /// - **H5**: WAP 网关支付(返回自动提交 HTML form, 浏览器跳转银联收银台)
 @Service
@@ -44,6 +44,9 @@ public class UnionPayService {
     /// 交易币种(156=人民币)
     private static final String CURRENCY_CODE = "156";
 
+    /// 手机渠道
+    private static final String CHANNEL_TYPE_MOBILE = "08";
+
     /// 通道支付下单
     public UnionPayResp pay(UnionPayReq req) {
         log.info("云闪付通道收到支付请求: outTradeNo={}, amount={}, method={}",
@@ -59,25 +62,29 @@ public class UnionPayService {
         };
     }
 
-    /// 主扫支付(申请二维码, 返回 qrNo 二维码内容)
+    /// 主扫支付(申请二维码, 返回 qrCode 二维码内容)
     private UnionPayResp applyQrCode(UnionPayReq req) {
         UnionClient client = new UnionClient(req.getCredential(), restClient);
         Map<String, Object> param = this.buildCommonParam(req.getCredential());
         param.put("orderId", req.getOutTradeNo());
         param.put("txnAmt", req.getAmount());
-        if (StrUtil.isNotBlank(req.getDescription())) {
-            param.put("orderDesc", req.getDescription());
-        }
+        param.put("channelType", CHANNEL_TYPE_MOBILE);
         param.put("backUrl", req.getNotifyUrl());
         Map<String, String> response = client.applyQrCode(param);
-        String qrNo = response.get("qrNo");
-        if (StrUtil.isBlank(qrNo)) {
+        this.checkSuccess(response);
+
+        // ACP 主扫申请二维码标准响应字段为 qrCode；兼容部分历史实现使用的 qrNo。
+        String qrCode = response.get("qrCode");
+        if (StrUtil.isBlank(qrCode)) {
+            qrCode = response.get("qrNo");
+        }
+        if (StrUtil.isBlank(qrCode)) {
             throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
-                    "channel.error.unionRequestFailed", "未返回 qrNo");
+                    "channel.error.unionRequestFailed", "银联响应成功但未返回 qrCode");
         }
         return new UnionPayResp()
                 .setOutTradeNo(req.getOutTradeNo())
-                .setPayBody(qrNo)
+                .setPayBody(qrCode)
                 .setPayBodyType(UnionPayBodyType.QR_CODE);
     }
 
@@ -97,8 +104,7 @@ public class UnionPayService {
         Map<String, String> response = client.consume(param);
         String respCode = response.get("respCode");
         if (!"00".equals(respCode) && !"03".equals(respCode)) {
-            throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
-                    "channel.error.unionRequestFailed", response.get("respMsg"));
+            throwUnionError(response);
         }
         return new UnionPayResp().setOutTradeNo(req.getOutTradeNo());
     }
@@ -130,5 +136,23 @@ public class UnionPayService {
         param.put("accessType", ACCESS_TYPE);
         param.put("currencyCode", CURRENCY_CODE);
         return param;
+    }
+
+    /// 后台同步接口成功码校验。
+    private void checkSuccess(Map<String, String> response) {
+        if (!"00".equals(response.get("respCode"))) {
+            throwUnionError(response);
+        }
+    }
+
+    /// 保留银联原始业务错误，避免被“缺少结果字段”等二次错误覆盖。
+    private void throwUnionError(Map<String, String> response) {
+        String respCode = response.get("respCode");
+        String respMsg = response.get("respMsg");
+        String message = StrUtil.isBlank(respMsg)
+                ? StrUtil.format("银联交易失败(respCode={})", respCode)
+                : StrUtil.format("{} (respCode={})", respMsg, respCode);
+        throw new ChannelServiceException(ChannelErrorCode.SDK_CALL_FAILED.getCode(),
+                "channel.error.unionRequestFailed", message);
     }
 }
