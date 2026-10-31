@@ -11,9 +11,9 @@ import cn.daxpay.open.platform.core.exception.ChannelServiceException;
 ///
 /// 根据主应用下发的通道凭证 [WechatSdkCredential] 构建 WxJava [WxPayService], 支持两种验签模式:
 ///
-/// ## 验签模式
-/// - **支付公钥新模式**(优先): 凭证配置了 publicKeyId + publicKey 时启用, 免平台证书自动轮换(微信官方推荐)
-/// - **平台证书模式**(兜底): publicKeyId 为空时, 由 SDK 自动下载并轮换平台证书
+/// ## 验签模式(WxJava 4.8.6.B 默认全公钥模式 fullPublicKeyModel=true)
+/// - **支付公钥新模式**: 凭证配置了 publicKeyId + publicKey 时启用, 免平台证书自动轮换(微信官方推荐)
+/// - publicKeyId 为空时 SDK 直接抛错(不再自动下载平台证书), 凭证必须配齐公钥两件套
 public class WechatSdkConfig {
 
     /// 根据通道凭证构建 [WxPayService]
@@ -65,6 +65,11 @@ public class WechatSdkConfig {
         if (StrUtil.isNotBlank(credential.getPublicKeyId())) {
             config.setPublicKeyId(credential.getPublicKeyId());
             config.setPublicKeyString(credential.getPublicKey());
+        }
+
+        // API域名(非空时覆盖, 留空走官方 api.mch.weixin.qq.com; 联调演练指向模拟网关, WxJava 自动加入 trustedHosts)
+        if (StrUtil.isNotBlank(credential.getApiHostUrl())) {
+            config.setApiHostUrl(credential.getApiHostUrl());
         }
 
         // 服务商模式: 将特约商户信息(sub_mchid/sub_appid)注入 WxPayConfig

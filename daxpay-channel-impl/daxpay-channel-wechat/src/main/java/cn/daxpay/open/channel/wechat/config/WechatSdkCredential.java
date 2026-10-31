@@ -8,9 +8,9 @@ import lombok.Data;
 /// 下发给子应用用于构建 [com.github.binarywang.wxpay.service.WxPayService]。
 /// 仅承载通道调用所需的身份与密钥信息, 不含任何业务字段, 与系统内业务配置实体严格区分。
 ///
-/// 鉴权模式:
-/// - 支付公钥新模式(优先): 配置了 publicKeyId + publicKey 时启用, 免平台证书自动轮换(微信官方推荐)
-/// - 平台证书模式(兜底): publicKeyId 为空时, 由 SDK 自动下载并轮换平台证书
+/// 鉴权模式(WxJava 4.8.6.B 默认全公钥模式 fullPublicKeyModel=true):
+/// - 支付公钥新模式: 配置 publicKeyId + publicKey 启用, 免平台证书自动轮换(微信官方推荐)
+/// - publicKeyId 为空时 SDK 直接抛错(不再自动下载平台证书), 凭证必须配齐公钥两件套
 @Data
 public class WechatSdkCredential {
     /// 微信商户号(服务商模式下为服务商商户号 sp_mchid)
@@ -33,4 +33,6 @@ public class WechatSdkCredential {
     private String publicKey;
     /// 支付公钥ID(支付公钥新模式使用)
     private String publicKeyId;
+    /// API域名(留空使用官方 api.mch.weixin.qq.com; 联调演练填模拟网关地址)
+    private String apiHostUrl;
 }
