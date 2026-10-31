@@ -1,0 +1,11 @@
+{
+  "gatewayResponseVerifyFailed": "Gateway response signature verification failed: {0}",
+  "gatewayRequestFailed": "{0}",
+  "callbackPlatformKeyMissing": "Callback signature verification failed: no platform public key configured in channel credential",
+  "callbackVerifyFailed": "Callback signature verification failed: {0}",
+  "callbackPlatformKeyParseFailed": "Callback signature verification failed: failed to parse platform public key ({0})",
+  "callbackBodyParseFailed": "Failed to parse callback payload: {0}",
+  "callbackDataMissing": "Callback payload is missing the data structure",
+  "callbackTimestampInvalid": "Callback signature verification failed: invalid timestamp (epoch seconds required)",
+  "callbackTimestampOutOfWindow": "Callback signature verification failed: timestamp is outside the tolerance window (±{0} seconds)"
+}

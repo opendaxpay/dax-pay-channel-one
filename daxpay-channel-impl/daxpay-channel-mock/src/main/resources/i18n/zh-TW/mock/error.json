@@ -1,0 +1,11 @@
+{
+  "gatewayResponseVerifyFailed": "閘道回應驗簽失敗: {0}",
+  "gatewayRequestFailed": "{0}",
+  "callbackPlatformKeyMissing": "回呼驗簽失敗: 通道憑證未設定平台公鑰, 無法驗簽",
+  "callbackVerifyFailed": "回呼驗簽失敗: {0}",
+  "callbackPlatformKeyParseFailed": "回呼驗簽失敗: 平台公鑰解析失敗({0})",
+  "callbackBodyParseFailed": "回呼報文解析失敗: {0}",
+  "callbackDataMissing": "回呼報文缺少 data 結構",
+  "callbackTimestampInvalid": "回呼驗簽失敗: 時間戳非法(須為秒級時間戳)",
+  "callbackTimestampOutOfWindow": "回呼驗簽失敗: 時間戳超出容忍視窗(±{0}秒)"
+}

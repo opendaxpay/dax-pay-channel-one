@@ -20,6 +20,7 @@
         <module>daxpay-channel-douyin</module>
         <module>daxpay-channel-ums</module>
         <module>daxpay-channel-union</module>
+        <module>daxpay-channel-mock</module>
     </modules>
 
     <dependencies>

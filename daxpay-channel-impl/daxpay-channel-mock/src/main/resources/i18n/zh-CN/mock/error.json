@@ -1,0 +1,11 @@
+{
+  "gatewayResponseVerifyFailed": "网关响应验签失败: {0}",
+  "gatewayRequestFailed": "{0}",
+  "callbackPlatformKeyMissing": "回调验签失败: 通道凭证未配置平台公钥, 无法验签",
+  "callbackVerifyFailed": "回调验签失败: {0}",
+  "callbackPlatformKeyParseFailed": "回调验签失败: 平台公钥解析失败({0})",
+  "callbackBodyParseFailed": "回调报文解析失败: {0}",
+  "callbackDataMissing": "回调报文缺少 data 结构",
+  "callbackTimestampInvalid": "回调验签失败: 时间戳非法(须为秒级时间戳)",
+  "callbackTimestampOutOfWindow": "回调验签失败: 时间戳超出容忍窗口(±{0}秒)"
+}

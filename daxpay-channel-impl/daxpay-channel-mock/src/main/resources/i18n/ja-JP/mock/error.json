@@ -1,0 +1,11 @@
+{
+  "gatewayResponseVerifyFailed": "ゲートウェイ応答の署名検証に失敗しました: {0}",
+  "gatewayRequestFailed": "{0}",
+  "callbackPlatformKeyMissing": "コールバック署名検証に失敗しました: チャネル資格情報にプラットフォーム公開鍵が設定されていません",
+  "callbackVerifyFailed": "コールバック署名検証に失敗しました: {0}",
+  "callbackPlatformKeyParseFailed": "コールバック署名検証に失敗しました: プラットフォーム公開鍵の解析に失敗しました({0})",
+  "callbackBodyParseFailed": "コールバック電文の解析に失敗しました: {0}",
+  "callbackDataMissing": "コールバック電文に data 構造がありません",
+  "callbackTimestampInvalid": "コールバック署名検証に失敗しました: タイムスタンプが不正です(秒単位のタイムスタンプが必要)",
+  "callbackTimestampOutOfWindow": "コールバック署名検証に失敗しました: タイムスタンプが許容範囲(±{0}秒)を超えています"
+}

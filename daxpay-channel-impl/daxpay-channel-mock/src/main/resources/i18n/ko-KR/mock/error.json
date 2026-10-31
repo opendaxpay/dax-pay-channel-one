@@ -1,0 +1,11 @@
+{
+  "gatewayResponseVerifyFailed": "게이트웨이 응답 서명 검증 실패: {0}",
+  "gatewayRequestFailed": "{0}",
+  "callbackPlatformKeyMissing": "콜백 서명 검증 실패: 채널 자격 증명에 플랫폼 공개 키가 설정되지 않았습니다",
+  "callbackVerifyFailed": "콜백 서명 검증 실패: {0}",
+  "callbackPlatformKeyParseFailed": "콜백 서명 검증 실패: 플랫폼 공개 키 파싱 실패({0})",
+  "callbackBodyParseFailed": "콜백 전문 파싱 실패: {0}",
+  "callbackDataMissing": "콜백 전문에 data 구조가 없습니다",
+  "callbackTimestampInvalid": "콜백 서명 검증 실패: 타임스탬프가 올바르지 않습니다(초 단위 타임스탬프 필요)",
+  "callbackTimestampOutOfWindow": "콜백 서명 검증 실패: 타임스탬프가 허용 범위(±{0}초)를 벗어났습니다"
+}

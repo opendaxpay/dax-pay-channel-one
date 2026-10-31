@@ -14,6 +14,11 @@ daxpay:
     transport-encrypt:
       key: ${CHANNEL_TRANSPORT_KEY:0123456789abcdef0123456789abcdef}
 
+# Mock 网关(10400 mock 子应用, 仅开发联调使用)
+mock:
+  gateway:
+    base-url: http://127.0.0.1:10400
+
 # 监控端点与链路追踪(actuator 配置必须放在顶层, 不能放在 spring: 下)
 management:
   # 链路追踪(仅日志关联, 不导出到后端; 采样率 dev/prod 共享 1.0 全采样,

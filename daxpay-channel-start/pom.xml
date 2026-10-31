@@ -92,6 +92,12 @@
             <artifactId>daxpay-channel-ums</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- Mock 模拟通道(官方 SDK 角色, RSA 三行签名调 10400 mock 网关; 仅 DEV 装配) -->
+        <dependency>
+            <groupId>cn.daxpay.open.channel.one</groupId>
+            <artifactId>daxpay-channel-mock</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
