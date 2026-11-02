@@ -14,10 +14,10 @@ daxpay:
     transport-encrypt:
       key: ${CHANNEL_TRANSPORT_KEY:0123456789abcdef0123456789abcdef}
 
-# Mock 网关(10400 mock 子应用, 仅开发联调使用)
+# Mock 网关(10400 mock 子应用, 仅开发联调使用; 演示档装机由 compose 注入容器网络地址)
 mock:
   gateway:
-    base-url: http://127.0.0.1:10400
+    base-url: ${MOCK_GATEWAY_BASE_URL:http://127.0.0.1:10400}
 
 # 监控端点与链路追踪(actuator 配置必须放在顶层, 不能放在 spring: 下)
 management:
