@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath/>
     </parent>
 
@@ -41,15 +41,15 @@
 
         <!-- 三方库版本集中管理(子模块通过继承获取) -->
         <lombok.version>1.18.48</lombok.version>
-        <hutool.version>5.8.47</hutool.version>
-        <alipay-sdk.version>4.40.1026.ALL</alipay-sdk.version>
+        <hutool.version>5.8.48</hutool.version>
+        <alipay-sdk.version>4.40.1067.ALL</alipay-sdk.version>
         <wxjava.version>4.8.6.B</wxjava.version>
         <!-- guava: weixin-java-pay 传递依赖, 显式声明统一版本(排除传递以避免版本漂移) -->
         <guava.version>33.7.2-jre</guava.version>
         <!-- 抖音支付官方 SDK -->
-        <douyinpay.version>1.0.12</douyinpay.version>
+        <douyinpay.version>1.0.14</douyinpay.version>
         <!-- OkHttp: 锁定 4.x (抖音 SDK 引用 okhttp3.internal.Util, 5.x 已移除), 配套 okio 3.18.2 -->
-        <okhttp.version>4.12.0</okhttp.version>
+        <okhttp.version>4.12.1</okhttp.version>
         <okio.version>3.18.2</okio.version>
     </properties>
 
