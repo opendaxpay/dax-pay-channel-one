@@ -79,7 +79,7 @@
         </appender>
         <!-- 异步写盘: 队列满时不阻塞业务线程(neverBlock=true); discardingThreshold=0 保证不丢弃任何级别 -->
         <appender name="FILE" class="ch.qos.logback.classic.AsyncAppender">
-            <queueCapacity>2048</queueCapacity>
+            <queueSize>2048</queueSize>
             <discardingThreshold>0</discardingThreshold>
             <neverBlock>true</neverBlock>
             <appender-ref ref="FILE_RAW"/>
