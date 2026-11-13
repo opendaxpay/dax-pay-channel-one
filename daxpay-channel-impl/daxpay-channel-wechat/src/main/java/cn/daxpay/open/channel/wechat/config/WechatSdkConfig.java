@@ -6,6 +6,9 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import cn.daxpay.open.platform.core.exception.ChannelErrorCode;
 import cn.daxpay.open.platform.core.exception.ChannelServiceException;
+import cn.daxpay.open.platform.core.util.RsaKeyLoader;
+
+import java.security.spec.InvalidKeySpecException;
 
 /// # 微信 SDK 客户端构建工具
 ///
@@ -56,15 +59,16 @@ public class WechatSdkConfig {
         config.setAppId(credential.getWxAppId());
         config.setMchId(credential.getWxMchId());
         config.setApiV3Key(credential.getApiKeyV3());
-        // 商户私钥(PEM PKCS#8 字符串)
-        config.setPrivateKeyString(credential.getPrivateKey());
+        // 商户私钥(WxJava 只认 PKCS#8, 归一化兼容 PKCS#1 与 PEM 头尾)
+        config.setPrivateKeyString(normalizePrivateKey(credential.getPrivateKey()));
         // 商户证书序列号
         config.setCertSerialNo(credential.getCertSerialNo());
 
         // 支付公钥新模式(优先): 配置了 publicKeyId 则启用, 免平台证书轮换
         if (StrUtil.isNotBlank(credential.getPublicKeyId())) {
             config.setPublicKeyId(credential.getPublicKeyId());
-            config.setPublicKeyString(credential.getPublicKey());
+            // 支付公钥归一化为 X.509(兼容商户粘贴的 PKCS#1 与 PEM 头尾)
+            config.setPublicKeyString(normalizePublicKey(credential.getPublicKey()));
         }
 
         // API域名(非空时覆盖, 留空走官方 api.mch.weixin.qq.com; 联调演练指向模拟网关, WxJava 自动加入 trustedHosts)
@@ -80,5 +84,30 @@ public class WechatSdkConfig {
             }
         }
         return config;
+    }
+
+    /// 归一化商户私钥为 PKCS#8 裸 Base64(WxJava 只认标准格式, 于此兼容 PKCS#1 与 PEM 头尾)
+    private static String normalizePrivateKey(String key) {
+        try {
+            return RsaKeyLoader.toPkcs8Base64(key);
+        } catch (InvalidKeySpecException e) {
+            // 微信: 通道配置无效
+            throw new ChannelServiceException(ChannelErrorCode.INVALID_CONFIG,
+                    "channel.error.wechatInvalidConfig");
+        }
+    }
+
+    /// 归一化微信支付公钥为 X.509 裸 Base64(兼容 PKCS#1 与 PEM 头尾; 留空时保持原值, 避免把签名链路一起阻断)
+    private static String normalizePublicKey(String key) {
+        if (StrUtil.isBlank(key)) {
+            return key;
+        }
+        try {
+            return RsaKeyLoader.toX509Base64(key);
+        } catch (InvalidKeySpecException e) {
+            // 微信: 通道配置无效
+            throw new ChannelServiceException(ChannelErrorCode.INVALID_CONFIG,
+                    "channel.error.wechatInvalidConfig");
+        }
     }
 }

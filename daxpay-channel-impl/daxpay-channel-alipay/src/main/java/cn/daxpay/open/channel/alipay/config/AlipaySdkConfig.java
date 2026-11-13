@@ -8,6 +8,7 @@ import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.DefaultAlipayClient;
 import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.util.RsaKeyLoader;
 
 /// # 支付宝 SDK 客户端构建与调用工具
 ///
@@ -34,17 +35,22 @@ public class AlipaySdkConfig {
             }
             config.setServerUrl(serverUrl);
             config.setAppId(credential.getAliAppId());
-            config.setPrivateKey(credential.getPrivateKey());
+            // 支付宝 SDK 只认裸 Base64 私钥, 此处归一化以兼容 PKCS#1(PKCS8/PKCS1 双格式) 与 PEM 头尾
+            config.setPrivateKey(RsaKeyLoader.toPkcs8Base64(credential.getPrivateKey()));
             // 证书模式使用三本证书, 公钥模式使用支付宝公钥
             if (AlipayAuthTypeEnum.fromCode(credential.getAuthType()).isCert()) {
                 config.setAppCertContent(credential.getAppCert());
                 config.setAlipayPublicCertContent(credential.getAlipayCert());
                 config.setRootCertContent(credential.getAlipayRootCert());
             } else {
-                config.setAlipayPublicKey(credential.getAlipayPublicKey());
+                // 公钥模式: 支付宝公钥归一化为 X.509 裸 Base64(兼容商户粘贴的 PKCS#1 与 PEM 头尾)
+                // 允许留空(仅影响验签), 留空时保持原值避免把签名链路一起阻断
+                config.setAlipayPublicKey(StrUtil.isBlank(credential.getAlipayPublicKey())
+                        ? credential.getAlipayPublicKey()
+                        : RsaKeyLoader.toX509Base64(credential.getAlipayPublicKey()));
             }
             return new DefaultAlipayClient(config);
-        } catch (AlipayApiException e) {
+        } catch (Exception e) {
             throw new SdkCallException(e.getMessage(), e);
         }
     }

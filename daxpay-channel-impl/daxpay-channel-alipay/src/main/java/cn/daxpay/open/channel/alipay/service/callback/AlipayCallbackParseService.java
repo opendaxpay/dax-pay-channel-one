@@ -5,6 +5,7 @@ import cn.daxpay.open.channel.alipay.config.AlipaySdkCredential;
 import cn.daxpay.open.channel.alipay.req.AlipayCallbackParseReq;
 import cn.daxpay.open.channel.alipay.resp.AlipayCallbackParseResp;
 import cn.daxpay.open.channel.alipay.resp.AlipayTransferCallbackParseResp;
+import cn.daxpay.open.platform.core.util.RsaKeyLoader;
 import cn.hutool.core.util.StrUtil;
 import com.alipay.api.internal.util.AlipaySignature;
 import lombok.extern.slf4j.Slf4j;
@@ -129,7 +130,8 @@ public class AlipayCallbackParseService {
                     Files.deleteIfExists(tempCert);
                 }
             }
-            return AlipaySignature.rsaCheckV1(params, credential.getAlipayPublicKey(), "UTF-8", signType);
+            // 公钥模式: 支付宝公钥归一化为 X.509 裸 Base64(兼容商户粘贴的 PKCS#1 与 PEM 头尾)
+            return AlipaySignature.rsaCheckV1(params, RsaKeyLoader.toX509Base64(credential.getAlipayPublicKey()), "UTF-8", signType);
         } catch (Exception e) {
             log.error("支付宝回调验签异常", e);
             return false;

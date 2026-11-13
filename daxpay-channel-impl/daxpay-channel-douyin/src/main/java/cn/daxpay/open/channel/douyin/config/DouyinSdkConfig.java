@@ -1,6 +1,7 @@
 package cn.daxpay.open.channel.douyin.config;
 
 import cn.daxpay.open.platform.core.exception.SdkCallException;
+import cn.daxpay.open.platform.core.util.RsaKeyLoader;
 import com.douyinpay.api.DefaultDouyinpayClient;
 import com.douyinpay.api.DouyinpayClient;
 import com.douyinpay.api.notification.NotificationParser;
@@ -13,6 +14,7 @@ import com.douyinpay.define.AutoPlatformCertificateConfig;
 import com.douyinpay.define.DomainName;
 import lombok.experimental.UtilityClass;
 
+import java.security.spec.InvalidKeySpecException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Objects;
 
@@ -35,7 +37,7 @@ public class DouyinSdkConfig {
         return new DefaultDouyinpayClient.AutoRSABuilder()
                 .mchId(credential.getMchId())
                 .merchantSerialNumber(credential.getMerchantSerialNumber())
-                .privateKey(credential.getMerchantPrivateKey())
+                .privateKey(normalizePrivateKey(credential))
                 .encryptKey(credential.getEncryptKey())
                 .build();
     }
@@ -96,7 +98,7 @@ public class DouyinSdkConfig {
         AutoPlatformCertificateConfig certConfig = new AutoPlatformCertificateConfig.AutoRSAConfigBuilder()
                 .mchId(credential.getMchId())
                 .merchantSerialNumber(credential.getMerchantSerialNumber())
-                .privateKey(credential.getMerchantPrivateKey())
+                .privateKey(normalizePrivateKey(credential))
                 .encryptKey(credential.getEncryptKey())
                 .build();
         return new NotificationParser(certConfig);
@@ -106,6 +108,15 @@ public class DouyinSdkConfig {
     public static void assertClientNotNull(DouyinpayClient client, String mchId) {
         if (Objects.isNull(client)) {
             throw new SdkCallException("抖音 SDK 客户端构建失败: mchId=" + mchId);
+        }
+    }
+
+    /// 归一化商户私钥为 PKCS#8 裸 Base64(抖音 SDK 只认 PKCS#8, 于此兼容 PKCS#1 与 PEM 头尾)
+    private static String normalizePrivateKey(DouyinSdkCredential credential) {
+        try {
+            return RsaKeyLoader.toPkcs8Base64(credential.getMerchantPrivateKey());
+        } catch (InvalidKeySpecException e) {
+            throw new SdkCallException("抖音商户私钥解析失败: mchId=" + credential.getMchId(), e);
         }
     }
 }
